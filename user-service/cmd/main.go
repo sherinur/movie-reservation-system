@@ -13,7 +13,7 @@ var PORT = flag.String("port", "8080", "port number")
 func main() {
 	flag.Parse()
 
-	cfg := server.NewConfig(":" + *PORT)
+	cfg := server.NewConfig(*PORT)
 	apiServer := server.NewServer(cfg)
 
 	err := apiServer.Start()

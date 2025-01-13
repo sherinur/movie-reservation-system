@@ -8,7 +8,8 @@ import (
 )
 
 type UserService interface {
-	Register() (*mongo.InsertOneResult, error)
+	Register(user *models.User) (*mongo.InsertOneResult, error)
+	Authorize(loginRequest *models.LoginRequest) (*models.User, error)
 }
 
 type userService struct {
@@ -21,12 +22,25 @@ func NewUserService(r dal.UserRepository) UserService {
 	}
 }
 
-func (s *userService) Register() (*mongo.InsertOneResult, error) {
-	user := &models.User{
-		Username: "sherinur",
-		Email:    "sherinurislam@gmail.com",
-		Password: "123",
+func (s *userService) Authorize(req *models.LoginRequest) (*models.User, error) {
+	user, err := s.userRepository.FindUserByEmail(req.Email)
+	if err != nil {
+		return nil, err
 	}
+
+	if user == nil {
+		return nil, ErrNoUser
+	}
+
+	if req.Password != user.Password {
+		return nil, ErrWrongPassword
+	}
+
+	return user, nil
+}
+
+func (s *userService) Register(user *models.User) (*mongo.InsertOneResult, error) {
+	// TODO: Validate user data
 
 	result, err := s.userRepository.CreateUser(user)
 	if err != nil {

@@ -20,7 +20,7 @@ type Server interface {
 
 type server struct {
 	mux *http.ServeMux
-	cfg config
+	cfg *config
 
 	userHandler handler.UserHandler
 }
@@ -28,7 +28,7 @@ type server struct {
 func NewServer(cfg *config) Server {
 	return &server{
 		mux: http.NewServeMux(),
-		cfg: *cfg,
+		cfg: cfg,
 	}
 }
 

@@ -7,8 +7,13 @@ type config struct {
 }
 
 func NewConfig(port string) *config {
+	// portValue := port
+	// if port == "8080" {
+	// 	portValue = os.Getenv("PORT")
+	// }
+
 	return &config{
-		Port:   port,
+		Port:   ":" + port,
 		DbUri:  "mongodb://localhost:27017",
 		DbName: "userDB",
 	}
