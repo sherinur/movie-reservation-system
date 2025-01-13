@@ -10,6 +10,6 @@ func NewConfig(port string) *config {
 	return &config{
 		Port:   port,
 		DbUri:  "mongodb://localhost:27017",
-		DbName: "user-service",
+		DbName: "userDB",
 	}
 }

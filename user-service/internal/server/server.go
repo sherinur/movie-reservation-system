@@ -53,14 +53,13 @@ func (s *server) Shutdown() {
 func (s *server) registerRoutes() error {
 	db, err := db.ConnectMongo(s.cfg.DbUri, s.cfg.DbName)
 	if err != nil {
-		slog.Error(err.Error())
 		return err
 	}
 
 	// user routes
 	userRepository := dal.NewUserRepository(db)
-	userService := service.NewUserService(&userRepository)
-	s.userHandler = handler.NewUserHandler(&userService)
+	userService := service.NewUserService(userRepository)
+	s.userHandler = handler.NewUserHandler(userService)
 
 	s.mux.HandleFunc("/login", s.userHandler.HandleLogin)
 	s.mux.HandleFunc("/register", s.userHandler.HandleRegister)
@@ -68,5 +67,6 @@ func (s *server) registerRoutes() error {
 
 	// other routes
 	s.mux.HandleFunc("/health", handler.GetHealth)
+
 	return nil
 }
