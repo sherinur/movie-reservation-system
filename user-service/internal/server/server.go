@@ -59,7 +59,7 @@ func (s *server) registerRoutes() error {
 
 	// user routes
 	userRepository := dal.NewUserRepository(db)
-	userService := service.NewUserService(userRepository)
+	userService := service.NewUserService(userRepository, s.cfg.SecretKey)
 	s.userHandler = handler.NewUserHandler(userService)
 
 	s.mux.HandleFunc("/login", s.userHandler.HandleLogin)

@@ -26,8 +26,6 @@ func NewUserHandler(s service.UserService) UserHandler {
 	}
 }
 
-var jwtSecret = []byte("secretkey")
-
 // POST /login => auth and give JWT
 func (h *userHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -43,7 +41,7 @@ func (h *userHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.userService.Authorize(&req)
+	jwt, err := h.userService.Authorize(&req)
 	if err != nil {
 		switch err {
 		case service.ErrWrongPassword:
@@ -60,7 +58,7 @@ func (h *userHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(200)
-	w.Write([]byte(fmt.Sprintf("%s, %s, %s, %s", user.ID, user.Username, user.Email, user.Password)))
+	w.Write([]byte(jwt))
 }
 
 // POST /register => new user registration
@@ -71,19 +69,19 @@ func (h *userHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 
-	var user *models.User
+	var req *models.RegisterRequest
 
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	result, err := h.userService.Register(user)
+	result, err := h.userService.Register(req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte(fmt.Sprintf("%v", result.InsertedID)))
 }
 

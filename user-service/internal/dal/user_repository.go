@@ -11,8 +11,9 @@ import (
 
 type UserRepository interface {
 	GetAllUsers() ([]models.User, error)
+	GetUserById(id string) (*models.User, error)
+	GetUserByEmail(email string) (*models.User, error)
 	CreateUser(user *models.User) (*mongo.InsertOneResult, error)
-	FindUserByEmail(email string) (*models.User, error)
 	IsEmailExists(email string) (bool, error)
 }
 
@@ -27,7 +28,7 @@ func NewUserRepository(db *mongo.Database) UserRepository {
 }
 
 func (r *userRepository) GetAllUsers() ([]models.User, error) {
-	// getting cursor of users from mongo
+	// getting a cursor of users from mongo
 	cur, err := r.db.Collection("users").Find(context.Background(), bson.D{})
 	if err != nil {
 		return nil, err
@@ -48,7 +49,7 @@ func (r *userRepository) GetAllUsers() ([]models.User, error) {
 		users = append(users, user)
 	}
 
-	// handling cursor err
+	// handling a cursor err
 	if err := cur.Err(); err != nil {
 		return nil, err
 	}
@@ -67,13 +68,26 @@ func (r *userRepository) CreateUser(user *models.User) (*mongo.InsertOneResult, 
 	return result, nil
 }
 
-func (r *userRepository) FindUserByEmail(email string) (*models.User, error) {
-	coll := r.db.Collection("users")
+func (r *userRepository) GetUserById(id string) (*models.User, error) {
+	filter := bson.D{{Key: "id", Value: id}}
 
+	var user models.User
+	err := r.db.Collection("users").FindOne(context.TODO(), filter).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (r *userRepository) GetUserByEmail(email string) (*models.User, error) {
 	filter := bson.D{{Key: "email", Value: email}}
 
 	var user models.User
-	err := coll.FindOne(context.TODO(), filter).Decode(&user)
+	err := r.db.Collection("users").FindOne(context.TODO(), filter).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
