@@ -41,7 +41,7 @@ func (h *userHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jwt, err := h.userService.Authorize(&req)
+	jwtToken, err := h.userService.Authorize(&req)
 	if err != nil {
 		switch err {
 		case service.ErrWrongPassword:
@@ -58,13 +58,14 @@ func (h *userHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(200)
-	w.Write([]byte(jwt))
+	w.Write([]byte(jwtToken))
 }
 
 // POST /register => new user registration
 func (h *userHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
 	}
 
 	defer r.Body.Close()
@@ -78,7 +79,20 @@ func (h *userHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 
 	result, err := h.userService.Register(req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		switch err {
+		case service.ErrInvalidPassword:
+			http.Error(w, "Invalid password", http.StatusBadRequest)
+			return
+		case service.ErrInvalidUsername:
+			http.Error(w, "Invalid username", http.StatusBadRequest)
+			return
+		case service.ErrUserExists:
+			http.Error(w, "User already exists", http.StatusConflict)
+			return
+		default:
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	w.WriteHeader(http.StatusCreated)
@@ -95,6 +109,7 @@ func (h *userHandler) HandleProfile(w http.ResponseWriter, r *http.Request) {
 	users, err := h.userService.GetAllUsers()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.WriteHeader(200)

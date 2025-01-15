@@ -36,8 +36,7 @@ func (s *userService) GetAllUsers() ([]models.User, error) {
 }
 
 func (s *userService) Authorize(req *models.LoginRequest) (string, error) {
-	// TODO: Generate and return JWT token using secret key
-
+	// login validation
 	user, err := s.userRepository.GetUserByEmail(req.Email)
 	if err != nil {
 		return "", err
@@ -51,11 +50,24 @@ func (s *userService) Authorize(req *models.LoginRequest) (string, error) {
 		return "", ErrWrongPassword
 	}
 
-	return "", nil
+	jwtToken, err := utils.GenerateJWT(user, []byte(s.secretKey))
+	if err != nil {
+		return "", err
+	}
+
+	return jwtToken, nil
 }
 
 func (s *userService) Register(registerRequest *models.RegisterRequest) (*mongo.InsertOneResult, error) {
 	// TODO: Validate the user id
+
+	// check for uniqueness
+	existingUser, err := s.userRepository.GetUserByEmail(registerRequest.Email)
+	if err != nil {
+		return nil, err
+	} else if existingUser != nil {
+		return nil, ErrUserExists
+	}
 
 	// password validation
 	if !utils.ValidatePassword(registerRequest.Password) {
@@ -65,14 +77,6 @@ func (s *userService) Register(registerRequest *models.RegisterRequest) (*mongo.
 	// username validation
 	if !utils.ValidateUsername(registerRequest.Username) {
 		return nil, ErrInvalidUsername
-	}
-
-	// check for uniqueness
-	existingUser, err := s.userRepository.GetUserByEmail(registerRequest.Email)
-	if err != nil {
-		return nil, err
-	} else if existingUser != nil {
-		return nil, ErrUserExists
 	}
 
 	// create a new user
