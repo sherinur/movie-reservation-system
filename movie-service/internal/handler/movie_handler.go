@@ -1,16 +1,75 @@
 package handler
 
-import "movie-service/internal/service"
+import (
+	"encoding/json"
+	"fmt"
+	"movie-service/internal/models"
+	"movie-service/internal/service"
+	"net/http"
+)
 
 type MovieHandler interface {
+	HandleAddMovie(w http.ResponseWriter, r *http.Request)
+	HandleGetMovie(w http.ResponseWriter, r *http.Request)
+	HandleUpdateMovie(w http.ResponseWriter, r *http.Request)
+	HandleDeleteMovie(w http.ResponseWriter, r *http.Request)
 }
 
 type movieHandler struct {
 	movieService service.MovieService
 }
 
-func NewMovieHandler(s *service.MovieService) MovieHandler {
+func NewMovieHandler(s service.MovieService) MovieHandler {
 	return &movieHandler{
 		movieService: s,
 	}
+}
+
+// Post /add => add new movie
+func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+	}
+	defer r.Body.Close()
+
+	var movie *models.MovieList
+
+	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	res, err := h.movieService.AddMovie(movie)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.WriteHeader(200)
+	w.Write([]byte(fmt.Sprintf("%v", res.InsertedIDs...)))
+}
+
+func (h movieHandler) HandleGetMovie(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+	}
+
+	_, err := h.movieService.GetMovie()
+	if err != nil {
+		switch err {
+		default:
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	// w.Write()
+}
+
+func (h movieHandler) HandleUpdateMovie(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (h movieHandler) HandleDeleteMovie(w http.ResponseWriter, r *http.Request) {
+
 }
