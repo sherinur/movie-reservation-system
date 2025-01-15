@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"user-service/internal/models"
@@ -34,15 +35,15 @@ func (h *userHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req *models.LoginRequest
+	var req models.LoginRequest
 
 	// TODO: Fix decoding the request body
-	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	user, err := h.userService.Authorize(req)
+	user, err := h.userService.Authorize(&req)
 	if err != nil {
 		switch err {
 		case service.ErrWrongPassword:
@@ -52,6 +53,7 @@ func (h *userHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "User not found", http.StatusUnauthorized)
 			return
 		default:
+			slog.Error(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -89,8 +91,14 @@ func (h *userHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 func (h *userHandler) HandleProfile(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	users, err := h.userService.GetAllUsers()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	w.WriteHeader(200)
-	w.Write([]byte("Profile"))
+	json.NewEncoder(w).Encode(&users)
 }

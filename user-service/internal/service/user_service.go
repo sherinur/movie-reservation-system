@@ -10,6 +10,7 @@ import (
 type UserService interface {
 	Register(user *models.User) (*mongo.InsertOneResult, error)
 	Authorize(loginRequest *models.LoginRequest) (*models.User, error)
+	GetAllUsers() ([]models.User, error)
 }
 
 type userService struct {
@@ -20,6 +21,15 @@ func NewUserService(r dal.UserRepository) UserService {
 	return &userService{
 		userRepository: r,
 	}
+}
+
+func (s *userService) GetAllUsers() ([]models.User, error) {
+	users, err := s.userRepository.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func (s *userService) Authorize(req *models.LoginRequest) (*models.User, error) {

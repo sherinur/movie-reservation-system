@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-	"log/slog"
 	"net/http"
 	"os"
 
@@ -10,6 +8,7 @@ import (
 	"user-service/internal/db"
 	"user-service/internal/handler"
 	"user-service/internal/service"
+	"user-service/internal/utils"
 )
 
 type Server interface {
@@ -32,16 +31,18 @@ func NewServer(cfg *config) Server {
 	}
 }
 
+var Logger = utils.NewLogger(true, true)
+
 func (s *server) Start() error {
 	// TODO: log the start
-	slog.Info("Registering routes ...")
+	Logger.PrintInfoMsg("Registering routes ...")
 	err := s.registerRoutes()
 	if err != nil {
-		slog.Error(err.Error())
+		Logger.PrintErrorMsg("Could not register routes: " + err.Error())
 		return err
 	}
 
-	slog.Info(fmt.Sprintf("Starting server on port %s", s.cfg.Port))
+	Logger.PrintInfoMsg("Starting server on port " + s.cfg.Port)
 	return http.ListenAndServe(s.cfg.Port, s.mux)
 }
 
