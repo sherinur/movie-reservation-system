@@ -44,7 +44,7 @@ func (s *movieService) AddMovie(movielist *models.MovieList) (*mongo.InsertManyR
 	return res, nil
 }
 
-func (s *movieService) GetMovie() (*[]models.Movie, error) {
+func (s *movieService) GetMovie() (*models.MovieList, error) {
 	data, err := s.movieRepository.GetMovie()
 	if err != nil {
 		return nil, err
