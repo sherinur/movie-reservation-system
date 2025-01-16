@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"reservation-service/reservation-service/internal/server"
+	"reservation-service/internal/server"
 )
 
 func main() {

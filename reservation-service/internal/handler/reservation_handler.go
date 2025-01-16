@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"reservation-service/reservation-service/internal/models"
-	"reservation-service/reservation-service/internal/service"
+	"reservation-service/internal/models"
+	"reservation-service/internal/service"
 	"strings"
 )
 

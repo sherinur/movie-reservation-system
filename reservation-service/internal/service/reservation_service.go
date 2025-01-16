@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/skip2/go-qrcode"
-	"reservation-service/reservation-service/internal/dal"
-	"reservation-service/reservation-service/internal/models"
+	"reservation-service/internal/dal"
+	"reservation-service/internal/models"
 	"time"
 )
 

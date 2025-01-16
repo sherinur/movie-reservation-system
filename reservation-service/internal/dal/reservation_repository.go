@@ -5,7 +5,7 @@ import (
 	"errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"reservation-service/reservation-service/internal/models"
+	"reservation-service/internal/models"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )

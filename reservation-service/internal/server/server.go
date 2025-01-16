@@ -5,10 +5,10 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"reservation-service/reservation-service/internal/dal"
-	"reservation-service/reservation-service/internal/db"
-	"reservation-service/reservation-service/internal/handler"
-	"reservation-service/reservation-service/internal/service"
+	"reservation-service/internal/dal"
+	"reservation-service/internal/db"
+	"reservation-service/internal/handler"
+	"reservation-service/internal/service"
 )
 
 type Server interface {
