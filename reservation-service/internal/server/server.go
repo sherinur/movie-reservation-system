@@ -1,6 +1,8 @@
 package server
 
 import (
+	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"reservation-service/reservation-service/internal/dal"
@@ -43,16 +45,20 @@ func (s *server) Shutdown() {
 }
 
 func (s *server) registerRoutes() error {
-	db, err := db.ConnectMongo(s.cfg.DBuri, s.cfg.DBname)
+	database, err := db.ConnectMongo(s.cfg.DBuri, s.cfg.DBname)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
-	reservationRepository := dal.NewReservationRepository(db)
-	service := service.NewReservationService(reservationRepository)
+	slog.Info("Registering routes..")
+
+	repository := dal.NewReservationRepository(database)
+	service := service.NewReservationService(repository)
 	s.handler = handler.NewReservationHandler(service)
 
 	s.mux.HandleFunc("/booking", s.handler.HandleBooking)
+	s.mux.HandleFunc("/booking/add", s.handler.AddReservation)
+	s.mux.HandleFunc("/booking/delete/", s.handler.DeleteReservation)
 
 	return nil
 }

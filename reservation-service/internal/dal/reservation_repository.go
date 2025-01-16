@@ -4,14 +4,15 @@ import (
 	"context"
 	"errors"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"reservation-service/reservation-service/internal/models"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type ReservationRepository interface {
-	AddTicket(ticket *models.Ticket) (*mongo.InsertOneResult, error)
-	RemoveTicket(id string) (*mongo.DeleteResult, error)
+	Add(reservation models.Reservation) error
+	Delete(id string) error
 }
 
 type reservationRepository struct {
@@ -22,26 +23,25 @@ func NewReservationRepository(db *mongo.Database) ReservationRepository {
 	return &reservationRepository{db: db}
 }
 
-func (r *reservationRepository) AddTicket(ticket *models.Ticket) (*mongo.InsertOneResult, error) {
+func (r *reservationRepository) Add(reservation models.Reservation) error {
 	coll := r.db.Collection("reservations")
-	result, err := coll.InsertOne(context.Background(), ticket)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	_, err := coll.InsertOne(context.TODO(), reservation)
+	return err
 }
 
-func (r *reservationRepository) RemoveTicket(id string) (*mongo.DeleteResult, error) {
+func (r *reservationRepository) Delete(id string) error {
 	coll := r.db.Collection("reservations")
-	result, err := coll.DeleteOne(context.Background(), bson.M{"_id": id})
+	ObjID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	if result.DeletedCount == 0 {
-		return nil, errors.New("reservation not found")
+	res, err := coll.DeleteOne(context.TODO(), bson.M{"_id": ObjID})
+	if err != nil {
+		return err
 	}
-
-	return result, nil
+	if res.DeletedCount == 0 {
+		return errors.New("no reservation found with the given ID")
+	}
+	return nil
 }
