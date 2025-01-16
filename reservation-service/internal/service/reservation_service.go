@@ -4,10 +4,11 @@ import (
 	"errors"
 	"reservation-service/reservation-service/internal/dal"
 	"reservation-service/reservation-service/internal/models"
+	"time"
 )
 
 type ReservationService interface {
-	AddReservation(reservation models.Reservation) error
+	AddReservation(booking models.Booking) error
 	DeleteReservation(id string) error
 }
 
@@ -21,11 +22,17 @@ func NewReservationService(r dal.ReservationRepository) ReservationService {
 	}
 }
 
-func (s *reservationService) AddReservation(reservation models.Reservation) error {
-	if reservation.MovieTitle == "" || reservation.Email == "" {
-		return errors.New("reservation id or name or email is empty")
+func (s *reservationService) AddReservation(booking models.Booking) error {
+	if booking.MovieTitle == "" || booking.Email == "" || len(booking.Tickets) == 0 {
+		return errors.New("booking is empty")
 	}
-
+	reservation := models.Reservation{
+		MovieTitle: booking.MovieTitle,
+		Email:      booking.Email,
+		Status:     "Bought",
+		BoughtTime: time.Now().String(),
+		Tickets:    booking.Tickets,
+	}
 	return s.reservationRepository.Add(reservation)
 }
 

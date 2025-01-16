@@ -31,7 +31,7 @@ func (rh *reservationHandler) HandleBooking(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	var tickets models.Reservation
+	var tickets []models.Reservation
 
 	err := json.NewDecoder(r.Body).Decode(&tickets)
 	if err != nil {
@@ -44,12 +44,12 @@ func (rh *reservationHandler) HandleBooking(w http.ResponseWriter, r *http.Reque
 }
 
 func (rh *reservationHandler) AddReservation(w http.ResponseWriter, r *http.Request) {
-	var reservation models.Reservation
-	if err := json.NewDecoder(r.Body).Decode(&reservation); err != nil {
+	var booking models.Booking
+	if err := json.NewDecoder(r.Body).Decode(&booking); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-	err := rh.reservationService.AddReservation(reservation)
+	err := rh.reservationService.AddReservation(booking)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
