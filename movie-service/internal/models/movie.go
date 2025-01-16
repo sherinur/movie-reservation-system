@@ -14,7 +14,3 @@ type Movie struct {
 	Producer    string `bson:"producer"`
 	Status      string `bson:"status"`
 }
-
-type MovieList struct {
-	List []Movie
-}

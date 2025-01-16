@@ -57,7 +57,7 @@ func (s *server) registerRoutes() error {
 	s.movieHandler = handler.NewMovieHandler(movieService)
 
 	s.mux.HandleFunc("/add", s.movieHandler.HandleAddMovie)
-	// s.mux.HandleFunc("/get", s.movieHandler.)
+	s.mux.HandleFunc("/movies", s.movieHandler.HandleGetMovie)
 	// s.mux.HandleFunc("/update/{id}" , s.movieHandler.)
 	// s.mux.HandleFunc("/delete/{id}", s.movieHandler.)
 

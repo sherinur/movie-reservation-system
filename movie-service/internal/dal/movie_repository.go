@@ -2,6 +2,7 @@ package dal
 
 import (
 	"context"
+	"encoding/json"
 	"movie-service/internal/models"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -9,9 +10,9 @@ import (
 )
 
 type MovieRepository interface {
-	AddMovie(movielist []interface{}) (*mongo.InsertManyResult, error)
-	GetMovie() (*models.MovieList, error)
-	UpdateMovie()
+	AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
+	GetAllMovie() ([]byte, error)
+	UpdateMovie() error
 	DeleteMovie()
 }
 
@@ -25,10 +26,11 @@ func NewMovieRepository(db *mongo.Database) MovieRepository {
 	}
 }
 
-func (r *movieRepository) AddMovie(movielist []interface{}) (*mongo.InsertManyResult, error) {
+func (r *movieRepository) AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
 	collection := r.db.Collection("movie")
 
-	res, err := collection.InsertMany(context.TODO(), movielist)
+	doc := ConvertToDoc(movielist)
+	res, err := collection.InsertMany(context.TODO(), doc)
 	if err != nil {
 		return nil, err
 	}
@@ -36,26 +38,42 @@ func (r *movieRepository) AddMovie(movielist []interface{}) (*mongo.InsertManyRe
 	return res, nil
 }
 
-func (r *movieRepository) GetMovie() (*models.MovieList, error) {
-	collection := r.db.Collection("movie")
-	cursor, err := collection.Find(context.TODO(), bson.D{})
+func (r *movieRepository) GetAllMovie() ([]byte, error) {
+	col := r.db.Collection("movie")
+	cursor, err := col.Find(context.TODO(), bson.D{})
 	if err != nil {
 		return nil, err
 	}
 
-	data := models.MovieList{List: []models.Movie{}}
-	err = cursor.All(context.TODO(), data.List)
+	var result []bson.M
+	err = cursor.All(context.TODO(), &result)
 	if err != nil {
 		return nil, err
 	}
 
-	return &data, nil
+	data, err := json.MarshalIndent(result, "", "")
+	if err != nil {
+		return data, err
+	}
+
+	return data, nil
 }
 
-func (r *movieRepository) UpdateMovie() {
-
+func (r *movieRepository) UpdateMovie() error {
+	return nil
 }
 
 func (r *movieRepository) DeleteMovie() {
 
+}
+
+func ConvertToDoc(movielist []models.Movie) []interface{} {
+	documents := []interface{}{}
+	for _, movie := range movielist {
+		documents = append(documents, bson.D{
+			{Key: "Title", Value: movie.Title},
+		})
+	}
+
+	return documents
 }

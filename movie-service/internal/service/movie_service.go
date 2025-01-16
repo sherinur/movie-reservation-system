@@ -8,8 +8,8 @@ import (
 )
 
 type MovieService interface {
-	AddMovie(movielist *models.MovieList) (*mongo.InsertManyResult, error)
-	GetMovie() (*models.MovieList, error)
+	AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
+	GetAllMovie() ([]byte, error)
 	UpdateMovie()
 	DeleteMovie()
 }
@@ -24,19 +24,16 @@ func NewMovieService(r dal.MovieRepository) MovieService {
 	}
 }
 
-func (s *movieService) AddMovie(movielist *models.MovieList) (*mongo.InsertManyResult, error) {
+func (s *movieService) AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
 
-	var movies []interface{}
-
-	for _, r := range movielist.List {
+	for _, movie := range movielist {
 		//TODO write checking for empty values
-		if r.Title == "" || r.Description == "" || r.Genre == "" {
+		if movie.Title == "" || movie.Description == "" || movie.Genre == "" {
 			return nil, ErrBadRequest
 		}
-		movies = append(movies, r)
 	}
 
-	res, err := s.movieRepository.AddMovie(movies)
+	res, err := s.movieRepository.AddMovie(movielist)
 	if err != nil {
 		return nil, err
 	}
@@ -44,11 +41,12 @@ func (s *movieService) AddMovie(movielist *models.MovieList) (*mongo.InsertManyR
 	return res, nil
 }
 
-func (s *movieService) GetMovie() (*models.MovieList, error) {
-	data, err := s.movieRepository.GetMovie()
+func (s *movieService) GetAllMovie() ([]byte, error) {
+	data, err := s.movieRepository.GetAllMovie()
 	if err != nil {
 		return nil, err
 	}
+
 	return data, nil
 }
 

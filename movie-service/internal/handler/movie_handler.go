@@ -25,14 +25,14 @@ func NewMovieHandler(s service.MovieService) MovieHandler {
 	}
 }
 
-// Post /add => add new movie
+// Post /addmovie => add new movie
 func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 	}
 	defer r.Body.Close()
 
-	var movie *models.MovieList
+	var movie []models.Movie
 
 	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -44,16 +44,17 @@ func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(fmt.Sprintf("%v", res.InsertedIDs...)))
 }
 
+// GET /movies => get all movies
 func (h movieHandler) HandleGetMovie(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 	}
 
-	_, err := h.movieService.GetMovie()
+	data, err := h.movieService.GetAllMovie()
 	if err != nil {
 		switch err {
 		default:
@@ -63,10 +64,14 @@ func (h movieHandler) HandleGetMovie(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	// w.Write()
+	w.Write(data)
 }
 
+// PUT /update/{id} => update movie information
 func (h movieHandler) HandleUpdateMovie(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+	}
 
 }
 
