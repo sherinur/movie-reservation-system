@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnetcMongo(uri string, name string) (*mongo.Database, error) {
+func ConnectMongo(uri string, name string) (*mongo.Database, error) {
 	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
 	if err != nil {
 		return nil, err
