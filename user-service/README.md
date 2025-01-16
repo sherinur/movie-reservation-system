@@ -77,6 +77,7 @@ Register a new user.
 ```json
 {
   "username": "string",
+  "email": "string",
   "password": "string"
 }
 ```
@@ -123,6 +124,8 @@ Example MongoDB user document:
 - **Project Structure:**
   ```
   user-service
+  ├── build
+  │  └── Dockerfile        # Dockerfile
   ├── cmd
   │   └── main.go          # Entry point of the application
   ├── internal
