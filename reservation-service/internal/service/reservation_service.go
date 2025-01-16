@@ -1,7 +1,10 @@
 package service
 
 import (
+	"encoding/base64"
 	"errors"
+	"fmt"
+	"github.com/skip2/go-qrcode"
 	"reservation-service/reservation-service/internal/dal"
 	"reservation-service/reservation-service/internal/models"
 	"time"
@@ -26,6 +29,7 @@ func (s *reservationService) AddReservation(booking models.Booking) error {
 	if booking.MovieTitle == "" || booking.Email == "" || len(booking.Tickets) == 0 {
 		return errors.New("booking is empty")
 	}
+
 	reservation := models.Reservation{
 		MovieTitle: booking.MovieTitle,
 		Email:      booking.Email,
@@ -33,6 +37,17 @@ func (s *reservationService) AddReservation(booking models.Booking) error {
 		BoughtTime: time.Now().String(),
 		Tickets:    booking.Tickets,
 	}
+
+	qrData := fmt.Sprintf("Reservation for %d seats on %s at %s\nStatus: %s", len(reservation.Tickets), reservation.MovieTitle, reservation.BoughtTime, reservation.Status)
+
+	var png []byte
+	png, err := qrcode.Encode(qrData, qrcode.Medium, 256)
+	if err != nil {
+		return err
+	}
+
+	reservation.QRCode = base64.StdEncoding.EncodeToString(png)
+
 	return s.reservationRepository.Add(reservation)
 }
 
