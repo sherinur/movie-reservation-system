@@ -150,4 +150,4 @@ Example MongoDB user document:
 - Add unit and integration tests for comprehensive coverage.
 
 ## Author
-This project is written by Nurislam Sheri [sherinur](https://github.com/sherinur).
+This project is written by Nurislam Sheri [(sherinur)](https://github.com/sherinur).
