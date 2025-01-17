@@ -11,8 +11,8 @@ import (
 type MovieHandler interface {
 	HandleAddMovie(w http.ResponseWriter, r *http.Request)
 	HandleGetMovie(w http.ResponseWriter, r *http.Request)
-	HandleUpdateMovie(w http.ResponseWriter, r *http.Request)
-	HandleDeleteMovie(w http.ResponseWriter, r *http.Request)
+	HandleUpdateMovieById(w http.ResponseWriter, r *http.Request)
+	HandleDeleteMovieByID(w http.ResponseWriter, r *http.Request)
 }
 
 type movieHandler struct {
@@ -29,6 +29,7 @@ func NewMovieHandler(s service.MovieService) MovieHandler {
 func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
 	}
 	defer r.Body.Close()
 
@@ -41,7 +42,12 @@ func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.movieService.AddMovie(movie)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		switch err {
+		default:
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -52,6 +58,7 @@ func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 func (h movieHandler) HandleGetMovie(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
 	}
 
 	data, err := h.movieService.GetAllMovie()
@@ -67,14 +74,52 @@ func (h movieHandler) HandleGetMovie(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-// PUT /update/{id} => update movie information
-func (h movieHandler) HandleUpdateMovie(w http.ResponseWriter, r *http.Request) {
+// PUT /update/{id} => update movie information by id
+func (h movieHandler) HandleUpdateMovieById(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	defer r.Body.Close()
+
+	var movie *models.Movie
+	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
+	id := r.PathValue("id")
+	res, err := h.movieService.UpdateMovieById(id, movie)
+	if err != nil {
+		switch err {
+		default:
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(fmt.Sprintf("%v", res.UpsertedID)))
 }
 
-func (h movieHandler) HandleDeleteMovie(w http.ResponseWriter, r *http.Request) {
+// DELETE /delete/{id} => delete movie
+func (h movieHandler) HandleDeleteMovieByID(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
+	id := r.PathValue("id")
+
+	res, err := h.movieService.DeleteMovieById(id)
+	if err != nil {
+		switch err {
+		default:
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+	w.Write([]byte(fmt.Sprintf("%v", res.DeletedCount)))
 }

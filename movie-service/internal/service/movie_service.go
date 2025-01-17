@@ -10,8 +10,8 @@ import (
 type MovieService interface {
 	AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
 	GetAllMovie() ([]byte, error)
-	UpdateMovie()
-	DeleteMovie()
+	UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error)
+	DeleteMovieById(id string) (*mongo.DeleteResult, error)
 }
 
 type movieService struct {
@@ -23,7 +23,6 @@ func NewMovieService(r dal.MovieRepository) MovieService {
 		movieRepository: r,
 	}
 }
-
 func (s *movieService) AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
 
 	for _, movie := range movielist {
@@ -50,10 +49,24 @@ func (s *movieService) GetAllMovie() ([]byte, error) {
 	return data, nil
 }
 
-func (s *movieService) UpdateMovie() {
+func (s *movieService) UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error) {
+	res, err := s.movieRepository.UpdateMovieById(id, movie)
+	if err != nil {
+		return nil, err
+	}
 
+	return res, nil
 }
 
-func (s *movieService) DeleteMovie() {
+func (s *movieService) DeleteMovieById(id string) (*mongo.DeleteResult, error) {
+	if id == "" {
+		return nil, ErrInvalidId
+	}
 
+	res, err := s.movieRepository.DeleteMovieById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
