@@ -2,13 +2,12 @@ package utils
 
 import (
 	"time"
-
 	"user-service/internal/models"
 
 	"github.com/golang-jwt/jwt"
 )
 
-var expHours = 72
+var expHours = 1440
 
 func GenerateJWT(user *models.User, jwtSecretKey []byte) (string, error) {
 	payload := jwt.MapClaims{

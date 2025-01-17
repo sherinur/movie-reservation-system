@@ -19,12 +19,12 @@ type Server interface {
 
 type server struct {
 	mux *http.ServeMux
-	cfg *config
+	cfg *Config
 
 	userHandler handler.UserHandler
 }
 
-func NewServer(cfg *config) Server {
+func NewServer(cfg *Config) Server {
 	return &server{
 		mux: http.NewServeMux(),
 		cfg: cfg,
@@ -65,7 +65,7 @@ func (s *server) registerRoutes() error {
 
 	// user routes
 	userRepository := dal.NewUserRepository(db)
-	userService := service.NewUserService(userRepository, s.cfg.SecretKey)
+	userService := service.NewUserService(userRepository, s.cfg.JwtSecretKey)
 	s.userHandler = handler.NewUserHandler(userService)
 
 	s.mux.HandleFunc("/login", s.userHandler.HandleLogin)

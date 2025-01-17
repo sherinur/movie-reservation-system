@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	cfg := server.NewConfig()
+	cfg := server.GetConfig()
 	apiServer := server.NewServer(cfg)
 
 	err := apiServer.Start()

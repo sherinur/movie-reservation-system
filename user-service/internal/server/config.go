@@ -1,40 +1,51 @@
 package server
 
 import (
-	"errors"
 	"os"
+	"sync"
 
 	"github.com/joho/godotenv"
 )
 
-var ErrInvalidEnv = errors.New("missing environment variables")
+var (
+	instance *Config
+	once     sync.Once
+)
 
-type config struct {
-	Port      string
-	DbUri     string
-	DbName    string
-	SecretKey string
+type Config struct {
+	Port         string
+	DbUri        string
+	DbName       string
+	JwtSecretKey string
+	ExpHours     string
 }
 
-func NewConfig() *config {
-	config, err := GetEnvConfig()
-	if err != nil {
-		return GetDefaultConfig()
+func GetConfig() *Config {
+	once.Do(func() {
+		config, err := ParseEnvConfig()
+		if err != nil {
+			Logger.PrintErrorMsg("Error of parsing environment variables: " + err.Error())
+			Logger.PrintWarnMsg("Failed to load config. Using default values.")
+			instance = GetDefaultConfig()
+		} else {
+			instance = config
+		}
+	})
+
+	return instance
+}
+
+func GetDefaultConfig() *Config {
+	return &Config{
+		Port:         ":8080",
+		DbUri:        "mongodb://localhost:27017",
+		DbName:       "userDB",
+		JwtSecretKey: "a5d52d1471164c78450ee0f6095cfN2f2c712e45525010b0e46e936cc61e6d205",
+		ExpHours:     "1440",
 	}
-
-	return config
 }
 
-func GetDefaultConfig() *config {
-	return &config{
-		Port:      ":8080",
-		DbUri:     "mongodb://localhost:27017",
-		DbName:    "userDB",
-		SecretKey: "a5d52d1471164c78450ee0f6095cfN2f2c712e45525010b0e46e936cc61e6d205",
-	}
-}
-
-func GetEnvConfig() (*config, error) {
+func ParseEnvConfig() (*Config, error) {
 	err := godotenv.Load(".env")
 	if err != nil {
 		return nil, err
@@ -45,16 +56,18 @@ func GetEnvConfig() (*config, error) {
 		mongoUri     = os.Getenv("MONGO_URI")
 		mongoDbName  = os.Getenv("DB_NAME")
 		jwtSecretKey = os.Getenv("JWT_SECRET_KEY")
+		expHours     = os.Getenv("EXP_HOURS")
 	)
 
 	if port == "" || mongoUri == "" || mongoDbName == "" || jwtSecretKey == "" {
 		return nil, ErrInvalidEnv
 	}
 
-	return &config{
-		Port:      ":" + port,
-		DbUri:     mongoUri,
-		DbName:    mongoDbName,
-		SecretKey: jwtSecretKey,
+	return &Config{
+		Port:         ":" + port,
+		DbUri:        mongoUri,
+		DbName:       mongoDbName,
+		JwtSecretKey: jwtSecretKey,
+		ExpHours:     expHours,
 	}, nil
 }
