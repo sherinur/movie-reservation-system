@@ -1,14 +1,15 @@
 # MongoDB image
-FROM mongo:latest
+FROM golang:1.22.2
 
 # Expose MongoDB port
-EXPOSE 27017
+EXPOSE 8080
 
 # Set the working directory
 WORKDIR /app
 
 # Copy binary file
 COPY user-service /app/user-service
+COPY .env /app/.env
 
 # Start
-CMD ["sh", "-c", "mongod --bind_ip_all & ./user-service"]
+ENTRYPOINT [ "./user-service" ]

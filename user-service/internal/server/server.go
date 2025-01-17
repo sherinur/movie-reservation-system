@@ -34,8 +34,7 @@ func NewServer(cfg *config) Server {
 var Logger = utils.NewLogger(true, true)
 
 func (s *server) Start() error {
-	// TODO: log the start
-	Logger.PrintInfoMsg("Registering routes ...")
+	Logger.PrintInfoMsg("Registering routes...")
 	err := s.registerRoutes()
 	if err != nil {
 		Logger.PrintErrorMsg("Could not register routes: " + err.Error())
@@ -43,7 +42,14 @@ func (s *server) Start() error {
 	}
 
 	Logger.PrintInfoMsg("Starting server on port " + s.cfg.Port)
-	return http.ListenAndServe(s.cfg.Port, s.mux)
+
+	err = http.ListenAndServe(s.cfg.Port, s.mux)
+	if err != nil {
+		Logger.PrintErrorMsg("Can not start the server: " + err.Error())
+		return err
+	}
+
+	return nil
 }
 
 // TODO: Write gracefull shutdown
