@@ -3,10 +3,12 @@ package service
 import (
 	"movie-service/internal/dal"
 	"movie-service/internal/models"
+	"movie-service/utils"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// TODO: Implement validation for service
 type MovieService interface {
 	AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
 	GetAllMovie() ([]byte, error)
@@ -24,10 +26,9 @@ func NewMovieService(r dal.MovieRepository) MovieService {
 	}
 }
 func (s *movieService) AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
-
 	for _, movie := range movielist {
-		//TODO write checking for empty values
-		if movie.Title == "" || movie.Description == "" || movie.Genre == "" {
+		isempty := utils.IsEmpty(movie)
+		if !isempty {
 			return nil, ErrBadRequest
 		}
 	}
@@ -50,6 +51,11 @@ func (s *movieService) GetAllMovie() ([]byte, error) {
 }
 
 func (s *movieService) UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error) {
+	isempty := utils.IsEmpty(movie)
+	if !isempty {
+		return nil, ErrBadRequest
+	}
+
 	res, err := s.movieRepository.UpdateMovieById(id, movie)
 	if err != nil {
 		return nil, err

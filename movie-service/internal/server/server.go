@@ -6,6 +6,7 @@ import (
 	"movie-service/internal/dal"
 	"movie-service/internal/db"
 	"movie-service/internal/handler"
+
 	"movie-service/internal/service"
 	"net/http"
 	"os"
@@ -21,7 +22,8 @@ type server struct {
 	mux *http.ServeMux
 	cfg *config
 
-	movieHandler handler.MovieHandler
+	movieHandler  handler.MovieHandler
+	cinemaHandler handler.CinemaHandler
 }
 
 func NewServer(cfg *config) Server {
@@ -52,14 +54,27 @@ func (s *server) registerRoutes() error {
 		return err
 	}
 
+	//Registr routes
 	movieRepository := dal.NewMovieRepository(db)
 	movieService := service.NewMovieService(movieRepository)
 	s.movieHandler = handler.NewMovieHandler(movieService)
 
-	s.mux.HandleFunc("/add", s.movieHandler.HandleAddMovie)
-	s.mux.HandleFunc("/movies", s.movieHandler.HandleGetMovie)
-	s.mux.HandleFunc("/update/{id}", s.movieHandler.HandleUpdateMovieById)
-	s.mux.HandleFunc("/delete/{id}", s.movieHandler.HandleDeleteMovieByID)
+	cinemaRepository := dal.NewCinemaRepository(db)
+	cinemaService := service.NewCinemaService(cinemaRepository)
+	s.cinemaHandler = handler.NewCinemaHandler(cinemaService)
+
+	//Basic crud operation routes for movie and cinema
+	//TODO: test routes and add validation in service
+	s.mux.HandleFunc("/movie/add", s.movieHandler.HandleAddMovie)
+	s.mux.HandleFunc("/movie/get", s.movieHandler.HandleGetAllMovie)
+	s.mux.HandleFunc("/movie/update/{id}", s.movieHandler.HandleUpdateMovieById)
+	s.mux.HandleFunc("/movie/delete/{id}", s.movieHandler.HandleDeleteMovieByID)
+
+	//! this routes not tested
+	s.mux.HandleFunc("/cinema/add", s.cinemaHandler.HandleAddCinema)
+	s.mux.HandleFunc("/cinema/get", s.cinemaHandler.HandleGetAllCinema)
+	s.mux.HandleFunc("/cinema/update/{id}", s.cinemaHandler.HandleUpdateCinema)
+	s.mux.HandleFunc("/cinema/delete/{id}", s.cinemaHandler.HandleDeleteCinema)
 
 	return nil
 }

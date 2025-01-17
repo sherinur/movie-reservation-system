@@ -11,29 +11,29 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type MovieRepository interface {
-	AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
-	GetAllMovie() ([]byte, error)
-	UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error)
-	DeleteMovieById(id string) (*mongo.DeleteResult, error)
+type CinemaRepository interface {
+	AddCinema(movielist []models.Cinema) (*mongo.InsertManyResult, error)
+	GetAllCinema() ([]byte, error)
+	UpdateCinemaById(id string, movie *models.Cinema) (*mongo.UpdateResult, error)
+	DeleteCinemaById(id string) (*mongo.DeleteResult, error)
 }
 
-type movieRepository struct {
+type cinemaRepository struct {
 	db *mongo.Database
 }
 
-func NewMovieRepository(db *mongo.Database) MovieRepository {
-	return &movieRepository{
+func NewCinemaRepository(db *mongo.Database) CinemaRepository {
+	return &cinemaRepository{
 		db: db,
 	}
 }
 
-func (r *movieRepository) AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
-	col := r.db.Collection("movie")
+func (r *cinemaRepository) AddCinema(cinemalist []models.Cinema) (*mongo.InsertManyResult, error) {
+	col := r.db.Collection("cinema")
 
 	doc := []interface{}{}
-	for _, movie := range movielist {
-		bsonDoc, err := utils.ConvertToBsonD(movie)
+	for _, cinema := range cinemalist {
+		bsonDoc, err := utils.ConvertToBsonD(cinema)
 		if err != nil {
 			return nil, err
 		}
@@ -49,8 +49,8 @@ func (r *movieRepository) AddMovie(movielist []models.Movie) (*mongo.InsertManyR
 	return res, nil
 }
 
-func (r *movieRepository) GetAllMovie() ([]byte, error) {
-	col := r.db.Collection("movie")
+func (r *cinemaRepository) GetAllCinema() ([]byte, error) {
+	col := r.db.Collection("cinema")
 	cursor, err := col.Find(context.TODO(), bson.D{})
 	if err != nil {
 		return nil, err
@@ -70,15 +70,15 @@ func (r *movieRepository) GetAllMovie() ([]byte, error) {
 	return data, nil
 }
 
-func (r *movieRepository) UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error) {
-	col := r.db.Collection("movie")
+func (r *cinemaRepository) UpdateCinemaById(id string, cinema *models.Cinema) (*mongo.UpdateResult, error) {
+	col := r.db.Collection("cinema")
 
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
 
-	update, err := utils.ConvertToBsonD(movie)
+	update, err := utils.ConvertToBsonD(cinema)
 	if err != nil {
 		return nil, err
 	}
@@ -87,11 +87,12 @@ func (r *movieRepository) UpdateMovieById(id string, movie *models.Movie) (*mong
 	if err != nil {
 		return nil, err
 	}
+
 	return res, nil
 }
 
-func (r *movieRepository) DeleteMovieById(id string) (*mongo.DeleteResult, error) {
-	col := r.db.Collection("movie")
+func (r *cinemaRepository) DeleteCinemaById(id string) (*mongo.DeleteResult, error) {
+	col := r.db.Collection("cinema")
 
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -104,5 +105,4 @@ func (r *movieRepository) DeleteMovieById(id string) (*mongo.DeleteResult, error
 	}
 
 	return res, nil
-
 }

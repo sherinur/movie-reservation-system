@@ -9,39 +9,39 @@ import (
 )
 
 // TODO: add logger and return statement with status code
-type MovieHandler interface {
-	HandleAddMovie(w http.ResponseWriter, r *http.Request)
-	HandleGetAllMovie(w http.ResponseWriter, r *http.Request)
-	HandleUpdateMovieById(w http.ResponseWriter, r *http.Request)
-	HandleDeleteMovieByID(w http.ResponseWriter, r *http.Request)
+type CinemaHandler interface {
+	HandleAddCinema(w http.ResponseWriter, r *http.Request)
+	HandleGetAllCinema(w http.ResponseWriter, r *http.Request)
+	HandleUpdateCinema(w http.ResponseWriter, r *http.Request)
+	HandleDeleteCinema(w http.ResponseWriter, r *http.Request)
 }
 
-type movieHandler struct {
-	movieService service.MovieService
+type cinemaHandler struct {
+	cinemaService service.CinemaService
 }
 
-func NewMovieHandler(s service.MovieService) MovieHandler {
-	return &movieHandler{
-		movieService: s,
+func NewCinemaHandler(s service.CinemaService) CinemaHandler {
+	return &cinemaHandler{
+		cinemaService: s,
 	}
 }
 
-// Post /movie/add => add new movie
-func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
+// Post /cinema/add => add new cinema
+func (h *cinemaHandler) HandleAddCinema(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
 	defer r.Body.Close()
 
-	var movie []models.Movie
+	var cinemalist []models.Cinema
 
-	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&cinemalist); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	res, err := h.movieService.AddMovie(movie)
+	res, err := h.cinemaService.AddCinema(cinemalist)
 	if err != nil {
 		switch err {
 		case service.ErrBadRequest:
@@ -58,14 +58,14 @@ func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprintf("%v", res.InsertedIDs...)))
 }
 
-// GET /movie/get => get all movies
-func (h movieHandler) HandleGetAllMovie(w http.ResponseWriter, r *http.Request) {
+// GET /cinema/get => get all cinema
+func (h *cinemaHandler) HandleGetAllCinema(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	data, err := h.movieService.GetAllMovie()
+	data, err := h.cinemaService.GetAllCinema()
 	if err != nil {
 		switch err {
 		default:
@@ -78,22 +78,22 @@ func (h movieHandler) HandleGetAllMovie(w http.ResponseWriter, r *http.Request) 
 	w.Write(data)
 }
 
-// PUT /movie/update/{id} => update movie information by id
-func (h movieHandler) HandleUpdateMovieById(w http.ResponseWriter, r *http.Request) {
+// PUT /cinema/update/{id} => update cinema information by id
+func (h *cinemaHandler) HandleUpdateCinema(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
 	defer r.Body.Close()
 
-	var movie *models.Movie
-	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
+	var cinema *models.Cinema
+	if err := json.NewDecoder(r.Body).Decode(&cinema); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	id := r.PathValue("id")
-	res, err := h.movieService.UpdateMovieById(id, movie)
+	res, err := h.cinemaService.UpdateCinemaById(id, cinema)
 	if err != nil {
 		switch err {
 		case service.ErrBadRequest:
@@ -109,8 +109,8 @@ func (h movieHandler) HandleUpdateMovieById(w http.ResponseWriter, r *http.Reque
 	w.Write([]byte(fmt.Sprintf("%v", res.MatchedCount)))
 }
 
-// DELETE /movie/delete/{id} => delete movie
-func (h movieHandler) HandleDeleteMovieByID(w http.ResponseWriter, r *http.Request) {
+// DELETE /cinema/delete/{id} => delete cinema
+func (h *cinemaHandler) HandleDeleteCinema(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
@@ -118,7 +118,7 @@ func (h movieHandler) HandleDeleteMovieByID(w http.ResponseWriter, r *http.Reque
 
 	id := r.PathValue("id")
 
-	res, err := h.movieService.DeleteMovieById(id)
+	res, err := h.cinemaService.DeleteCinemaById(id)
 	if err != nil {
 		switch err {
 		default:
