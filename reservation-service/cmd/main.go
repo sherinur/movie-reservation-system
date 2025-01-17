@@ -7,9 +7,9 @@ import (
 )
 
 func main() {
-	cfg := server.NewConfig("8080")
-
+	cfg := server.NewConfig()
 	srv := server.NewServer(cfg)
+
 	fmt.Println("server started at the port:", cfg.Port)
 	err := srv.Start()
 	if err != nil {
