@@ -12,6 +12,7 @@ import (
 
 type ReservationRepository interface {
 	Add(reservation models.Reservation) error
+	Update(id string) error
 	Delete(id string) error
 }
 
@@ -27,6 +28,23 @@ func (r *reservationRepository) Add(reservation models.Reservation) error {
 	coll := r.db.Collection("reservations")
 	_, err := coll.InsertOne(context.TODO(), reservation)
 	return err
+}
+
+func (r *reservationRepository) Update(id string) error {
+	coll := r.db.Collection("reservations")
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	update := bson.M{"$set": bson.M{"status": "Paid"}}
+
+	_, err = coll.UpdateByID(context.TODO(), objID, update)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *reservationRepository) Delete(id string) error {

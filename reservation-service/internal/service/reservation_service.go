@@ -13,6 +13,7 @@ import (
 type ReservationService interface {
 	AddReservation(booking models.Booking) error
 	DeleteReservation(id string) error
+	UpdateStatus(id string) error
 }
 
 type reservationService struct {
@@ -49,6 +50,14 @@ func (s *reservationService) AddReservation(booking models.Booking) error {
 	reservation.QRCode = base64.StdEncoding.EncodeToString(png)
 
 	return s.reservationRepository.Add(reservation)
+}
+
+func (s *reservationService) UpdateStatus(id string) error {
+	if id == "" {
+		return errors.New("id is empty")
+	}
+
+	return s.reservationRepository.Update(id)
 }
 
 func (s *reservationService) DeleteReservation(id string) error {

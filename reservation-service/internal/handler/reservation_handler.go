@@ -10,8 +10,8 @@ import (
 )
 
 type ReservationHandler interface {
-	HandleBooking(w http.ResponseWriter, r *http.Request)
 	AddReservation(w http.ResponseWriter, r *http.Request)
+	UpdateStatus(w http.ResponseWriter, r *http.Request)
 	DeleteReservation(w http.ResponseWriter, r *http.Request)
 }
 
@@ -23,24 +23,6 @@ func NewReservationHandler(s service.ReservationService) ReservationHandler {
 	return &reservationHandler{
 		reservationService: s,
 	}
-}
-
-func (rh *reservationHandler) HandleBooking(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Only GET method is supported.", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var tickets []models.Reservation
-
-	err := json.NewDecoder(r.Body).Decode(&tickets)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(tickets)
 }
 
 func (rh *reservationHandler) AddReservation(w http.ResponseWriter, r *http.Request) {
@@ -56,6 +38,25 @@ func (rh *reservationHandler) AddReservation(w http.ResponseWriter, r *http.Requ
 	}
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Reservation added successfully"))
+}
+
+func (rh *reservationHandler) UpdateStatus(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		http.Error(w, "Only PUT method is supported.", http.StatusMethodNotAllowed)
+		return
+	}
+
+	id := strings.TrimPrefix(r.URL.Path, "/booking/")
+	if id == "" {
+		http.Error(w, "Missing update ID", http.StatusBadRequest)
+	}
+
+	err := rh.reservationService.UpdateStatus(id)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error updating reservation: %v", err), http.StatusInternalServerError)
+	}
+	w.WriteHeader(http.StatusAccepted)
+	w.Write([]byte("Reservation updated successfully"))
 }
 
 func (rh *reservationHandler) DeleteReservation(w http.ResponseWriter, r *http.Request) {
