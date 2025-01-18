@@ -17,6 +17,10 @@ clean:
 	rm data -rf
 	rm -f $(BINARY_NAME)
 
+deploy:
+	@echo "Deploying the project..."
+	docker compose up --build
+
 help:
 	@echo "Makefile commands:"
 	@echo "  make build   - Build the project"

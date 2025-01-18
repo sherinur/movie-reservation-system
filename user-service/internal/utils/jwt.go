@@ -2,6 +2,7 @@ package utils
 
 import (
 	"time"
+
 	"user-service/internal/models"
 
 	"github.com/golang-jwt/jwt"
@@ -13,7 +14,7 @@ func GenerateJWT(user *models.User, jwtSecretKey []byte) (string, error) {
 	payload := jwt.MapClaims{
 		"sub":    user.Email,
 		"status": "client",
-		"exp":    time.Now().Add(time.Hour * time.Duration(expHours)),
+		"exp":    time.Now().Add(time.Hour * time.Duration(expHours)).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)

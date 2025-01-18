@@ -9,8 +9,8 @@ import (
 )
 
 type UserService interface {
-	Register(registerRequest *models.RegisterRequest) (*mongo.InsertOneResult, error)
-	Authorize(loginRequest *models.LoginRequest) (string, error)
+	Register(req *models.RegisterRequest) (*mongo.InsertOneResult, error)
+	Authorize(req *models.LoginRequest) (string, error)
 	GetAllUsers() ([]models.User, error)
 }
 
@@ -58,11 +58,11 @@ func (s *userService) Authorize(req *models.LoginRequest) (string, error) {
 	return jwtToken, nil
 }
 
-func (s *userService) Register(registerRequest *models.RegisterRequest) (*mongo.InsertOneResult, error) {
+func (s *userService) Register(req *models.RegisterRequest) (*mongo.InsertOneResult, error) {
 	// TODO: Validate the user id
 
 	// check for uniqueness
-	existingUser, err := s.userRepository.GetUserByEmail(registerRequest.Email)
+	existingUser, err := s.userRepository.GetUserByEmail(req.Email)
 	if err != nil {
 		return nil, err
 	} else if existingUser != nil {
@@ -70,20 +70,20 @@ func (s *userService) Register(registerRequest *models.RegisterRequest) (*mongo.
 	}
 
 	// password validation
-	if !utils.ValidatePassword(registerRequest.Password) {
+	if !utils.ValidatePassword(req.Password) {
 		return nil, ErrInvalidPassword
 	}
 
 	// username validation
-	if !utils.ValidateUsername(registerRequest.Username) {
+	if !utils.ValidateUsername(req.Username) {
 		return nil, ErrInvalidUsername
 	}
 
 	// create a new user
 	user := models.User{
-		Username: registerRequest.Username,
-		Email:    registerRequest.Email,
-		Password: registerRequest.Password,
+		Username: req.Username,
+		Email:    req.Email,
+		Password: req.Password,
 	}
 
 	newUser, err := s.userRepository.CreateUser(&user)

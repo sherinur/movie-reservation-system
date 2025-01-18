@@ -5,4 +5,5 @@ type User struct {
 	Username string `bson:"username"`
 	Email    string `bson:"email"`
 	Password string `bson:"password"`
+	Role     string `bson:"role"`
 }

@@ -33,6 +33,27 @@ func NewServer(cfg *Config) Server {
 
 var Logger = utils.NewLogger(true, true)
 
+func (s *server) registerRoutes() error {
+	db, err := db.ConnectMongo(s.cfg.DbUri, s.cfg.DbName)
+	if err != nil {
+		return err
+	}
+
+	// user routes
+	userRepository := dal.NewUserRepository(db)
+	userService := service.NewUserService(userRepository, s.cfg.JwtSecretKey)
+	s.userHandler = handler.NewUserHandler(userService)
+
+	s.mux.HandleFunc("/login", s.userHandler.HandleLogin)
+	s.mux.HandleFunc("/register", s.userHandler.HandleRegister)
+	s.mux.Handle("/profile", handler.JwtMiddleware(s.cfg.JwtSecretKey)(http.HandlerFunc(s.userHandler.HandleProfile)))
+
+	// other routes
+	s.mux.HandleFunc("/health", handler.GetHealth)
+
+	return nil
+}
+
 func (s *server) Start() error {
 	Logger.PrintInfoMsg("Registering routes...")
 	err := s.registerRoutes()
@@ -55,25 +76,4 @@ func (s *server) Start() error {
 // TODO: Write gracefull shutdown
 func (s *server) Shutdown() {
 	os.Exit(1)
-}
-
-func (s *server) registerRoutes() error {
-	db, err := db.ConnectMongo(s.cfg.DbUri, s.cfg.DbName)
-	if err != nil {
-		return err
-	}
-
-	// user routes
-	userRepository := dal.NewUserRepository(db)
-	userService := service.NewUserService(userRepository, s.cfg.JwtSecretKey)
-	s.userHandler = handler.NewUserHandler(userService)
-
-	s.mux.HandleFunc("/login", s.userHandler.HandleLogin)
-	s.mux.HandleFunc("/register", s.userHandler.HandleRegister)
-	s.mux.HandleFunc("/profile", s.userHandler.HandleProfile)
-
-	// other routes
-	s.mux.HandleFunc("/health", handler.GetHealth)
-
-	return nil
 }
