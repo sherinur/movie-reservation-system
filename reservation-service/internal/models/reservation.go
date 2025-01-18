@@ -6,6 +6,7 @@ type Reservation struct {
 	Status     string   `json:"status"`
 	BoughtTime string   `json:"bought_time"`
 	Tickets    []Ticket `json:"tickets"`
+	TotalPrice float64  `json:"total_price"`
 	QRCode     string   `json:"qr_code"`
 }
 
