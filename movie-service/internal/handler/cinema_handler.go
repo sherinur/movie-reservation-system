@@ -9,6 +9,7 @@ import (
 )
 
 // TODO: add logger and return statement with status code
+// TODO: add special handler for update Seat status and etc...
 type CinemaHandler interface {
 	HandleAddCinema(w http.ResponseWriter, r *http.Request)
 	HandleGetAllCinema(w http.ResponseWriter, r *http.Request)
