@@ -11,7 +11,7 @@ import (
 
 type ReservationHandler interface {
 	AddReservation(w http.ResponseWriter, r *http.Request)
-	UpdateStatus(w http.ResponseWriter, r *http.Request)
+	PayReservation(w http.ResponseWriter, r *http.Request)
 	DeleteReservation(w http.ResponseWriter, r *http.Request)
 }
 
@@ -40,7 +40,7 @@ func (rh *reservationHandler) AddReservation(w http.ResponseWriter, r *http.Requ
 	w.Write([]byte("Reservation added successfully"))
 }
 
-func (rh *reservationHandler) UpdateStatus(w http.ResponseWriter, r *http.Request) {
+func (rh *reservationHandler) PayReservation(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "Only PUT method is supported.", http.StatusMethodNotAllowed)
 		return
@@ -51,9 +51,10 @@ func (rh *reservationHandler) UpdateStatus(w http.ResponseWriter, r *http.Reques
 		http.Error(w, "Missing update ID", http.StatusBadRequest)
 	}
 
-	err := rh.reservationService.UpdateStatus(id)
+	err := rh.reservationService.PayReservation(id)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error updating reservation: %v", err), http.StatusInternalServerError)
+		return
 	}
 	w.WriteHeader(http.StatusAccepted)
 	w.Write([]byte("Reservation updated successfully"))

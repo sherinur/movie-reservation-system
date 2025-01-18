@@ -57,7 +57,7 @@ func (s *server) registerRoutes() error {
 	s.handler = handler.NewReservationHandler(service)
 
 	s.mux.HandleFunc("/booking", s.handler.AddReservation)
-	s.mux.HandleFunc("/booking/", s.handler.UpdateStatus)
+	s.mux.HandleFunc("/booking/", s.handler.PayReservation)
 	s.mux.HandleFunc("/booking/delete/", s.handler.DeleteReservation)
 
 	return nil

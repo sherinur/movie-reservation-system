@@ -14,6 +14,7 @@ type ReservationRepository interface {
 	Add(reservation models.Reservation) error
 	Update(id string) error
 	Delete(id string) error
+	GetById(id string) (*models.Reservation, error)
 }
 
 type reservationRepository struct {
@@ -62,4 +63,20 @@ func (r *reservationRepository) Delete(id string) error {
 		return errors.New("no reservation found with the given ID")
 	}
 	return nil
+}
+
+func (r *reservationRepository) GetById(id string) (*models.Reservation, error) {
+	coll := r.db.Collection("reservations")
+	ObjID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	var reservation models.Reservation
+	err = coll.FindOne(context.TODO(), bson.M{"_id": ObjID}).Decode(&reservation)
+	if err != nil {
+		return nil, err
+	}
+
+	return &reservation, nil
 }

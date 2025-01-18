@@ -12,8 +12,8 @@ import (
 
 type ReservationService interface {
 	AddReservation(booking models.Booking) error
+	PayReservation(id string) error
 	DeleteReservation(id string) error
-	UpdateStatus(id string) error
 }
 
 type reservationService struct {
@@ -53,10 +53,17 @@ func (s *reservationService) AddReservation(booking models.Booking) error {
 	return s.reservationRepository.Add(reservation)
 }
 
-func (s *reservationService) UpdateStatus(id string) error {
+func (s *reservationService) PayReservation(id string) error {
 	if id == "" {
 		return errors.New("id is empty")
 	}
+
+	reservation, err := s.reservationRepository.GetById(id)
+	if err != nil {
+		return err
+	}
+
+	err = utilits.SendMail(reservation.Email, "Good boooy", reservation.MovieTitle)
 
 	return s.reservationRepository.Update(id)
 }
