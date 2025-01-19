@@ -76,5 +76,8 @@ func (s *server) registerRoutes() error {
 	s.mux.HandleFunc("/cinema/update/{id}", s.cinemaHandler.HandleUpdateCinema)
 	s.mux.HandleFunc("/cinema/delete/{id}", s.cinemaHandler.HandleDeleteCinema)
 
+	// other routes
+	s.mux.HandleFunc("/health", handler.GetHealth)
+
 	return nil
 }
