@@ -23,14 +23,30 @@ func ConvertToBsonD(movie interface{}) (interface{}, error) {
 
 func IsEmpty(v interface{}) bool {
 	val := reflect.ValueOf(v)
-	if val.IsValid() && val.Kind() == reflect.Struct {
-		for i := 0; i < val.NumField(); i++ {
-			field := val.Field(i)
-			if !reflect.DeepEqual(field.Interface(), reflect.Zero(field.Type()).Interface()) {
-				return false
-			}
-		}
+	if val.Kind() == reflect.Ptr {
+		val = val.Elem()
 	}
 
-	return true
+	switch val.Kind() {
+	case reflect.Struct:
+		for i := 0; i < val.NumField(); i++ {
+			if IsEmpty(val.Field(i).Interface()) {
+				return true
+			}
+		}
+	case reflect.Slice, reflect.Array:
+		for i := 0; i < val.Len(); i++ {
+			if IsEmpty(val.Index(i).Interface()) {
+				return true
+			}
+		}
+	case reflect.String:
+		return val.String() == ""
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return val.Int() == 0
+	case reflect.Float32, reflect.Float64:
+		return val.Float() == 0.0
+	}
+
+	return false
 }
