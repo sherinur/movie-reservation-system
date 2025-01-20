@@ -2,10 +2,10 @@ FROM golang:1.23
 
 WORKDIR /app
 
-COPY . .
+COPY user-service/ . 
 
-RUN go build -o main cmd/main.go
+# RUN go build -o user-service cmd/main.go
 
 EXPOSE 8080
 
-CMD ["./main"]
+CMD ["./user-service"]

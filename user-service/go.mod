@@ -4,7 +4,15 @@ go 1.22.2
 
 require go.mongodb.org/mongo-driver v1.17.2
 
-require github.com/joho/godotenv v1.5.1
+require (
+	github.com/joho/godotenv v1.5.1
+	github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-00010101000000-000000000000
+)
+
+require (
+	github.com/sirupsen/logrus v1.9.3 // indirect
+	golang.org/x/sys v0.23.0 // indirect
+)
 
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -19,3 +27,5 @@ require (
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/text v0.17.0 // indirect
 )
+
+replace github.com/sherinur/movie-reservation-system/pkg/logging => ../pkg/logging

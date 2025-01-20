@@ -19,11 +19,13 @@ clean:
 
 deploy:
 	@echo "Deploying the project..."
-	docker compose up --build
+	make build
+	docker compose -f ../docker-compose.yml  up --build
 
 help:
 	@echo "Makefile commands:"
 	@echo "  make build   - Build the project"
+	@echo "  make deploy  - Docker compose"
 	@echo "  make run     - Build and run the project"
 	@echo "  make clean   - Remove the compiled binary"
 	@echo "  make help    - Show this help message"

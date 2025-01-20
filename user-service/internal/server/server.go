@@ -8,8 +8,11 @@ import (
 	"user-service/internal/db"
 	"user-service/internal/handler"
 	"user-service/internal/service"
-	"user-service/internal/utils"
+
+	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
+
+var Log = logging.Init()
 
 type Server interface {
 	Start() error
@@ -30,8 +33,6 @@ func NewServer(cfg *Config) Server {
 		cfg: cfg,
 	}
 }
-
-var Logger = utils.NewLogger(true, true)
 
 func (s *server) registerRoutes() error {
 	db, err := db.ConnectMongo(s.cfg.DbUri, s.cfg.DbName)
@@ -55,18 +56,18 @@ func (s *server) registerRoutes() error {
 }
 
 func (s *server) Start() error {
-	Logger.PrintInfoMsg("Registering routes...")
+	Log.Info("Registering routes...")
 	err := s.registerRoutes()
 	if err != nil {
-		Logger.PrintErrorMsg("Could not register routes: " + err.Error())
+		Log.Errorf("Could not register routes: %s", err.Error())
 		return err
 	}
 
-	Logger.PrintInfoMsg("Starting server on port " + s.cfg.Port)
+	Log.Info("Starting server on port" + s.cfg.Port)
 
 	err = http.ListenAndServe(s.cfg.Port, s.mux)
 	if err != nil {
-		Logger.PrintErrorMsg("Can not start the server: " + err.Error())
+		Log.Errorf("Can not start the server: %s", err.Error())
 		return err
 	}
 

@@ -1,6 +1,7 @@
 package logging
 
 import (
+	"io"
 	"os"
 	"path"
 	"runtime"
@@ -28,7 +29,7 @@ func Init() *logrus.Logger {
 		log.Fatalf("Cannot open the logs file: %s", err.Error())
 	}
 
-	log.SetOutput(logFile)
+	log.SetOutput(io.MultiWriter(os.Stdout, logFile))
 
 	log.Info("Successfully initialized the logrus logger")
 

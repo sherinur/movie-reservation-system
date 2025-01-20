@@ -24,8 +24,8 @@ func GetConfig() *Config {
 	once.Do(func() {
 		config, err := ParseEnvConfig()
 		if err != nil {
-			Logger.PrintErrorMsg("Error of parsing environment variables: " + err.Error())
-			Logger.PrintWarnMsg("Failed to load config. Using default values.")
+			Log.Errorf("Error of parsing environment variables: %s", err.Error())
+			Log.Warn("Failed to load config. Using default values.")
 			instance = GetDefaultConfig()
 		} else {
 			instance = config
