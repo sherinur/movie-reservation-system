@@ -10,6 +10,12 @@ import (
 	"user-service/internal/service"
 )
 
+// handlers must implement http.Handler interface, not custom interface
+
+// handler consists -> kitHTTP.NewServer -> middleware, go kit, server options
+
+// kitHTTP - go kit -> decodeRequest
+
 type UserHandler interface {
 	HandleLogin(w http.ResponseWriter, r *http.Request)
 	HandleRegister(w http.ResponseWriter, r *http.Request)
