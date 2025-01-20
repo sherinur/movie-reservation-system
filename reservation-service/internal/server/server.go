@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"log"
 	"log/slog"
 	"net/http"
@@ -34,7 +35,7 @@ func NewServer(cfg *config) Server {
 func (s *server) Start() error {
 	err := s.registerRoutes()
 	if err != nil {
-		return err
+		log.Fatal(err.Error())
 	}
 
 	return http.ListenAndServe(s.cfg.Port, s.mux)
@@ -47,7 +48,7 @@ func (s *server) Shutdown() {
 func (s *server) registerRoutes() error {
 	database, err := db.ConnectMongo(s.cfg.DBuri, s.cfg.DBname)
 	if err != nil {
-		log.Fatal(err)
+		return errors.New("error connecting to MongoDB")
 	}
 
 	slog.Info("Registering routes..")
