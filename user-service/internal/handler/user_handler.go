@@ -10,11 +10,11 @@ import (
 	"user-service/internal/service"
 )
 
-// handlers must implement http.Handler interface, not custom interface
+// TODO: handlers must implement http.Handler interface, not custom interface
 
-// handler consists -> kitHTTP.NewServer -> middleware, go kit, server options
+// TODO: Add to handler : kitHTTP.NewServer -> middleware, go kit, server options
 
-// kitHTTP - go kit -> decodeRequest
+// TODO: Use kitHTTP to unmarshal binary from req.body: - go kit -> decodeRequest
 
 type UserHandler interface {
 	HandleLogin(w http.ResponseWriter, r *http.Request)
