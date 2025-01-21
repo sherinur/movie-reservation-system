@@ -19,7 +19,7 @@ func ConvertToBsonD(movie interface{}) (interface{}, error) {
 	}
 
 	return bsonDoc, nil
-} 
+}
 
 func IsEmpty(v interface{}) bool {
 	val := reflect.ValueOf(v)

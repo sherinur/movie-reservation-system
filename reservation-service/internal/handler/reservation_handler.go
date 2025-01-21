@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
+
 	"reservation-service/internal/models"
 	"reservation-service/internal/service"
-	"strings"
 )
 
 type ReservationHandler interface {

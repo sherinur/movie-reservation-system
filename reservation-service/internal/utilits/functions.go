@@ -3,9 +3,10 @@ package utilits
 import (
 	"encoding/base64"
 	"errors"
-	"github.com/skip2/go-qrcode"
 	"net/smtp"
 	"os"
+
+	"github.com/skip2/go-qrcode"
 )
 
 func GenerateQR(QRdata string) (string, error) {

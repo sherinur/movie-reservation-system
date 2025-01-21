@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+
 	"reservation-service/internal/server"
 )
 
@@ -15,5 +16,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
