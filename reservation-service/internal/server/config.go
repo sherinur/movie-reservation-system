@@ -7,6 +7,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var EnvVarError = errors.New("env variables are not set")
+
 type config struct {
 	Port   string
 	DBuri  string
@@ -33,17 +35,23 @@ func DefaultConfig() *config {
 func CreateEnvConfig() (*config, error) {
 	err := godotenv.Load()
 	if err != nil {
-		return nil, err
+		return nil, EnvVarError
+	}
+
+	var (
+		port   = os.Getenv("PORT")
+		dbUri  = os.Getenv("DB_URI")
+		dbName = os.Getenv("DB_NAME")
+	)
+
+	if port == "" || dbUri == "" || dbName == "" {
+		return nil, EnvVarError
 	}
 
 	conf := &config{
-		Port:   ":" + os.Getenv("PORT"),
-		DBuri:  os.Getenv("DB_URI"),
-		DBname: os.Getenv("DB_NAME"),
-	}
-
-	if conf.Port == "" || conf.DBuri == "" || conf.DBname == "" {
-		return nil, errors.New("env variables not set")
+		Port:   ":" + port,
+		DBuri:  dbUri,
+		DBname: dbName,
 	}
 
 	return conf, nil

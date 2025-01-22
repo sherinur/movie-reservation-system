@@ -58,19 +58,19 @@ func (s *reservationService) PayReservation(id string) error {
 		return errors.New("id is empty")
 	}
 
-	reservation, err := s.reservationRepository.GetById(id)
-	if err != nil {
-		return err
-	}
+	// reservation, err := s.reservationRepository.GetById(id)
+	// if err != nil {
+	// 	return err
+	// }
 
-	err = utilits.SendMail(reservation.Email, "Good boooy", reservation.MovieTitle)
+	// err = utilits.SendMail(reservation.Email, "Good boooy", reservation.MovieTitle)
 
 	return s.reservationRepository.Update(id)
 }
 
 func (s *reservationService) DeleteReservation(id string) error {
 	if id == "" {
-		return errors.New("reservation id is empty")
+		return errors.New("id is empty")
 	}
 
 	return s.reservationRepository.Delete(id)

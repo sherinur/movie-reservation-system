@@ -50,11 +50,12 @@ func (rh *reservationHandler) PayReservation(w http.ResponseWriter, r *http.Requ
 	id := strings.TrimPrefix(r.URL.Path, "/booking/")
 	if id == "" {
 		http.Error(w, "Missing update ID", http.StatusBadRequest)
+		return
 	}
 
 	err := rh.reservationService.PayReservation(id)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error updating reservation: %v", err), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Error updating reservation: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
@@ -69,7 +70,7 @@ func (rh *reservationHandler) DeleteReservation(w http.ResponseWriter, r *http.R
 	}
 	err := rh.reservationService.DeleteReservation(id)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("%s lol %s", err.Error(), id), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Error deleting reservation: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

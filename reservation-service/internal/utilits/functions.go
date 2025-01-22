@@ -13,7 +13,7 @@ func GenerateQR(QRdata string) (string, error) {
 	var png []byte
 	png, err := qrcode.Encode(QRdata, qrcode.Medium, 256)
 	if err != nil {
-		return "", errors.New("Error generating QR Code: " + err.Error())
+		return "", errors.New("Error generating QR Code")
 	}
 
 	return base64.StdEncoding.EncodeToString(png), nil

@@ -2,8 +2,6 @@ package server
 
 import (
 	"errors"
-	"log"
-	"log/slog"
 	"net/http"
 	"os"
 
@@ -11,7 +9,11 @@ import (
 	"reservation-service/internal/db"
 	"reservation-service/internal/handler"
 	"reservation-service/internal/service"
+
+	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
+
+var Log = logging.Init()
 
 type Server interface {
 	Start() error
@@ -36,10 +38,17 @@ func NewServer(cfg *config) Server {
 func (s *server) Start() error {
 	err := s.registerRoutes()
 	if err != nil {
-		log.Fatal(err.Error())
+		Log.Errorf("Could not register routes: %s", err.Error())
 	}
 
-	return http.ListenAndServe(s.cfg.Port, s.mux)
+	Log.Info("Sarting server at the port" + s.cfg.Port)
+
+	err = http.ListenAndServe(s.cfg.Port, s.mux)
+	if err != nil {
+		Log.Errorf("Error starting server: %s", err.Error())
+	}
+
+	return nil
 }
 
 func (s *server) Shutdown() {
@@ -52,7 +61,7 @@ func (s *server) registerRoutes() error {
 		return errors.New("error connecting to MongoDB")
 	}
 
-	slog.Info("Registering routes..")
+	Log.Info("Registering routes..")
 
 	repository := dal.NewReservationRepository(database)
 	service := service.NewReservationService(repository)
