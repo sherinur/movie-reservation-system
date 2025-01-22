@@ -12,7 +12,7 @@ import (
 
 type ReservationService interface {
 	AddReservation(booking models.Booking) error
-	PayReservation(id string) error
+	PayReservation(id string, paying models.Paying) error
 	DeleteReservation(id string) error
 }
 
@@ -27,45 +27,57 @@ func NewReservationService(r dal.ReservationRepository) ReservationService {
 }
 
 func (s *reservationService) AddReservation(booking models.Booking) error {
-	if booking.MovieTitle == "" || booking.Email == "" || len(booking.Tickets) == 0 {
+	if len(booking.Tickets) == 0 {
 		return errors.New("booking is empty")
+	}
+	for _, ticket := range booking.Tickets {
+		if ticket.SeatColumn == "" || ticket.SeatRow == "" || ticket.Price < 0 || ticket.Type == "" {
+			return errors.New("not provided all seat data")
+		}
+	}
+
+	process := models.Process{
+		ScreeningID: booking.ScreeningID,
+		Status:      "processing",
+		Tickets:     booking.Tickets,
+		CreatedTime: time.Now().String(),
+	}
+
+	for _, ticket := range booking.Tickets {
+		process.TotalPrice += ticket.Price
+	}
+
+	return s.reservationRepository.Add(process)
+}
+
+func (s *reservationService) PayReservation(id string, paying models.Paying) error {
+	if id == "" {
+		return errors.New("id is empty")
+	}
+
+	process, err := s.reservationRepository.GetById(id)
+	if err != nil {
+		return err
 	}
 
 	reservation := models.Reservation{
-		MovieTitle: booking.MovieTitle,
-		Email:      booking.Email,
-		Status:     "Processing",
-		BoughtTime: time.Now().String(),
-		Tickets:    booking.Tickets,
+		ScreeningID: process.ScreeningID,
+		Email:       paying.Email,
+		PhoneNumber: paying.Email,
+		Status:      "paid",
+		Tickets:     process.Tickets,
+		TotalPrice:  process.TotalPrice,
+		BoughtTime:  time.Now().String(),
 	}
 
-	for _, ticket := range reservation.Tickets {
-		reservation.TotalPrice += ticket.Price
-	}
-
-	qrData := fmt.Sprintf("Reservation for %d seats on %s at %s\nStatus: %s", len(reservation.Tickets), reservation.MovieTitle, reservation.BoughtTime, reservation.Status)
+	qrData := fmt.Sprintf("Reservation for %d seats at %s\nStatus: %s", len(reservation.Tickets), reservation.BoughtTime, reservation.Status)
 	QR, err := utilits.GenerateQR(qrData)
 	if err != nil {
 		return err
 	}
 	reservation.QRCode = QR
 
-	return s.reservationRepository.Add(reservation)
-}
-
-func (s *reservationService) PayReservation(id string) error {
-	if id == "" {
-		return errors.New("id is empty")
-	}
-
-	// reservation, err := s.reservationRepository.GetById(id)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// err = utilits.SendMail(reservation.Email, "Good boooy", reservation.MovieTitle)
-
-	return s.reservationRepository.Update(id)
+	return s.reservationRepository.Update(id, reservation)
 }
 
 func (s *reservationService) DeleteReservation(id string) error {

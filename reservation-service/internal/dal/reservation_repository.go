@@ -13,8 +13,8 @@ import (
 )
 
 type ReservationRepository interface {
-	Add(reservation models.Reservation) error
-	Update(id string) error
+	Add(process models.Process) error
+	Update(id string, reservation models.Reservation) error
 	Delete(id string) error
 	GetById(id string) (*models.Reservation, error)
 }
@@ -27,24 +27,39 @@ func NewReservationRepository(db *mongo.Database) ReservationRepository {
 	return &reservationRepository{db: db}
 }
 
-func (r *reservationRepository) Add(reservation models.Reservation) error {
+func (r *reservationRepository) Add(process models.Process) error {
 	coll := r.db.Collection("reservations")
-	_, err := coll.InsertOne(context.TODO(), reservation)
-	return err
+	_, err := coll.InsertOne(context.TODO(), process)
+
+	if err != nil {
+		return errors.New("error adding new process to repository")
+	}
+
+	return nil
 }
 
-func (r *reservationRepository) Update(id string) error {
+func (r *reservationRepository) Update(id string, reservation models.Reservation) error {
 	coll := r.db.Collection("reservations")
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return errors.New("error getting objID")
 	}
 
-	update := bson.M{"$set": bson.M{"status": "Paid"}}
+	resDoc := bson.M{
+		"_id":          objID,
+		"screening_id": reservation.ScreeningID,
+		"email":        reservation.Email,
+		"phone_number": reservation.PhoneNumber,
+		"status":       reservation.Status,
+		"tickets":      reservation.Tickets,
+		"total_price":  reservation.TotalPrice,
+		"qr_code":      reservation.QRCode,
+		"bought_time":  reservation.BoughtTime,
+	}
 
-	_, err = coll.UpdateByID(context.TODO(), objID, update)
+	_, err = coll.ReplaceOne(context.TODO(), bson.M{"_id": objID}, resDoc)
 	if err != nil {
-		return errors.New("could not update in repository by id")
+		return errors.New("could not update in repository by id: " + err.Error())
 	}
 
 	return nil
