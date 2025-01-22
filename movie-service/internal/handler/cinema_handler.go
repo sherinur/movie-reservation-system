@@ -3,9 +3,10 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"movie-service/internal/models"
 	"movie-service/internal/service"
-	"net/http"
 )
 
 // TODO: add logger and return statement with status code
@@ -52,7 +53,6 @@ func (h *cinemaHandler) HandleAddCinema(w http.ResponseWriter, r *http.Request) 
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
 	}
 
 	w.WriteHeader(http.StatusOK)

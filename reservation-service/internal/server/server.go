@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+
 	"reservation-service/internal/dal"
 	"reservation-service/internal/db"
 	"reservation-service/internal/handler"

@@ -3,11 +3,11 @@ package service
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"reservation-service/internal/dal"
 	"reservation-service/internal/models"
 	"reservation-service/internal/utilits"
-	"time"
 )
 
 type ReservationService interface {
