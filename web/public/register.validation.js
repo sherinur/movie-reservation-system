@@ -55,6 +55,8 @@ async function ValidateRegister() {
         const confirmPasswordError = document.querySelector('#confirm-password-error');
         ShowError(confirmPasswordError, confirmPasswordInput, confirmPasswordMsg);
     }
+
+    MakeRegisterRequest(fullname, email, password);
 }
 
 async function HideError(errorText, input) {
@@ -70,4 +72,41 @@ function ShowError(errorMsgElement, input, errorText) {
     errorMsgElement.style.display = 'block';
 
     input.addEventListener('click', () => HideError(errorMsgElement, input));
+}
+
+// TODO: Rewrite the fetch to the user-service:
+// ! Uncaught (in promise) SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data
+//     MakeRegisterRequest http://localhost:4200/register.validation.js:98
+//     AsyncFunctionThrow self-hosted:804
+//     (Async: async)
+//     ValidateRegister http://localhost:4200/register.validation.js:59
+//     (Async: EventListener.handleEvent)
+//     <anonymous> http://localhost:4200/register.validation.js:5
+//     (Async: EventListener.handleEvent)
+//     <anonymous> http://localhost:4200/register.validation.js:1
+
+
+const url = 'http://127.0.0.1:8080/register';
+
+async function MakeRegisterRequest(username, email, password) {
+    const data = {
+        username: username,
+        email: email,
+        password: password
+    }
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        console.log(`error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(`${result}`)
 }

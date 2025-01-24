@@ -65,7 +65,7 @@ func (s *server) Start() error {
 
 	Log.Info("Starting server on port" + s.cfg.Port)
 
-	err = http.ListenAndServe(s.cfg.Port, s.mux)
+	err = http.ListenAndServe(s.cfg.Port, handler.CorsMiddleware(s.mux))
 	if err != nil {
 		Log.Errorf("Can not start the server: %s", err.Error())
 		return err
