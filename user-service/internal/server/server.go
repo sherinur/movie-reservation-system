@@ -5,14 +5,15 @@ import (
 	"os"
 
 	"user-service/internal/dal"
-	"user-service/internal/db"
 	"user-service/internal/handler"
 	"user-service/internal/service"
+
+	"github.com/sherinur/movie-reservation-system/pkg/db"
 
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
-var Log = logging.Init()
+var log = logging.GetLogger()
 
 type Server interface {
 	Start() error
@@ -56,18 +57,18 @@ func (s *server) registerRoutes() error {
 }
 
 func (s *server) Start() error {
-	Log.Info("Registering routes...")
+	log.Info("Registering routes...")
 	err := s.registerRoutes()
 	if err != nil {
-		Log.Errorf("Could not register routes: %s", err.Error())
+		log.Errorf("Could not register routes: %s", err.Error())
 		return err
 	}
 
-	Log.Info("Starting server on port" + s.cfg.Port)
+	log.Info("Starting server on port" + s.cfg.Port)
 
 	err = http.ListenAndServe(s.cfg.Port, handler.CorsMiddleware(s.mux))
 	if err != nil {
-		Log.Errorf("Can not start the server: %s", err.Error())
+		log.Errorf("Can not start the server: %s", err.Error())
 		return err
 	}
 

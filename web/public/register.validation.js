@@ -86,7 +86,7 @@ function ShowError(errorMsgElement, input, errorText) {
 //     <anonymous> http://localhost:4200/register.validation.js:1
 
 
-const url = 'http://127.0.0.1:8080/register';
+const userServiceUrl = 'http://127.0.0.1:8080/register';
 
 async function MakeRegisterRequest(username, email, password) {
     const data = {
@@ -95,12 +95,12 @@ async function MakeRegisterRequest(username, email, password) {
         password: password
     }
 
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+    MakeFetch('POST', userServiceUrl, data)
+    .then(data => {
+        console.log(data);
+    })
+    .catch(error => {
+        console.log(error);
     });
 
     if (!response.ok) {
@@ -109,4 +109,22 @@ async function MakeRegisterRequest(username, email, password) {
 
     const result = await response.json();
     console.log(`${result}`)
+}
+
+function MakeFetch(method, url, data) {
+    return fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error(`Error of fetch: ${response.status}`);
+            return response.json();
+        }
+    })
+    .catch(error => {
+        throw error;
+    });
 }
