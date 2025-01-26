@@ -6,11 +6,12 @@ import (
 	"os"
 
 	"reservation-service/internal/dal"
-	"reservation-service/internal/db"
 	"reservation-service/internal/handler"
 	"reservation-service/internal/service"
 
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
+
+	"github.com/sherinur/movie-reservation-system/pkg/db"
 )
 
 var Log = logging.Init()
