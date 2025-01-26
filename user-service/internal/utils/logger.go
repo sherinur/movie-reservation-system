@@ -6,8 +6,6 @@ import (
 	"net/http"
 )
 
-// TODO: Save logs to the ./logs/user-service.log path
-
 type iLogger interface {
 	PrintInfoMsg(mes string, args ...interface{})
 	PrintDebugMsg(mes string, args ...interface{})

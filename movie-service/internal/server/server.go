@@ -3,13 +3,14 @@ package server
 import (
 	"fmt"
 	"log/slog"
+	"net/http"
+	"os"
+
 	"movie-service/internal/dal"
 	"movie-service/internal/db"
 	"movie-service/internal/handler"
 
 	"movie-service/internal/service"
-	"net/http"
-	"os"
 )
 
 type Server interface {
@@ -44,9 +45,13 @@ func (s *server) Start() error {
 	slog.Info(fmt.Sprintf("Starting server on port %s", s.cfg.Port))
 	return http.ListenAndServe(s.cfg.Port, s.mux)
 }
+
 func (s *server) Shutdown() {
 	os.Exit(0)
 }
+
+// opentelemetry/otel
+// load balancer ++ nginx
 
 func (s *server) registerRoutes() error {
 	db, err := db.ConnectMongo(s.cfg.DbUri, s.cfg.DbName)
@@ -54,7 +59,7 @@ func (s *server) registerRoutes() error {
 		return err
 	}
 
-	//Registr routes
+	// Registr routes
 	movieRepository := dal.NewMovieRepository(db)
 	movieService := service.NewMovieService(movieRepository)
 	s.movieHandler = handler.NewMovieHandler(movieService)
@@ -63,8 +68,8 @@ func (s *server) registerRoutes() error {
 	cinemaService := service.NewCinemaService(cinemaRepository)
 	s.cinemaHandler = handler.NewCinemaHandler(cinemaService)
 
-	//Basic crud operation routes for movie and cinema
-	//TODO: test routes and add validation in service
+	// Basic crud operation routes for movie and cinema
+	// TODO: test routes and add validation in service
 	s.mux.HandleFunc("/movie/add", s.movieHandler.HandleAddMovie)
 	s.mux.HandleFunc("/movie/get", s.movieHandler.HandleGetAllMovie)
 	s.mux.HandleFunc("/movie/update/{id}", s.movieHandler.HandleUpdateMovieById)

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"movie-service/internal/server"
 	"os"
+
+	"movie-service/internal/server"
 )
 
 func main() {

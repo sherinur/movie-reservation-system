@@ -2,8 +2,9 @@ package server
 
 import (
 	"errors"
-	"github.com/joho/godotenv"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type config struct {
@@ -28,6 +29,7 @@ func DefaultConfig() *config {
 		DBname: "reservationDB",
 	}
 }
+
 func CreateEnvConfig() (*config, error) {
 	err := godotenv.Load()
 	if err != nil {

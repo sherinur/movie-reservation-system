@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.25rem;
+        }
+        .form-control {
+            height: calc(3rem + 2px);
+            font-size: 1.2rem;
+        }
+        .already-account {
+            font-size: 1rem;
+        }
+        .error-message {
+            color: red;
+            font-size: 1rem;
+            display: none;
+        }
+        .error-input {
+            border-color: red;
+            border-width: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-md-6 col-sm-8">
+            <div class="card p-4">
+                <h2 class="text-center mb-4">Sign Up</h2>
+                    <!-- Full Name Input -->
+                    <div class="mb-3">
+                        <label for="fullname" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullname" placeholder="Enter your full name" required>
+                        <div id="fullname-error" class="error-message mt-2">Fullname error</div>
+                    </div>
+
+                    <!-- Email Input -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                        <div id="email-error" class="error-message mt-2">Email error</div>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Create a password" required>
+                        <div id="password-error" class="error-message mt-2">Fullname error</div>
+                    </div>
+
+                    <!-- Confirm Password Input -->
+                    <div class="mb-3">
+                        <label for="confirm-password" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirm-password" placeholder="Confirm your password" required>
+                        <div id="confirm-password-error" class="error-message mt-2">Fullname error</div>
+                    </div>
+
+                    <!-- Sign Up Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary" id="submit-btn">Sign Up</button>
+                    </div>
+
+                    <!-- Already have an account link -->
+                    <div class="mt-3 text-center">
+                        <span class="already-account">Already have an account? <a href="/login" class="text-decoration-none">Sign In</a></span>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="register.validation.js"></script>
+</body>
+</html>

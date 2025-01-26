@@ -3,6 +3,7 @@ package dal
 import (
 	"context"
 	"encoding/json"
+
 	"movie-service/internal/models"
 	"movie-service/utils"
 
@@ -104,5 +105,4 @@ func (r *movieRepository) DeleteMovieById(id string) (*mongo.DeleteResult, error
 	}
 
 	return res, nil
-
 }

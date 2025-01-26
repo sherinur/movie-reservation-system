@@ -3,7 +3,6 @@ package service
 import (
 	"movie-service/internal/dal"
 	"movie-service/internal/models"
-	"movie-service/utils"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -25,13 +24,14 @@ func NewMovieService(r dal.MovieRepository) MovieService {
 		movieRepository: r,
 	}
 }
+
 func (s *movieService) AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
-	for _, movie := range movielist {
-		isempty := utils.IsEmpty(movie)
-		if !isempty {
-			return nil, ErrBadRequest
-		}
-	}
+	// for _, movie := range movielist {
+	// 	isempty := utils.IsEmpty(movie)
+	// 	if !isempty {
+	// 		return nil, ErrBadRequest
+	// 	}
+	// }
 
 	res, err := s.movieRepository.AddMovie(movielist)
 	if err != nil {
@@ -51,10 +51,10 @@ func (s *movieService) GetAllMovie() ([]byte, error) {
 }
 
 func (s *movieService) UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error) {
-	isempty := utils.IsEmpty(movie)
-	if !isempty {
-		return nil, ErrBadRequest
-	}
+	// isempty := utils.IsEmpty(movie)
+	// if !isempty {
+	// 	return nil, ErrBadRequest
+	// }
 
 	res, err := s.movieRepository.UpdateMovieById(id, movie)
 	if err != nil {
