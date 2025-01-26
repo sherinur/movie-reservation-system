@@ -27,18 +27,23 @@ func NewReservationHandler(s service.ReservationService) ReservationHandler {
 }
 
 func (rh *reservationHandler) AddReservation(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Only POST method is supported.", http.StatusMethodNotAllowed)
+		return
+	}
+
 	var booking models.Booking
 	if err := json.NewDecoder(r.Body).Decode(&booking); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-	err := rh.reservationService.AddReservation(booking)
+	result, err := rh.reservationService.AddReservation(booking)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Reservation added successfully"))
+	w.Write([]byte(fmt.Sprintf("%v", result.InsertedID)))
 }
 
 func (rh *reservationHandler) PayReservation(w http.ResponseWriter, r *http.Request) {
@@ -47,21 +52,33 @@ func (rh *reservationHandler) PayReservation(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
+	var paying models.Paying
+	if err := json.NewDecoder(r.Body).Decode(&paying); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
 	id := strings.TrimPrefix(r.URL.Path, "/booking/")
 	if id == "" {
 		http.Error(w, "Missing update ID", http.StatusBadRequest)
+		return
 	}
 
-	err := rh.reservationService.PayReservation(id)
+	result, err := rh.reservationService.PayReservation(id, paying)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error updating reservation: %v", err), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Error updating reservation: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
-	w.Write([]byte("Reservation updated successfully"))
+	w.Write([]byte(fmt.Sprintf("%v", result.UpsertedID)))
 }
 
 func (rh *reservationHandler) DeleteReservation(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "Only DELETE method is supported.", http.StatusMethodNotAllowed)
+		return
+	}
+
 	id := strings.TrimPrefix(r.URL.Path, "/booking/delete/")
 	if id == "" {
 		http.Error(w, "Missing reservation ID", http.StatusBadRequest)
@@ -69,7 +86,7 @@ func (rh *reservationHandler) DeleteReservation(w http.ResponseWriter, r *http.R
 	}
 	err := rh.reservationService.DeleteReservation(id)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("%s lol %s", err.Error(), id), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Error deleting reservation: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

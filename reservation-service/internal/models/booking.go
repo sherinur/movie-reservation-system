@@ -1,7 +1,6 @@
 package models
 
 type Booking struct {
-	MovieTitle string   `json:"movie_title"`
-	Email      string   `json:"email"`
-	Tickets    []Ticket `json:"tickets"`
+	ScreeningID string   `json:"screening_id"`
+	Tickets     []Ticket `json:"tickets"`
 }
