@@ -8,6 +8,8 @@ import (
 
 	"user-service/internal/models"
 	"user-service/internal/service"
+
+	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
 // TODO: handlers must implement http.Handler interface, not custom interface
@@ -31,6 +33,8 @@ func NewUserHandler(s service.UserService) UserHandler {
 		userService: s,
 	}
 }
+
+var log = logging.GetLogger()
 
 // POST /login => auth and give JWT
 func (h *userHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
@@ -85,6 +89,8 @@ func (h *userHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 
 	result, err := h.userService.Register(req)
 	if err != nil {
+		log.Info("Failed registration attempt from", r.RemoteAddr, err)
+
 		switch err {
 		case service.ErrInvalidPassword:
 			http.Error(w, "Invalid password", http.StatusBadRequest)

@@ -18,9 +18,7 @@ clean:
 	rm -f $(BINARY_NAME)
 
 deploy:
-	@echo "Deploying the project..."
-	make build
-	docker compose -f ../docker-compose.yml  up --build
+	make -C ../. deploy
 
 help:
 	@echo "Makefile commands:"
