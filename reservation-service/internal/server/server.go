@@ -1,16 +1,20 @@
 package server
 
 import (
-	"log"
-	"log/slog"
+	"errors"
 	"net/http"
 	"os"
 
 	"reservation-service/internal/dal"
-	"reservation-service/internal/db"
 	"reservation-service/internal/handler"
 	"reservation-service/internal/service"
+
+	"github.com/sherinur/movie-reservation-system/pkg/logging"
+
+	"github.com/sherinur/movie-reservation-system/pkg/db"
 )
+
+var Log = logging.Init()
 
 type Server interface {
 	Start() error
@@ -35,10 +39,17 @@ func NewServer(cfg *config) Server {
 func (s *server) Start() error {
 	err := s.registerRoutes()
 	if err != nil {
-		return err
+		Log.Errorf("Could not register routes: %s", err.Error())
 	}
 
-	return http.ListenAndServe(s.cfg.Port, s.mux)
+	Log.Info("Sarting server at the port" + s.cfg.Port)
+
+	err = http.ListenAndServe(s.cfg.Port, s.mux)
+	if err != nil {
+		Log.Errorf("Error starting server: %s", err.Error())
+	}
+
+	return nil
 }
 
 func (s *server) Shutdown() {
@@ -48,10 +59,10 @@ func (s *server) Shutdown() {
 func (s *server) registerRoutes() error {
 	database, err := db.ConnectMongo(s.cfg.DBuri, s.cfg.DBname)
 	if err != nil {
-		log.Fatal(err)
+		return errors.New("error connecting to MongoDB")
 	}
 
-	slog.Info("Registering routes..")
+	Log.Info("Registering routes..")
 
 	repository := dal.NewReservationRepository(database)
 	service := service.NewReservationService(repository)

@@ -4,7 +4,6 @@ MAIN_FILE=cmd/main.go
 
 build:
 	go mod tidy
-	gofumpt -l -w .
 	go build -o $(BINARY_NAME) $(MAIN_FILE)
 
 run: build
