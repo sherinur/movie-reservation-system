@@ -27,10 +27,10 @@ func NewMovieHandler(s service.MovieService) MovieHandler {
 	}
 }
 
-// Post /movie/add => add new movie
+// POST /movie/add => add new movie
 func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Only POST method is supported.", http.StatusMethodNotAllowed)
 		return
 	}
 	defer r.Body.Close()
@@ -61,7 +61,7 @@ func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 // GET /movie/get => get all movies
 func (h movieHandler) HandleGetAllMovie(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Only GET method is supported.", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -81,7 +81,7 @@ func (h movieHandler) HandleGetAllMovie(w http.ResponseWriter, r *http.Request) 
 // PUT /movie/update/{id} => update movie information by id
 func (h movieHandler) HandleUpdateMovieById(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Only PUT method is supported.", http.StatusMethodNotAllowed)
 		return
 	}
 	defer r.Body.Close()
@@ -112,7 +112,7 @@ func (h movieHandler) HandleUpdateMovieById(w http.ResponseWriter, r *http.Reque
 // DELETE /movie/delete/{id} => delete movie
 func (h movieHandler) HandleDeleteMovieByID(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Only DELET method is supported.", http.StatusMethodNotAllowed)
 		return
 	}
 

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"movie-service/internal/dal"
 	"movie-service/internal/models"
 	"movie-service/utils"
@@ -27,9 +28,9 @@ func NewCinemaService(r dal.CinemaRepository) CinemaService {
 
 func (s *cinemaService) AddCinema(cinemalist []models.Cinema) (*mongo.InsertManyResult, error) {
 	for _, movie := range cinemalist {
-		isempty := utils.IsEmpty(movie)
-		if isempty {
-			return nil, ErrBadRequest
+		emptyField := utils.IsEmpty(movie)
+		if emptyField != "" {
+			return nil, fmt.Errorf("empty field: %s", emptyField)
 		}
 	}
 
@@ -51,9 +52,9 @@ func (s cinemaService) GetAllCinema() ([]byte, error) {
 }
 
 func (s *cinemaService) UpdateCinemaById(id string, cinema *models.Cinema) (*mongo.UpdateResult, error) {
-	isempty := utils.IsEmpty(cinema)
-	if isempty {
-		return nil, ErrBadRequest
+	emptyField := utils.IsEmpty(cinema)
+	if emptyField != "" {
+		return nil, fmt.Errorf("empty field: %s", emptyField)
 	}
 
 	res, err := s.cinemaRepository.UpdateCinemaById(id, cinema)

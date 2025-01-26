@@ -3,6 +3,7 @@ module movie-service
 go 1.23.4
 
 require (
+	github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-20250125170936-009706ca1af8
 	github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-20250125170936-009706ca1af8
 	go.mongodb.org/mongo-driver v1.17.2
 )

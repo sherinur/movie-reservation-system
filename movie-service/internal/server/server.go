@@ -1,15 +1,13 @@
 package server
 
 import (
+	"movie-service/internal/dal"
+	"movie-service/internal/handler"
+	"movie-service/internal/service"
 	"net/http"
 	"os"
 
-	"movie-service/internal/dal"
-	"movie-service/internal/db"
-	"movie-service/internal/handler"
-
-	"movie-service/internal/service"
-
+	"github.com/sherinur/movie-reservation-system/pkg/db"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
@@ -23,13 +21,13 @@ type Server interface {
 
 type server struct {
 	mux *http.ServeMux
-	cfg *config
+	cfg *Config
 
 	movieHandler  handler.MovieHandler
 	cinemaHandler handler.CinemaHandler
 }
 
-func NewServer(cfg *config) Server {
+func NewServer(cfg *Config) Server {
 	return &server{
 		mux: http.NewServeMux(),
 		cfg: cfg,
