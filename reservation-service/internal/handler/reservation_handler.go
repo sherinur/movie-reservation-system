@@ -37,13 +37,13 @@ func (rh *reservationHandler) AddReservation(w http.ResponseWriter, r *http.Requ
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-	err := rh.reservationService.AddReservation(booking)
+	result, err := rh.reservationService.AddReservation(booking)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Reservation added successfully"))
+	w.Write([]byte(fmt.Sprintf("%v", result.InsertedID)))
 }
 
 func (rh *reservationHandler) PayReservation(w http.ResponseWriter, r *http.Request) {
@@ -64,13 +64,13 @@ func (rh *reservationHandler) PayReservation(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	err := rh.reservationService.PayReservation(id, paying)
+	result, err := rh.reservationService.PayReservation(id, paying)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error updating reservation: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
-	w.Write([]byte("Reservation updated successfully"))
+	w.Write([]byte(fmt.Sprintf("%v", result.UpsertedID)))
 }
 
 func (rh *reservationHandler) DeleteReservation(w http.ResponseWriter, r *http.Request) {

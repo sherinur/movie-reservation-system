@@ -21,3 +21,57 @@ time="2025-01-22T19:02:22+05:00" level=info msg="Sarting server at the port:8080
 time="2025-01-22T19:03:08+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
 time="2025-01-22T19:03:08+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
 time="2025-01-22T19:03:08+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T17:28:21+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T17:28:21+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T17:28:21+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T17:41:47+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T17:41:47+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T17:41:47+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T17:56:25+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T17:56:25+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T17:56:25+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T18:48:19+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T18:48:19+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T18:48:19+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:04:10+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:04:10+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:04:10+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:06:25+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:06:25+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:06:25+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:06:59+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:06:59+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:06:59+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:08:52+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:08:52+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:08:52+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:09:11+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:09:11+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:09:11+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:10:25+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:10:25+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:10:25+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:17:46+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:17:46+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:17:46+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:25:32+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:25:32+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:25:32+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:27:09+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:27:09+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:27:09+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:28:32+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:28:32+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:28:32+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:28:49+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:28:49+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:28:49+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:29:29+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:29:29+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:29:29+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:40:30+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:40:30+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:40:30+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-25T19:41:34+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-25T19:41:34+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-25T19:41:34+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go

@@ -8,11 +8,13 @@ import (
 	"reservation-service/internal/dal"
 	"reservation-service/internal/models"
 	"reservation-service/internal/utilits"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type ReservationService interface {
-	AddReservation(booking models.Booking) error
-	PayReservation(id string, paying models.Paying) error
+	AddReservation(booking models.Booking) (*mongo.InsertOneResult, error)
+	PayReservation(id string, paying models.Paying) (*mongo.UpdateResult, error)
 	DeleteReservation(id string) error
 }
 
@@ -26,13 +28,13 @@ func NewReservationService(r dal.ReservationRepository) ReservationService {
 	}
 }
 
-func (s *reservationService) AddReservation(booking models.Booking) error {
+func (s *reservationService) AddReservation(booking models.Booking) (*mongo.InsertOneResult, error) {
 	if len(booking.Tickets) == 0 {
-		return errors.New("booking is empty")
+		return nil, errors.New("booking is empty")
 	}
 	for _, ticket := range booking.Tickets {
-		if ticket.SeatColumn == "" || ticket.SeatRow == "" || ticket.Price < 0 || ticket.Type == "" {
-			return errors.New("not provided all seat data")
+		if ticket.SeatColumn == "" || ticket.SeatRow == "" || ticket.Price <= 0 || ticket.Type == "" {
+			return nil, errors.New("not provided all seat data")
 		}
 	}
 
@@ -40,24 +42,32 @@ func (s *reservationService) AddReservation(booking models.Booking) error {
 		ScreeningID: booking.ScreeningID,
 		Status:      "processing",
 		Tickets:     booking.Tickets,
-		CreatedTime: time.Now().String(),
+		ExpiringAt:  time.Now().Add(20 * time.Second),
 	}
 
 	for _, ticket := range booking.Tickets {
 		process.TotalPrice += ticket.Price
 	}
 
-	return s.reservationRepository.Add(process)
+	result, err := s.reservationRepository.Add(process)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
-func (s *reservationService) PayReservation(id string, paying models.Paying) error {
+func (s *reservationService) PayReservation(id string, paying models.Paying) (*mongo.UpdateResult, error) {
 	if id == "" {
-		return errors.New("id is empty")
+		return nil, errors.New("id is empty")
 	}
 
 	process, err := s.reservationRepository.GetById(id)
 	if err != nil {
-		return err
+		return nil, err
+	}
+	if process.Status != "processing" {
+		return nil, errors.New("could not pay already paid reservation")
 	}
 
 	reservation := models.Reservation{
@@ -67,17 +77,22 @@ func (s *reservationService) PayReservation(id string, paying models.Paying) err
 		Status:      "paid",
 		Tickets:     process.Tickets,
 		TotalPrice:  process.TotalPrice,
-		BoughtTime:  time.Now().String(),
+		BoughtTime:  time.Now(),
 	}
 
 	qrData := fmt.Sprintf("Reservation for %d seats at %s\nStatus: %s", len(reservation.Tickets), reservation.BoughtTime, reservation.Status)
 	QR, err := utilits.GenerateQR(qrData)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	reservation.QRCode = QR
 
-	return s.reservationRepository.Update(id, reservation)
+	result, err := s.reservationRepository.Update(id, reservation)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 func (s *reservationService) DeleteReservation(id string) error {

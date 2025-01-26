@@ -8,13 +8,14 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type ReservationRepository interface {
-	Add(process models.Process) error
-	Update(id string, reservation models.Reservation) error
+	Add(process models.Process) (*mongo.InsertOneResult, error)
+	Update(id string, reservation models.Reservation) (*mongo.UpdateResult, error)
 	Delete(id string) error
 	GetById(id string) (*models.Reservation, error)
 }
@@ -27,22 +28,33 @@ func NewReservationRepository(db *mongo.Database) ReservationRepository {
 	return &reservationRepository{db: db}
 }
 
-func (r *reservationRepository) Add(process models.Process) error {
+func (r *reservationRepository) Add(process models.Process) (*mongo.InsertOneResult, error) {
 	coll := r.db.Collection("reservations")
-	_, err := coll.InsertOne(context.TODO(), process)
 
-	if err != nil {
-		return errors.New("error adding new process to repository")
+	indexModel := mongo.IndexModel{
+		Keys:    bson.D{{Key: "expiring_at", Value: 1}},
+		Options: options.Index().SetExpireAfterSeconds(0),
 	}
 
-	return nil
+	_, err := coll.Indexes().CreateOne(context.TODO(), indexModel)
+	if err != nil {
+		return nil, errors.New("failed to add expiring after time index to collection")
+	}
+
+	result, err := coll.InsertOne(context.TODO(), process)
+
+	if err != nil {
+		return nil, errors.New("error adding new process to repository")
+	}
+
+	return result, nil
 }
 
-func (r *reservationRepository) Update(id string, reservation models.Reservation) error {
+func (r *reservationRepository) Update(id string, reservation models.Reservation) (*mongo.UpdateResult, error) {
 	coll := r.db.Collection("reservations")
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return errors.New("error getting objID")
+		return nil, errors.New("error getting objID")
 	}
 
 	resDoc := bson.M{
@@ -57,12 +69,15 @@ func (r *reservationRepository) Update(id string, reservation models.Reservation
 		"bought_time":  reservation.BoughtTime,
 	}
 
-	_, err = coll.ReplaceOne(context.TODO(), bson.M{"_id": objID}, resDoc)
+	result, err := coll.ReplaceOne(context.TODO(), bson.M{"_id": objID}, resDoc)
 	if err != nil {
-		return errors.New("could not update in repository by id: " + err.Error())
+		return nil, errors.New("could not update in repository by id: " + err.Error())
+	}
+	if result.ModifiedCount == 0 {
+		return nil, errors.New("no process found with the given ID")
 	}
 
-	return nil
+	return result, nil
 }
 
 func (r *reservationRepository) Delete(id string) error {
@@ -92,7 +107,7 @@ func (r *reservationRepository) GetById(id string) (*models.Reservation, error) 
 	var reservation models.Reservation
 	err = coll.FindOne(context.TODO(), bson.M{"_id": ObjID}).Decode(&reservation)
 	if err != nil {
-		return nil, errors.New("no reservation found with the given ID")
+		return nil, err
 	}
 
 	return &reservation, nil
