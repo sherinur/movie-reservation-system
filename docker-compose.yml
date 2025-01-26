@@ -15,6 +15,34 @@ services:
     depends_on:
       - mongo
 
+  movie-service:
+    build:
+      context: .
+      dockerfile: movie-service/Dockerfile
+    ports:
+      - "8070:8070"
+    # environment:
+    #   - MONGO_URI=${MONGO_URI}
+    #   - DB_NAME=${DB_NAME}
+    #   - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    #   - EXP_HOURS=${EXP_HOURS}
+    depends_on:
+      - mongo
+
+  reservation-service:
+    build:
+      context: .
+      dockerfile: reservation-service/Dockerfile
+    ports:
+      - "8090:8090"
+    # environment:
+    #   - MONGO_URI=${MONGO_URI}
+    #   - DB_NAME=${DB_NAME}
+    #   - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    #   - EXP_HOURS=${EXP_HOURS}
+    depends_on:
+      - mongo
+
   mongo:
     image: mongo
     ports:
@@ -22,10 +50,5 @@ services:
     volumes:
       - mongo_data:/data/db
 
-
-
-
 volumes:
   mongo_data:
-
-
