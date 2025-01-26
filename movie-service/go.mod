@@ -2,7 +2,16 @@ module movie-service
 
 go 1.23.4
 
-require go.mongodb.org/mongo-driver v1.17.2
+require (
+	github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-20250125170936-009706ca1af8
+	github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-20250125170936-009706ca1af8
+	go.mongodb.org/mongo-driver v1.17.2
+)
+
+require (
+	github.com/sirupsen/logrus v1.9.3 // indirect
+	golang.org/x/sys v0.27.0 // indirect
+)
 
 require (
 	github.com/golang/snappy v0.0.4 // indirect
