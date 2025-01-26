@@ -35,17 +35,14 @@ func (h *cinemaHandler) HandleAddCinema(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	defer r.Body.Close()
+	var cinema models.Cinema
 
-	var cinemalist []models.Cinema
-
-	if err := json.NewDecoder(r.Body).Decode(&cinemalist); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&cinema); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println(cinemalist)
-
-	res, err := h.cinemaService.AddCinema(cinemalist)
+	res, err := h.cinemaService.AddCinema(cinema)
 	if err != nil {
 		switch err {
 		case service.ErrBadRequest:
@@ -58,7 +55,7 @@ func (h *cinemaHandler) HandleAddCinema(w http.ResponseWriter, r *http.Request) 
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("%v", res.InsertedIDs...)))
+	w.Write([]byte(fmt.Sprintf("%v", res.InsertedID)))
 }
 
 // GET /cinema/get => get all cinema

@@ -1,16 +1,14 @@
 package service
 
 import (
-	"fmt"
 	"movie-service/internal/dal"
 	"movie-service/internal/models"
-	"movie-service/utils"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type CinemaService interface {
-	AddCinema(cinemalist []models.Cinema) (*mongo.InsertManyResult, error)
+	AddCinema(cinema models.Cinema) (*mongo.InsertOneResult, error)
 	GetAllCinema() ([]byte, error)
 	UpdateCinemaById(id string, cinema *models.Cinema) (*mongo.UpdateResult, error)
 	DeleteCinemaById(id string) (*mongo.DeleteResult, error)
@@ -26,15 +24,13 @@ func NewCinemaService(r dal.CinemaRepository) CinemaService {
 	}
 }
 
-func (s *cinemaService) AddCinema(cinemalist []models.Cinema) (*mongo.InsertManyResult, error) {
-	for _, movie := range cinemalist {
-		emptyField := utils.IsEmpty(movie)
-		if emptyField != "" {
-			return nil, fmt.Errorf("empty field: %s", emptyField)
-		}
+func (s *cinemaService) AddCinema(cinema models.Cinema) (*mongo.InsertOneResult, error) {
+	err := ValidateCinema(cinema)
+	if err != nil {
+		return nil, err
 	}
 
-	res, err := s.cinemaRepository.AddCinema(cinemalist)
+	res, err := s.cinemaRepository.AddCinema(cinema)
 	if err != nil {
 		return nil, err
 	}
@@ -52,9 +48,9 @@ func (s cinemaService) GetAllCinema() ([]byte, error) {
 }
 
 func (s *cinemaService) UpdateCinemaById(id string, cinema *models.Cinema) (*mongo.UpdateResult, error) {
-	emptyField := utils.IsEmpty(cinema)
-	if emptyField != "" {
-		return nil, fmt.Errorf("empty field: %s", emptyField)
+	err := ValidateCinema(*cinema)
+	if err != nil {
+		return nil, err
 	}
 
 	res, err := s.cinemaRepository.UpdateCinemaById(id, cinema)
