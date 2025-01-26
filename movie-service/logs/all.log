@@ -1,0 +1,3 @@
+time="2025-01-26T13:23:21+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T13:23:21+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T13:23:21+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go

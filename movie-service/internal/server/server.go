@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-	"log/slog"
 	"net/http"
 	"os"
 
@@ -11,7 +9,11 @@ import (
 	"movie-service/internal/handler"
 
 	"movie-service/internal/service"
+
+	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
+
+var log = logging.GetLogger()
 
 type Server interface {
 	Start() error
@@ -35,19 +37,27 @@ func NewServer(cfg *config) Server {
 }
 
 func (s *server) Start() error {
-	slog.Info("Registering routes ...")
+	log.Info("Registering routes...")
 	err := s.registerRoutes()
 	if err != nil {
-		slog.Error(err.Error())
+		log.Errorf("Could not register routes: %s", err.Error())
 		return err
 	}
 
-	slog.Info(fmt.Sprintf("Starting server on port %s", s.cfg.Port))
-	return http.ListenAndServe(s.cfg.Port, s.mux)
+	log.Info("Starting server on port" + s.cfg.Port)
+
+	err = http.ListenAndServe(s.cfg.Port, s.mux)
+	if err != nil {
+		log.Errorf("Can not start the server: %s", err.Error())
+		return err
+	}
+
+	return nil
 }
 
+// TODO: Write gracefull shutdown
 func (s *server) Shutdown() {
-	os.Exit(0)
+	os.Exit(1)
 }
 
 // opentelemetry/otel
