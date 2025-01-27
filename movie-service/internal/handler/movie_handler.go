@@ -1,20 +1,20 @@
 package handler
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"movie-service/internal/models"
 	"movie-service/internal/service"
+
+	"github.com/gin-gonic/gin"
 )
 
 // TODO: add logger and return statement with status code
 type MovieHandler interface {
-	HandleAddMovie(w http.ResponseWriter, r *http.Request)
-	HandleGetAllMovie(w http.ResponseWriter, r *http.Request)
-	HandleUpdateMovieById(w http.ResponseWriter, r *http.Request)
-	HandleDeleteMovieByID(w http.ResponseWriter, r *http.Request)
+	HandleAddMovie(c *gin.Context)
+	HandleGetAllMovie(c *gin.Context)
+	HandleUpdateMovieById(c *gin.Context)
+	HandleDeleteMovieByID(c *gin.Context)
 }
 
 type movieHandler struct {
@@ -28,118 +28,73 @@ func NewMovieHandler(s service.MovieService) MovieHandler {
 }
 
 // POST /movie/add => add new movie
-func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Only POST method is supported.", http.StatusMethodNotAllowed)
-		return
-	}
-	defer r.Body.Close()
-
-	var movie []models.Movie
-
-	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+func (h *movieHandler) HandleAddMovie(c *gin.Context) {
+	var movies []models.Movie
+	if err := c.ShouldBindJSON(&movies); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	res, err := h.movieService.AddMovie(movie)
+	res, err := h.movieService.AddMovie(movies)
 	if err != nil {
-		_, clientError := service.BadRequestMovieErrors[err]
-		switch {
-		case clientError:
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+		if _, clientError := service.BadRequestMovieErrors[err]; clientError {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
+		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("%v", res.InsertedIDs...)))
+	c.JSON(http.StatusOK, gin.H{"inserted_ids": res.InsertedIDs})
 }
 
 // GET /movie/get => get all movies
-func (h movieHandler) HandleGetAllMovie(w http.ResponseWriter, r *http.Request) {
-	enableCORS(w)
-	if r.Method != http.MethodGet {
-		http.Error(w, "Only GET method is supported.", http.StatusMethodNotAllowed)
-		return
-	}
-
+func (h *movieHandler) HandleGetAllMovie(c *gin.Context) {
 	data, err := h.movieService.GetAllMovie()
 	if err != nil {
-		switch err {
-		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(data)
+	c.Data(http.StatusOK, "application/json", data)
 }
 
-// PUT /movie/update/{id} => update movie information by id
-func (h movieHandler) HandleUpdateMovieById(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPut {
-		http.Error(w, "Only PUT method is supported.", http.StatusMethodNotAllowed)
-		return
-	}
-	defer r.Body.Close()
+// PUT /movie/update/:id => update movie information by id
+func (h *movieHandler) HandleUpdateMovieById(c *gin.Context) {
+	id := c.Param("id")
 
-	var movie *models.Movie
-	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	var movie models.Movie
+	if err := c.ShouldBindJSON(&movie); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	id := r.PathValue("id")
-	res, err := h.movieService.UpdateMovieById(id, movie)
+	res, err := h.movieService.UpdateMovieById(id, &movie)
 	if err != nil {
-		_, clientError := service.BadRequestMovieErrors[err]
-		switch {
-		case clientError:
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+		if _, clientError := service.BadRequestMovieErrors[err]; clientError {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("%v", res.MatchedCount)))
-}
-
-// DELETE /movie/delete/{id} => delete movie
-func (h movieHandler) HandleDeleteMovieByID(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodDelete {
-		http.Error(w, "Only DELET method is supported.", http.StatusMethodNotAllowed)
 		return
 	}
 
-	id := r.PathValue("id")
+	c.JSON(http.StatusOK, gin.H{"matched_count": res.MatchedCount})
+}
+
+// DELETE /movie/delete/:id => delete movie
+func (h *movieHandler) HandleDeleteMovieByID(c *gin.Context) {
+	id := c.Param("id")
 
 	res, err := h.movieService.DeleteMovieById(id)
 	if err != nil {
-		_, clientError := service.BadRequestMovieErrors[err]
-		switch {
-		case clientError:
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+		if _, clientError := service.BadRequestMovieErrors[err]; clientError {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
+		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
-	w.Write([]byte(fmt.Sprintf("%v", res.DeletedCount)))
-}
-
-func enableCORS(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "*") // Разрешить запросы со всех доменов
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+	c.JSON(http.StatusNoContent, gin.H{"deleted_count": res.DeletedCount})
 }
