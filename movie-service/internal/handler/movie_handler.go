@@ -61,6 +61,7 @@ func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 
 // GET /movie/get => get all movies
 func (h movieHandler) HandleGetAllMovie(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w)
 	if r.Method != http.MethodGet {
 		http.Error(w, "Only GET method is supported.", http.StatusMethodNotAllowed)
 		return
@@ -135,4 +136,10 @@ func (h movieHandler) HandleDeleteMovieByID(w http.ResponseWriter, r *http.Reque
 
 	w.WriteHeader(http.StatusNoContent)
 	w.Write([]byte(fmt.Sprintf("%v", res.DeletedCount)))
+}
+
+func enableCORS(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*") // Разрешить запросы со всех доменов
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 }
