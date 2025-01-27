@@ -1,14 +1,12 @@
 package handler
 
 import (
-	"encoding/json"
-	"fmt"
-	"log/slog"
 	"net/http"
 
 	"user-service/internal/models"
 	"user-service/internal/service"
 
+	"github.com/gin-gonic/gin"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
@@ -19,9 +17,9 @@ import (
 // TODO: Use kitHTTP to unmarshal binary from req.body: - go kit -> decodeRequest
 
 type UserHandler interface {
-	HandleLogin(w http.ResponseWriter, r *http.Request)
-	HandleRegister(w http.ResponseWriter, r *http.Request)
-	HandleProfile(w http.ResponseWriter, r *http.Request)
+	HandleLogin(c *gin.Context)
+	HandleRegister(c *gin.Context)
+	HandleProfile(c *gin.Context)
 }
 
 type userHandler struct {
@@ -37,93 +35,75 @@ func NewUserHandler(s service.UserService) UserHandler {
 var log = logging.GetLogger()
 
 // POST /login => auth and give JWT
-func (h *userHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+func (h *userHandler) HandleLogin(c *gin.Context) {
+	var logReq models.LoginRequest
+
+	if err := c.ShouldBindJSON(&logReq); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Invalid request body"})
 		return
 	}
 
-	var req models.LoginRequest
-
-	// TODO: Fix decoding the request body
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
-		return
-	}
-
-	jwtToken, err := h.userService.Authorize(&req)
+	jwtToken, err := h.userService.Authorize(&logReq)
 	if err != nil {
+		log.Infof("Failed authentication attempt to the profile with email %s from IP %s, error: %s", logReq.Email, c.ClientIP(), err.Error())
 		switch err {
 		case service.ErrWrongPassword:
-			http.Error(w, "Invalid password", http.StatusUnauthorized)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "message": "Invalid password"})
 			return
 		case service.ErrNoUser:
-			http.Error(w, "User not found", http.StatusUnauthorized)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "message": "User not found"})
 			return
 		default:
-			slog.Error(err.Error())
-			w.WriteHeader(http.StatusInternalServerError)
+			log.Errorf("User authentication error: %s", err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal server error"})
 			return
 		}
 	}
 
-	w.WriteHeader(200)
-	w.Write([]byte(jwtToken))
+	log.Infof("User with email %s logged in from %s", logReq.Email, c.ClientIP())
+	c.JSON(http.StatusOK, gin.H{"token": jwtToken})
 }
 
 // POST /register => new user registration
-func (h *userHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+func (h *userHandler) HandleRegister(c *gin.Context) {
+	var regReq models.RegisterRequest
+
+	if err := c.ShouldBindJSON(&regReq); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Invalid request body"})
 		return
 	}
 
-	defer r.Body.Close()
-
-	var req *models.RegisterRequest
-
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	result, err := h.userService.Register(req)
+	_, err := h.userService.Register(&regReq)
 	if err != nil {
-		log.Info("Failed registration attempt from", r.RemoteAddr, err)
-
+		log.Infof("Failed registration attempt from IP %s, error: %s", c.ClientIP(), err.Error())
 		switch err {
 		case service.ErrInvalidPassword:
-			http.Error(w, "Invalid password", http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Invalid password"})
 			return
 		case service.ErrInvalidUsername:
-			http.Error(w, "Invalid username", http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Invalid username"})
 			return
 		case service.ErrUserExists:
-			http.Error(w, "User already exists", http.StatusConflict)
+			c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "User already exists"})
 			return
 		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Errorf("User registration error: %s", err.Error())
+			c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
 			return
 		}
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(fmt.Sprintf("%v", result.InsertedID)))
+	log.Infof("Registered an user with email %s from IP %s", regReq.Email, c.ClientIP())
+	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
 }
 
 // GET /profile => get user profile data (need JWT)
-func (h *userHandler) HandleProfile(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
+func (h *userHandler) HandleProfile(c *gin.Context) {
 	users, err := h.userService.GetAllUsers()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
 		return
 	}
 
-	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(&users)
+	c.JSON(http.StatusOK, users)
 }

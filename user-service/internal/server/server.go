@@ -1,15 +1,15 @@
 package server
 
 import (
-	"net/http"
 	"os"
 
 	"user-service/internal/dal"
 	"user-service/internal/handler"
 	"user-service/internal/service"
 
-	"github.com/sherinur/movie-reservation-system/pkg/db"
+	"github.com/gin-gonic/gin"
 
+	"github.com/sherinur/movie-reservation-system/pkg/db"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
@@ -22,16 +22,16 @@ type Server interface {
 }
 
 type server struct {
-	mux *http.ServeMux
-	cfg *Config
+	router *gin.Engine
+	cfg    *Config
 
 	userHandler handler.UserHandler
 }
 
 func NewServer(cfg *Config) Server {
 	return &server{
-		mux: http.NewServeMux(),
-		cfg: cfg,
+		router: gin.Default(),
+		cfg:    cfg,
 	}
 }
 
@@ -46,12 +46,14 @@ func (s *server) registerRoutes() error {
 	userService := service.NewUserService(userRepository, s.cfg.JwtSecretKey)
 	s.userHandler = handler.NewUserHandler(userService)
 
-	s.mux.HandleFunc("/login", s.userHandler.HandleLogin)
-	s.mux.HandleFunc("/register", s.userHandler.HandleRegister)
-	s.mux.Handle("/profile", handler.JwtMiddleware(s.cfg.JwtSecretKey)(http.HandlerFunc(s.userHandler.HandleProfile)))
+	s.router.GET("/health", handler.GetHealth)
 
-	// other routes
-	s.mux.HandleFunc("/health", handler.GetHealth)
+	s.router.POST("/login", s.userHandler.HandleLogin)
+	s.router.POST("/register", s.userHandler.HandleRegister)
+	s.router.GET("/profile", s.userHandler.HandleProfile)
+
+	// // other routes
+	// s.mux.HandleFunc("/health", handler.GetHealth)
 
 	return nil
 }
@@ -66,7 +68,7 @@ func (s *server) Start() error {
 
 	log.Info("Starting server on port" + s.cfg.Port)
 
-	err = http.ListenAndServe(s.cfg.Port, handler.CorsMiddleware(s.mux))
+	err = s.router.Run(s.cfg.Port)
 	if err != nil {
 		log.Errorf("Can not start the server: %s", err.Error())
 		return err

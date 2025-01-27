@@ -1,8 +1,11 @@
 package handler
 
-import "net/http"
+import (
+	"net/http"
 
-func GetHealth(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(200)
-	w.Write([]byte("OK"))
+	"github.com/gin-gonic/gin"
+)
+
+func GetHealth(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "OK"})
 }
