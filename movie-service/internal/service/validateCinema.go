@@ -1,14 +1,14 @@
 package service
 
 import (
-	"errors"
-	"movie-service/internal/models"
 	"strings"
+
+	"movie-service/internal/models"
 )
 
 func ValidateScreening(screening models.Screening) error {
 	if strings.TrimSpace(screening.MovieID) == "" {
-		return errors.New("screening movie ID cannot be empty")
+		return ErrScreeningMovieID
 	}
 	err := ValidateMovie(screening.Movie)
 	if err != nil {
@@ -19,20 +19,20 @@ func ValidateScreening(screening models.Screening) error {
 
 func ValidateSeat(seat models.Seat) error {
 	if strings.TrimSpace(seat.Row) == "" || strings.TrimSpace(seat.Column) == "" || strings.TrimSpace(seat.Status) == "" {
-		return errors.New("seat must have non-empty row, column, and status")
+		return ErrSeatValidation
 	}
 	return nil
 }
 
 func ValidateHall(hall models.Hall) error {
 	if hall.Number == 0 {
-		return errors.New("hall number cannot be zero")
+		return ErrHallNumberZero
 	}
 	if hall.RowCount == 0 || hall.ColumnCount == 0 {
-		return errors.New("hall must have non-zero row and column count")
+		return ErrHallDimensionInvalid
 	}
 	if len(hall.Seats) == 0 {
-		return errors.New("hall must have seats")
+		return ErrHallNoSeats
 	}
 
 	for _, seat := range hall.Seats {
@@ -50,10 +50,15 @@ func ValidateHall(hall models.Hall) error {
 
 func ValidateCinema(cinema models.Cinema) error {
 	if strings.TrimSpace(cinema.Name) == "" || strings.TrimSpace(cinema.Address) == "" {
-		return errors.New("cinema name or address cannot be empty")
+		return ErrCinemaNameAddress
 	}
+
+	if cinema.Rating < 0 {
+		return ErrValidRating
+	}
+
 	if len(cinema.HallList) == 0 {
-		return errors.New("cinema must have at least one hall")
+		return ErrCinemaNoHalls
 	}
 
 	for _, hall := range cinema.HallList {

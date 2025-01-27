@@ -10,7 +10,6 @@ import (
 )
 
 // TODO: add logger and return statement with status code
-// TODO: add special handler for update Seat status and etc...
 type CinemaHandler interface {
 	HandleAddCinema(w http.ResponseWriter, r *http.Request)
 	HandleGetAllCinema(w http.ResponseWriter, r *http.Request)
@@ -67,9 +66,14 @@ func (h *cinemaHandler) HandleGetAllCinema(w http.ResponseWriter, r *http.Reques
 
 	data, err := h.cinemaService.GetAllCinema()
 	if err != nil {
-		switch err {
+		_, clientError := service.BadRequestCinemaErrors[err]
+		switch {
+		case clientError:
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 	}
 
@@ -95,8 +99,9 @@ func (h *cinemaHandler) HandleUpdateCinema(w http.ResponseWriter, r *http.Reques
 	id := r.PathValue("id")
 	res, err := h.cinemaService.UpdateCinemaById(id, cinema)
 	if err != nil {
-		switch err {
-		case service.ErrBadRequest:
+		_, clientError := service.BadRequestCinemaErrors[err]
+		switch {
+		case clientError:
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		default:
@@ -117,10 +122,13 @@ func (h *cinemaHandler) HandleDeleteCinema(w http.ResponseWriter, r *http.Reques
 	}
 
 	id := r.PathValue("id")
-
 	res, err := h.cinemaService.DeleteCinemaById(id)
 	if err != nil {
-		switch err {
+		_, clientError := service.BadRequestMovieErrors[err]
+		switch {
+		case clientError:
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

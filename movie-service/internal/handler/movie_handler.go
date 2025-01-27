@@ -44,8 +44,9 @@ func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.movieService.AddMovie(movie)
 	if err != nil {
-		switch err {
-		case service.ErrBadRequest:
+		_, clientError := service.BadRequestMovieErrors[err]
+		switch {
+		case clientError:
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		default:
@@ -95,8 +96,9 @@ func (h movieHandler) HandleUpdateMovieById(w http.ResponseWriter, r *http.Reque
 	id := r.PathValue("id")
 	res, err := h.movieService.UpdateMovieById(id, movie)
 	if err != nil {
-		switch err {
-		case service.ErrBadRequest:
+		_, clientError := service.BadRequestMovieErrors[err]
+		switch {
+		case clientError:
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		default:
@@ -120,7 +122,11 @@ func (h movieHandler) HandleDeleteMovieByID(w http.ResponseWriter, r *http.Reque
 
 	res, err := h.movieService.DeleteMovieById(id)
 	if err != nil {
-		switch err {
+		_, clientError := service.BadRequestMovieErrors[err]
+		switch {
+		case clientError:
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

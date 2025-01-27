@@ -1,48 +1,47 @@
 package service
 
 import (
-	"errors"
-	"movie-service/internal/models"
 	"strings"
+
+	"movie-service/internal/models"
 )
 
 func ValidateMovie(movie models.Movie) error {
 	if strings.TrimSpace(movie.Title) == "" {
-		return errors.New("movie title cannot be empty")
+		return ErrMovieTitleEmpty
 	}
 	if strings.TrimSpace(movie.Genre) == "" {
-		return errors.New("movie genre cannot be empty")
+		return ErrMovieGenreEmpty
 	}
 	if strings.TrimSpace(movie.Description) == "" {
-		return errors.New("movie description cannot be empty")
+		return ErrMovieDescriptionEmpty
 	}
 	if strings.TrimSpace(movie.PosterImage) == "" {
-		return errors.New("movie poster image cannot be empty")
+		return ErrMoviePosterEmpty
+	}
+	if movie.Duration <= 0 {
+		return ErrMovieDurationInvalid
 	}
 	if strings.TrimSpace(movie.Language) == "" {
-		return errors.New("movie language cannot be empty")
+		return ErrMovieLanguageEmpty
 	}
 	if strings.TrimSpace(movie.ReleaseDate) == "" {
-		return errors.New("movie release date cannot be empty")
+		return ErrMovieReleaseDateEmpty
 	}
 	if strings.TrimSpace(movie.Rating) == "" {
-		return errors.New("movie rating cannot be empty")
+		return ErrMovieRatingEmpty
 	}
 	if strings.TrimSpace(movie.PGrating) == "" {
-		return errors.New("movie PG rating cannot be empty")
+		return ErrMoviePGEmpty
 	}
 	if strings.TrimSpace(movie.Production) == "" {
-		return errors.New("movie production cannot be empty")
+		return ErrMovieProductionEmpty
 	}
 	if strings.TrimSpace(movie.Producer) == "" {
-		return errors.New("movie producer cannot be empty")
+		return ErrMovieProducerEmpty
 	}
 	if strings.TrimSpace(movie.Status) == "" {
-		return errors.New("movie status cannot be empty")
-	}
-
-	if movie.Duration <= 0 {
-		return errors.New("movie duration must be greater than zero")
+		return ErrMovieStatusEmpty
 	}
 
 	return nil
