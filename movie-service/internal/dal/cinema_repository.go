@@ -13,7 +13,7 @@ import (
 )
 
 type CinemaRepository interface {
-	AddCinema(movielist []models.Cinema) (*mongo.InsertManyResult, error)
+	AddCinema(cinemalist models.Cinema) (*mongo.InsertOneResult, error)
 	GetAllCinema() ([]byte, error)
 	UpdateCinemaById(id string, movie *models.Cinema) (*mongo.UpdateResult, error)
 	DeleteCinemaById(id string) (*mongo.DeleteResult, error)
@@ -29,20 +29,15 @@ func NewCinemaRepository(db *mongo.Database) CinemaRepository {
 	}
 }
 
-func (r *cinemaRepository) AddCinema(cinemalist []models.Cinema) (*mongo.InsertManyResult, error) {
+func (r *cinemaRepository) AddCinema(cinema models.Cinema) (*mongo.InsertOneResult, error) {
 	col := r.db.Collection("cinema")
 
-	doc := []interface{}{}
-	for _, cinema := range cinemalist {
-		bsonDoc, err := utils.ConvertToBsonD(cinema)
-		if err != nil {
-			return nil, err
-		}
-
-		doc = append(doc, bsonDoc)
+	bsonDoc, err := utils.ConvertToBsonD(cinema)
+	if err != nil {
+		return nil, err
 	}
 
-	res, err := col.InsertMany(context.TODO(), doc)
+	res, err := col.InsertOne(context.Background(), bsonDoc)
 	if err != nil {
 		return nil, err
 	}

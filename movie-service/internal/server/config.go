@@ -37,11 +37,9 @@ func GetConfig() *Config {
 
 func GetDefaultConfig() *Config {
 	return &Config{
-		Port:         ":8080",
-		DbUri:        "mongodb://localhost:27017",
-		DbName:       "movieDB",
-		JwtSecretKey: "a5d52d1471164c78450ee0f6095cfN2f2c712e45525010b0e46e936cc61e6d205",
-		ExpHours:     "1440",
+		Port:   ":8080",
+		DbUri:  "mongodb://localhost:27017",
+		DbName: "movieDB",
 	}
 }
 
@@ -52,22 +50,20 @@ func ParseEnvConfig() (*Config, error) {
 	}
 
 	var (
-		port         = os.Getenv("PORT")
-		mongoUri     = os.Getenv("MONGO_URI")
-		mongoDbName  = os.Getenv("DB_NAME")
-		jwtSecretKey = os.Getenv("JWT_SECRET_KEY")
-		expHours     = os.Getenv("EXP_HOURS")
+		port        = os.Getenv("PORT")
+		mongoUri    = os.Getenv("MONGO_URI")
+		mongoDbName = os.Getenv("DB_NAME")
 	)
 
-	if port == "" || mongoUri == "" || mongoDbName == "" || jwtSecretKey == "" {
+	if port == "" || mongoUri == "" || mongoDbName == "" {
 		return nil, ErrInvalidEnv
 	}
 
 	return &Config{
-		Port:         ":" + port,
-		DbUri:        mongoUri,
-		DbName:       mongoDbName,
-		JwtSecretKey: jwtSecretKey,
-		ExpHours:     expHours,
+		Port:   ":" + port,
+		DbUri:  mongoUri,
+		DbName: mongoDbName,
+		// JwtSecretKey: jwtSecretKey,
+		// ExpHours:     expHours,
 	}, nil
 }

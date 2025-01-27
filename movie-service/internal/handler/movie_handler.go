@@ -44,8 +44,9 @@ func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.movieService.AddMovie(movie)
 	if err != nil {
-		switch err {
-		case service.ErrBadRequest:
+		_, clientError := service.BadRequestMovieErrors[err]
+		switch {
+		case clientError:
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		default:
@@ -60,6 +61,7 @@ func (h movieHandler) HandleAddMovie(w http.ResponseWriter, r *http.Request) {
 
 // GET /movie/get => get all movies
 func (h movieHandler) HandleGetAllMovie(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w)
 	if r.Method != http.MethodGet {
 		http.Error(w, "Only GET method is supported.", http.StatusMethodNotAllowed)
 		return
@@ -95,8 +97,9 @@ func (h movieHandler) HandleUpdateMovieById(w http.ResponseWriter, r *http.Reque
 	id := r.PathValue("id")
 	res, err := h.movieService.UpdateMovieById(id, movie)
 	if err != nil {
-		switch err {
-		case service.ErrBadRequest:
+		_, clientError := service.BadRequestMovieErrors[err]
+		switch {
+		case clientError:
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		default:
@@ -120,7 +123,11 @@ func (h movieHandler) HandleDeleteMovieByID(w http.ResponseWriter, r *http.Reque
 
 	res, err := h.movieService.DeleteMovieById(id)
 	if err != nil {
-		switch err {
+		_, clientError := service.BadRequestMovieErrors[err]
+		switch {
+		case clientError:
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -129,4 +136,10 @@ func (h movieHandler) HandleDeleteMovieByID(w http.ResponseWriter, r *http.Reque
 
 	w.WriteHeader(http.StatusNoContent)
 	w.Write([]byte(fmt.Sprintf("%v", res.DeletedCount)))
+}
+
+func enableCORS(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*") // Разрешить запросы со всех доменов
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 }

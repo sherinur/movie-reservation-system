@@ -1,11 +1,12 @@
 package server
 
 import (
+	"net/http"
+	"os"
+
 	"movie-service/internal/dal"
 	"movie-service/internal/handler"
 	"movie-service/internal/service"
-	"net/http"
-	"os"
 
 	"github.com/sherinur/movie-reservation-system/pkg/db"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
@@ -53,7 +54,6 @@ func (s *server) Start() error {
 	return nil
 }
 
-// TODO: Write gracefull shutdown
 func (s *server) Shutdown() {
 	os.Exit(1)
 }
@@ -77,13 +77,11 @@ func (s *server) registerRoutes() error {
 	s.cinemaHandler = handler.NewCinemaHandler(cinemaService)
 
 	// Basic crud operation routes for movie and cinema
-	// TODO: test routes and add validation in service
 	s.mux.HandleFunc("/movie/add", s.movieHandler.HandleAddMovie)
 	s.mux.HandleFunc("/movie/get", s.movieHandler.HandleGetAllMovie)
 	s.mux.HandleFunc("/movie/update/{id}", s.movieHandler.HandleUpdateMovieById)
 	s.mux.HandleFunc("/movie/delete/{id}", s.movieHandler.HandleDeleteMovieByID)
 
-	//! this routes not tested
 	s.mux.HandleFunc("/cinema/add", s.cinemaHandler.HandleAddCinema)
 	s.mux.HandleFunc("/cinema/get", s.cinemaHandler.HandleGetAllCinema)
 	s.mux.HandleFunc("/cinema/update/{id}", s.cinemaHandler.HandleUpdateCinema)

@@ -46,3 +46,92 @@ time="2025-01-26T14:34:20+05:00" level=error msg="Error of parsing environment v
 time="2025-01-26T14:34:20+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
 time="2025-01-26T14:34:20+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
 time="2025-01-26T14:34:20+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T21:52:46+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T21:52:46+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T21:52:46+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T21:52:46+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T21:52:46+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T21:55:41+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T21:55:41+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T21:55:41+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T21:55:41+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T21:55:41+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:01:50+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T22:01:50+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:01:50+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:01:50+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:01:50+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:02:26+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T22:02:26+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:02:26+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:02:26+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:02:26+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:19:10+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T22:19:10+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:19:10+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:19:10+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:19:10+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:21:49+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T22:21:49+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:21:49+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:21:49+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:21:49+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:23:39+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T22:23:39+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:23:39+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:23:39+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:23:39+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:27:42+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T22:27:42+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:27:42+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:27:42+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:27:42+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:28:13+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T22:28:13+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:28:13+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:28:13+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:28:13+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:32:29+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T22:32:29+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:32:29+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:32:29+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:32:29+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:36:58+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T22:36:58+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:36:58+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:36:58+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:36:58+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:39:05+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-26T22:39:05+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:39:05+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-26T22:39:05+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-26T22:39:05+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T02:07:37+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-27T02:07:37+05:00" level=error msg="Error of parsing environment variables: open .env: no such file or directory" func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-27T02:07:37+05:00" level=warning msg="Failed to load config. Using default values." func=movie-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-27T02:07:37+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T02:07:37+05:00" level=info msg="Starting server on port:8080" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:25:23+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-27T16:25:23+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:25:33+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:26:01+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-27T16:26:01+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:26:11+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:26:54+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-27T16:26:54+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:27:04+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:38:43+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-27T16:38:43+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:38:53+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:40:04+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-27T16:40:04+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:40:04+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:40:30+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-27T16:40:30+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T16:40:30+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T17:00:50+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-27T17:00:50+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T17:00:50+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T17:15:58+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-27T17:15:58+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T17:15:58+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
