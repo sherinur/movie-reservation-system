@@ -1,17 +1,18 @@
 package server
 
 import (
-	"fmt"
-	"log/slog"
 	"net/http"
 	"os"
 
 	"movie-service/internal/dal"
-	"movie-service/internal/db"
 	"movie-service/internal/handler"
-
 	"movie-service/internal/service"
+
+	"github.com/sherinur/movie-reservation-system/pkg/db"
+	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
+
+var log = logging.GetLogger()
 
 type Server interface {
 	Start() error
@@ -21,13 +22,13 @@ type Server interface {
 
 type server struct {
 	mux *http.ServeMux
-	cfg *config
+	cfg *Config
 
 	movieHandler  handler.MovieHandler
 	cinemaHandler handler.CinemaHandler
 }
 
-func NewServer(cfg *config) Server {
+func NewServer(cfg *Config) Server {
 	return &server{
 		mux: http.NewServeMux(),
 		cfg: cfg,
@@ -35,19 +36,26 @@ func NewServer(cfg *config) Server {
 }
 
 func (s *server) Start() error {
-	slog.Info("Registering routes ...")
+	log.Info("Registering routes...")
 	err := s.registerRoutes()
 	if err != nil {
-		slog.Error(err.Error())
+		log.Errorf("Could not register routes: %s", err.Error())
 		return err
 	}
 
-	slog.Info(fmt.Sprintf("Starting server on port %s", s.cfg.Port))
-	return http.ListenAndServe(s.cfg.Port, s.mux)
+	log.Info("Starting server on port" + s.cfg.Port)
+
+	err = http.ListenAndServe(s.cfg.Port, s.mux)
+	if err != nil {
+		log.Errorf("Can not start the server: %s", err.Error())
+		return err
+	}
+
+	return nil
 }
 
 func (s *server) Shutdown() {
-	os.Exit(0)
+	os.Exit(1)
 }
 
 // opentelemetry/otel
@@ -69,13 +77,11 @@ func (s *server) registerRoutes() error {
 	s.cinemaHandler = handler.NewCinemaHandler(cinemaService)
 
 	// Basic crud operation routes for movie and cinema
-	// TODO: test routes and add validation in service
 	s.mux.HandleFunc("/movie/add", s.movieHandler.HandleAddMovie)
 	s.mux.HandleFunc("/movie/get", s.movieHandler.HandleGetAllMovie)
 	s.mux.HandleFunc("/movie/update/{id}", s.movieHandler.HandleUpdateMovieById)
 	s.mux.HandleFunc("/movie/delete/{id}", s.movieHandler.HandleDeleteMovieByID)
 
-	//! this routes not tested
 	s.mux.HandleFunc("/cinema/add", s.cinemaHandler.HandleAddCinema)
 	s.mux.HandleFunc("/cinema/get", s.cinemaHandler.HandleGetAllCinema)
 	s.mux.HandleFunc("/cinema/update/{id}", s.cinemaHandler.HandleUpdateCinema)

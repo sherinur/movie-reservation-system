@@ -26,12 +26,12 @@ func NewMovieService(r dal.MovieRepository) MovieService {
 }
 
 func (s *movieService) AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
-	// for _, movie := range movielist {
-	// 	isempty := utils.IsEmpty(movie)
-	// 	if !isempty {
-	// 		return nil, ErrBadRequest
-	// 	}
-	// }
+	for _, movie := range movielist {
+		err := ValidateMovie(movie)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	res, err := s.movieRepository.AddMovie(movielist)
 	if err != nil {
@@ -51,10 +51,10 @@ func (s *movieService) GetAllMovie() ([]byte, error) {
 }
 
 func (s *movieService) UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error) {
-	// isempty := utils.IsEmpty(movie)
-	// if !isempty {
-	// 	return nil, ErrBadRequest
-	// }
+	err := ValidateMovie(*movie)
+	if err != nil {
+		return nil, err
+	}
 
 	res, err := s.movieRepository.UpdateMovieById(id, movie)
 	if err != nil {

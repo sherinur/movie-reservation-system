@@ -26,6 +26,7 @@ time="2025-01-25T12:56:15+05:00" level=error msg="Could not register routes: ser
 time="2025-01-25T12:57:43+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
 time="2025-01-25T12:57:43+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
 time="2025-01-25T12:57:53+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo on 127.0.0.53:53: server misbehaving }, ] }" func="user-service/internal/server.(*server).Start" file=server.go
+<<<<<<< HEAD
 time="2025-01-27T18:27:18+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
 time="2025-01-27T18:27:18+05:00" level=error msg="Error of parsing environment variables: missing environment variables" func=user-service/internal/server.GetConfig.func1 file=config.go
 time="2025-01-27T18:27:18+05:00" level=warning msg="Failed to load config. Using default values." func=user-service/internal/server.GetConfig.func1 file=config.go
@@ -63,3 +64,10 @@ time="2025-01-27T20:14:35+05:00" level=error msg="Error of parsing environment v
 time="2025-01-27T20:14:35+05:00" level=warning msg="Failed to load config. Using default values." func=user-service/internal/server.GetConfig.func1 file=config.go
 time="2025-01-27T20:14:35+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
 time="2025-01-27T20:14:35+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+=======
+time="2025-01-27T00:56:51+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-27T00:56:51+05:00" level=error msg="Error of parsing environment variables: missing environment variables" func=user-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-27T00:56:51+05:00" level=warning msg="Failed to load config. Using default values." func=user-service/internal/server.GetConfig.func1 file=config.go
+time="2025-01-27T00:56:51+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-27T00:56:51+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+>>>>>>> main

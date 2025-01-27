@@ -2,33 +2,32 @@ package models
 
 import "time"
 
-// TODO!: think about struct cinema and add special data
 type Cinema struct {
-	Name     string  `bson:"name"`
-	Address  string  `bson:"address"`
-	Rating   float64 `bson:"rating"`
-	HallList []Hall  `bson:"hall_list"`
+	Name     string  `json:"name" bson:"name"`
+	Address  string  `json:"address" bson:"address"`
+	Rating   float64 `json:"rating" bson:"rating"`
+	HallList []Hall  `json:"hall_list" bson:"hall_list"`
 }
 
 type Hall struct {
-	Number      int         `bson:"number"`
-	RowCount    int         `bson:"row_count"`
-	ColumnCount int         `bson:"column_count"`
-	Seats       []Seat      `bson:"seats"`
-	Screenings  []Screening `bson:"screenings"`
+	Number      int         `json:"number" bson:"number"`
+	RowCount    int         `json:"row_count" bson:"row_count"`
+	ColumnCount int         `json:"column_count" bson:"column_count"`
+	Seats       []Seat      `json:"seats" bson:"seats"`
+	Screenings  []Screening `json:"screenings" bson:"screenings"`
 }
 
 type Seat struct {
-	Row    string `bson:"row"`
-	Column string `bson:"column"`
-	Status string `bson:"status"`
+	Row    string `json:"row" bson:"row"`
+	Column string `json:"column" bson:"column"`
+	Status string `json:"status" bson:"status"`
 }
 
 type Screening struct {
-	MovieID        string    `bson:"movie_id"`
-	Movie          Movie     `bson:"movie"`
-	StartTime      time.Time `bson:"start_time"`
-	EndTime        time.Time `bson:"end_time"`
-	HallNumber     int       `bson:"hall_number"`
-	AvailableSeats int       `bson:"available_seats"`
+	MovieID        string    `json:"movie_id" bson:"movie_id"`
+	Movie          Movie     `json:"movie" bson:"movie"`
+	StartTime      time.Time `json:"start_time" bson:"start_time"`
+	EndTime        time.Time `json:"end_time" bson:"end_time"`
+	HallNumber     int       `json:"hall_number" bson:"hall_number"`
+	AvailableSeats int       `json:"available_seats" bson:"available_seats"`
 }

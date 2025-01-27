@@ -8,7 +8,7 @@ import (
 )
 
 type CinemaService interface {
-	AddCinema(cinemalist []models.Cinema) (*mongo.InsertManyResult, error)
+	AddCinema(cinema models.Cinema) (*mongo.InsertOneResult, error)
 	GetAllCinema() ([]byte, error)
 	UpdateCinemaById(id string, cinema *models.Cinema) (*mongo.UpdateResult, error)
 	DeleteCinemaById(id string) (*mongo.DeleteResult, error)
@@ -24,15 +24,13 @@ func NewCinemaService(r dal.CinemaRepository) CinemaService {
 	}
 }
 
-func (s *cinemaService) AddCinema(cinemalist []models.Cinema) (*mongo.InsertManyResult, error) {
-	// for _, movie := range cinemalist {
-	// 	isempty := utils.IsEmpty(movie)
-	// 	if !isempty {
-	// 		return nil, ErrBadRequest
-	// 	}
-	// }
+func (s *cinemaService) AddCinema(cinema models.Cinema) (*mongo.InsertOneResult, error) {
+	err := ValidateCinema(cinema)
+	if err != nil {
+		return nil, err
+	}
 
-	res, err := s.cinemaRepository.AddCinema(cinemalist)
+	res, err := s.cinemaRepository.AddCinema(cinema)
 	if err != nil {
 		return nil, err
 	}
@@ -50,10 +48,10 @@ func (s cinemaService) GetAllCinema() ([]byte, error) {
 }
 
 func (s *cinemaService) UpdateCinemaById(id string, cinema *models.Cinema) (*mongo.UpdateResult, error) {
-	// isempty := utils.IsEmpty(cinema)
-	// if !isempty {
-	// 	return nil, ErrBadRequest
-	// }
+	err := ValidateCinema(*cinema)
+	if err != nil {
+		return nil, err
+	}
 
 	res, err := s.cinemaRepository.UpdateCinemaById(id, cinema)
 	if err != nil {
