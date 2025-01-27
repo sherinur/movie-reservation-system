@@ -1,0 +1,94 @@
+body {
+    background-color: #f8f9fa;
+  }
+  .screen {
+    width: 80%;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 20px;
+    margin: 20px auto;
+  }
+  .dropdown {
+    width: 35px;
+    height: 35px;
+    margin: 5px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    display: block;
+  }
+  .seat {
+    width: 35px;
+    height: 35px;
+    margin: 5px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+  }
+  .seat.selected {
+    background-color: #d9534f;
+  }
+  .seat.love {
+    border: 2px solid #d9534f;
+    background-color: transparent;
+  }
+  .seat.vip {
+    border: 2px solid #f7d810;
+    background-color: transparent;
+  }
+  .seat.common.occupied {
+    background-color: #444;
+  }
+  .seat.love.occupied {
+    border: none;
+    background-color: #444;
+  }
+  .seat.vip.occupied {
+    border: none;
+    background-color: #444;
+  }
+
+  .seat.common:hover {
+    border: 3px solid #7d7878;
+    background-color: #837f7f;
+  }
+  .seat.selected:hover {
+    background-color: #a03d3a;
+  }
+  .seat.love:hover {
+    border: 2px solid #773634;
+    background-color: #e0d9d9;
+  }
+  .seat.vip:hover {
+    border: 2px solid #b59f10;
+    background-color: #e0d9d9;
+  }
+
+  .seat-button {
+    width: 100%; 
+    height: 100%; 
+    border: none; 
+    background: transparent; 
+    position: absolute; 
+    top: 0; 
+    left: 0;
+    cursor: pointer;
+  }
+  
+  .row {
+    display:flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .legend .seat {
+    margin: 0;
+  }

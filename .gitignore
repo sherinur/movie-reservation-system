@@ -28,7 +28,12 @@ go.work.sum
 .idea
 .idea/
 
+
+# logs
+user-service/logs
+movie-service/logs
+reservation-service/logs
+
 # node_modules
 node_modules/
-
 web/node_modules/
