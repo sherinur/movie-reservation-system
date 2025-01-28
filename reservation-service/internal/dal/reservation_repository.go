@@ -2,7 +2,6 @@ package dal
 
 import (
 	"context"
-	"errors"
 
 	"reservation-service/internal/models"
 
@@ -38,12 +37,12 @@ func (r *reservationRepository) Add(process models.Process) (*mongo.InsertOneRes
 
 	_, err := coll.Indexes().CreateOne(context.TODO(), indexModel)
 	if err != nil {
-		return nil, errors.New("failed to add expiring after time index to collection")
+		return nil, err
 	}
 
 	result, err := coll.InsertOne(context.TODO(), process)
 	if err != nil {
-		return nil, errors.New("error adding new process to repository")
+		return nil, err
 	}
 
 	return result, nil
@@ -53,7 +52,7 @@ func (r *reservationRepository) Update(id string, reservation models.Reservation
 	coll := r.db.Collection("reservations")
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return nil, errors.New("error getting objID")
+		return nil, err
 	}
 
 	resDoc := bson.M{
@@ -70,10 +69,10 @@ func (r *reservationRepository) Update(id string, reservation models.Reservation
 
 	result, err := coll.ReplaceOne(context.TODO(), bson.M{"_id": objID}, resDoc)
 	if err != nil {
-		return nil, errors.New("could not update in repository by id: " + err.Error())
+		return nil, err
 	}
 	if result.ModifiedCount == 0 {
-		return nil, errors.New("no process found with the given ID")
+		return nil, ErrNotFoundById
 	}
 
 	return result, nil
@@ -83,15 +82,15 @@ func (r *reservationRepository) Delete(id string) error {
 	coll := r.db.Collection("reservations")
 	ObjID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return errors.New("error getting objID")
+		return err
 	}
 
 	res, err := coll.DeleteOne(context.TODO(), bson.M{"_id": ObjID})
 	if err != nil {
-		return errors.New("could not delete from repository by id")
+		return err
 	}
 	if res.DeletedCount == 0 {
-		return errors.New("no reservation found with the given ID")
+		return ErrNotFoundById
 	}
 	return nil
 }
@@ -100,7 +99,7 @@ func (r *reservationRepository) GetById(id string) (*models.Reservation, error) 
 	coll := r.db.Collection("reservations")
 	ObjID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return nil, errors.New("error getting objID")
+		return nil, err
 	}
 
 	var reservation models.Reservation

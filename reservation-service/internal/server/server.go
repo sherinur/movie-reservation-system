@@ -1,20 +1,18 @@
 package server
 
 import (
-	"errors"
-	"net/http"
 	"os"
 
 	"reservation-service/internal/dal"
 	"reservation-service/internal/handler"
 	"reservation-service/internal/service"
 
-	"github.com/sherinur/movie-reservation-system/pkg/logging"
-
+	"github.com/gin-gonic/gin"
 	"github.com/sherinur/movie-reservation-system/pkg/db"
+	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
-var Log = logging.Init()
+var log = logging.GetLogger()
 
 type Server interface {
 	Start() error
@@ -23,30 +21,30 @@ type Server interface {
 }
 
 type server struct {
-	mux *http.ServeMux
-	cfg *config
+	router *gin.Engine
+	cfg    *config
 
 	handler handler.ReservationHandler
 }
 
 func NewServer(cfg *config) Server {
 	return &server{
-		mux: http.NewServeMux(),
-		cfg: cfg,
+		router: gin.Default(),
+		cfg:    cfg,
 	}
 }
 
 func (s *server) Start() error {
 	err := s.registerRoutes()
 	if err != nil {
-		Log.Errorf("Could not register routes: %s", err.Error())
+		log.Errorf("Could not register routes: %s", err.Error())
 	}
 
-	Log.Info("Sarting server at the port" + s.cfg.Port)
+	log.Info("Sarting server at the port" + s.cfg.Port)
 
-	err = http.ListenAndServe(s.cfg.Port, s.mux)
+	err = s.router.Run(s.cfg.Port)
 	if err != nil {
-		Log.Errorf("Error starting server: %s", err.Error())
+		log.Errorf("Error starting server: %s", err.Error())
 	}
 
 	return nil
@@ -59,18 +57,18 @@ func (s *server) Shutdown() {
 func (s *server) registerRoutes() error {
 	database, err := db.ConnectMongo(s.cfg.DBuri, s.cfg.DBname)
 	if err != nil {
-		return errors.New("error connecting to MongoDB")
+		return err
 	}
 
-	Log.Info("Registering routes..")
+	log.Info("Registering routes..")
 
 	repository := dal.NewReservationRepository(database)
 	service := service.NewReservationService(repository)
 	s.handler = handler.NewReservationHandler(service)
 
-	s.mux.HandleFunc("/booking", s.handler.AddReservation)
-	s.mux.HandleFunc("/booking/", s.handler.PayReservation)
-	s.mux.HandleFunc("/booking/delete/", s.handler.DeleteReservation)
+	s.router.POST("/booking", s.handler.AddReservation)
+	s.router.PUT("/booking/:id", s.handler.PayReservation)
+	s.router.DELETE("/booking/delete/:id", s.handler.DeleteReservation)
 
 	return nil
 }

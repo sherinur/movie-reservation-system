@@ -1,17 +1,19 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"reservation-service/internal/server"
+
+	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
 func main() {
+	logging.Init()
+
 	cfg := server.NewConfig()
 	srv := server.NewServer(cfg)
 
-	fmt.Println("server started at the port:", cfg.Port)
 	err := srv.Start()
 	if err != nil {
 		log.Fatal(err)
