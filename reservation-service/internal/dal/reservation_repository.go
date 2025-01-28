@@ -42,7 +42,6 @@ func (r *reservationRepository) Add(process models.Process) (*mongo.InsertOneRes
 	}
 
 	result, err := coll.InsertOne(context.TODO(), process)
-
 	if err != nil {
 		return nil, errors.New("error adding new process to repository")
 	}

@@ -16,8 +16,7 @@ async function main() {
     app.use(express.static(path.join(__dirname, 'public')));
 
     app.get('/', (req, res) => {
-        const filePath = path.join(__dirname, 'views', 'index.html');
-        res.sendFile(filePath);
+        res.sendFile(path.join(__dirname, 'views', 'index.html'));
     });
     
     app.get('/reserve', (req, res) => {

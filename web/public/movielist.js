@@ -141,7 +141,7 @@ function displayMovies(movies) {
         const card = document.createElement('div');
         card.className = 'col-md-2 movie-card';
         card.innerHTML = `
-            <a href="${movie.posterimage}" style="text-decoration: none; color: inherit;" >
+            <a href="/reserve" style="text-decoration: none; color: inherit;" >
             <div class="card h-60>
                 <div class="poster-container">
                     <img src="${movie.posterimage}" class="card-img-top" alt="${movie.title}">

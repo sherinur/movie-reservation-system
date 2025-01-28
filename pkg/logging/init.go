@@ -38,7 +38,7 @@ func Init() {
 	// print to stdout
 	log.SetOutput(os.Stdout)
 
-	logFile, err := os.OpenFile("logs/all.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logFile, err := os.OpenFile("logs/all.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o666)
 	if err != nil {
 		log.Fatalf("Cannot open the logs file: %s", err.Error())
 	}
