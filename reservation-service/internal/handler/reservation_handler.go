@@ -1,23 +1,22 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
-	"strings"
 
 	"reservation-service/internal/models"
 	"reservation-service/internal/service"
 	"reservation-service/internal/utilits"
 
+	"github.com/gin-gonic/gin"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
 var log = logging.GetLogger()
 
 type ReservationHandler interface {
-	AddReservation(w http.ResponseWriter, r *http.Request)
-	PayReservation(w http.ResponseWriter, r *http.Request)
-	DeleteReservation(w http.ResponseWriter, r *http.Request)
+	AddReservation(c *gin.Context)
+	PayReservation(c *gin.Context)
+	DeleteReservation(c *gin.Context)
 }
 
 type reservationHandler struct {
@@ -30,88 +29,63 @@ func NewReservationHandler(s service.ReservationService) ReservationHandler {
 	}
 }
 
-func (rh *reservationHandler) AddReservation(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		utilits.WriteErrorResponse(http.StatusMethodNotAllowed, "method not allowed", ErrMethodNotPost, w, r)
-		log.Warn()
-		return
-	}
-
+func (rh *reservationHandler) AddReservation(c *gin.Context) {
 	var booking models.Booking
-	if err := json.NewDecoder(r.Body).Decode(&booking); err != nil {
-		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request body", ErrEmptyData, w, r)
+	if err := c.ShouldBindJSON(&booking); err != nil {
+		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request body", ErrEmptyData, c.Writer, c.Request)
 		return
 	}
 	result, err := rh.reservationService.AddReservation(booking)
 	if err != nil {
 		log.Info("error adding new process: " + err.Error())
-		utilits.WriteErrorResponse(http.StatusInternalServerError, "reserving error", err, w, r)
+		utilits.WriteErrorResponse(http.StatusInternalServerError, "reserving error", err, c.Writer, c.Request)
 		return
 	}
 
-	jsonResponse, err := utilits.ConvertToJson(result)
-	if err != nil {
-		log.Info("error while coverting response to json: " + err.Error())
-		utilits.WriteErrorResponse(http.StatusInternalServerError, "converting error", err, w, r)
-		return
-	}
+	// jsonResponse, err := utilits.ConvertToJson(result)
+	// if err != nil {
+	// 	log.Info("error while converting response to json: " + err.Error())
+	// 	utilits.WriteErrorResponse(http.StatusInternalServerError, "converting error", err, c.Writer, c.Request)
+	// 	return
+	// }
 
-	w.WriteHeader(http.StatusCreated)
-	w.Write(jsonResponse)
+	c.JSON(http.StatusAccepted, result)
 }
 
-func (rh *reservationHandler) PayReservation(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPut {
-		utilits.WriteErrorResponse(http.StatusMethodNotAllowed, "method not allowed", ErrMethodNotPut, w, r)
-		return
-	}
-
+func (rh *reservationHandler) PayReservation(c *gin.Context) {
 	var paying models.Paying
-	if err := json.NewDecoder(r.Body).Decode(&paying); err != nil {
-		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request body", ErrEmptyData, w, r)
+	if err := c.ShouldBindJSON(&paying); err != nil {
+		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request body", ErrEmptyData, c.Writer, c.Request)
 		return
 	}
 
-	id := strings.TrimPrefix(r.URL.Path, "/booking/")
+	id := c.Param("id")
 	if id == "" {
-		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request", ErrNoId, w, r)
+		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request", ErrNoId, c.Writer, c.Request)
 		return
 	}
 
 	result, err := rh.reservationService.PayReservation(id, paying)
 	if err != nil {
 		log.Info("error paying the reservation: " + err.Error())
-		utilits.WriteErrorResponse(http.StatusInternalServerError, "updating error", err, w, r)
+		utilits.WriteErrorResponse(http.StatusInternalServerError, "updating error", err, c.Writer, c.Request)
 		return
 	}
 
-	jsonResponse, err := utilits.ConvertToJson(result)
-	if err != nil {
-		log.Info("error while coverting response to json: " + err.Error())
-		utilits.WriteErrorResponse(http.StatusInternalServerError, "converting error", err, w, r)
-		return
-	}
-
-	w.WriteHeader(http.StatusAccepted)
-	w.Write(jsonResponse)
+	c.JSON(http.StatusOK, result)
 }
 
-func (rh *reservationHandler) DeleteReservation(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodDelete {
-		utilits.WriteErrorResponse(http.StatusMethodNotAllowed, "method not allowed", ErrMethodNotDelete, w, r)
-		return
-	}
-
-	id := strings.TrimPrefix(r.URL.Path, "/booking/delete/")
+func (rh *reservationHandler) DeleteReservation(c *gin.Context) {
+	id := c.Param("id")
 	if id == "" {
-		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request", ErrNoId, w, r)
+		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request", ErrNoId, c.Writer, c.Request)
 		return
 	}
 	err := rh.reservationService.DeleteReservation(id)
 	if err != nil {
-		utilits.WriteErrorResponse(http.StatusInternalServerError, "deleting error", err, w, r)
+		utilits.WriteErrorResponse(http.StatusInternalServerError, "deleting error", err, c.Writer, c.Request)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	c.Status(http.StatusNoContent)
 }

@@ -1,16 +1,15 @@
 package server
 
 import (
-	"net/http"
 	"os"
 
 	"reservation-service/internal/dal"
 	"reservation-service/internal/handler"
 	"reservation-service/internal/service"
 
-	"github.com/sherinur/movie-reservation-system/pkg/logging"
-
+	"github.com/gin-gonic/gin"
 	"github.com/sherinur/movie-reservation-system/pkg/db"
+	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
 var log = logging.GetLogger()
@@ -22,16 +21,16 @@ type Server interface {
 }
 
 type server struct {
-	mux *http.ServeMux
-	cfg *config
+	router *gin.Engine
+	cfg    *config
 
 	handler handler.ReservationHandler
 }
 
 func NewServer(cfg *config) Server {
 	return &server{
-		mux: http.NewServeMux(),
-		cfg: cfg,
+		router: gin.Default(),
+		cfg:    cfg,
 	}
 }
 
@@ -43,7 +42,7 @@ func (s *server) Start() error {
 
 	log.Info("Sarting server at the port" + s.cfg.Port)
 
-	err = http.ListenAndServe(s.cfg.Port, s.mux)
+	err = s.router.Run(s.cfg.Port)
 	if err != nil {
 		log.Errorf("Error starting server: %s", err.Error())
 	}
@@ -67,9 +66,9 @@ func (s *server) registerRoutes() error {
 	service := service.NewReservationService(repository)
 	s.handler = handler.NewReservationHandler(service)
 
-	s.mux.HandleFunc("/booking", s.handler.AddReservation)
-	s.mux.HandleFunc("/booking/", s.handler.PayReservation)
-	s.mux.HandleFunc("/booking/delete/", s.handler.DeleteReservation)
+	s.router.POST("/booking", s.handler.AddReservation)
+	s.router.PUT("/booking/:id", s.handler.PayReservation)
+	s.router.DELETE("/booking/delete/:id", s.handler.DeleteReservation)
 
 	return nil
 }
