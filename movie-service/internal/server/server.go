@@ -1,13 +1,13 @@
 package server
 
 import (
-	"net/http"
 	"os"
 
 	"movie-service/internal/dal"
 	"movie-service/internal/handler"
 	"movie-service/internal/service"
 
+	"github.com/gin-gonic/gin"
 	"github.com/sherinur/movie-reservation-system/pkg/db"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
@@ -21,8 +21,8 @@ type Server interface {
 }
 
 type server struct {
-	mux *http.ServeMux
-	cfg *Config
+	router *gin.Engine
+	cfg    *Config
 
 	movieHandler  handler.MovieHandler
 	cinemaHandler handler.CinemaHandler
@@ -30,8 +30,8 @@ type server struct {
 
 func NewServer(cfg *Config) Server {
 	return &server{
-		mux: http.NewServeMux(),
-		cfg: cfg,
+		router: gin.Default(),
+		cfg:    cfg,
 	}
 }
 
@@ -45,7 +45,7 @@ func (s *server) Start() error {
 
 	log.Info("Starting server on port" + s.cfg.Port)
 
-	err = http.ListenAndServe(s.cfg.Port, s.mux)
+	err = s.router.Run(s.cfg.Port)
 	if err != nil {
 		log.Errorf("Can not start the server: %s", err.Error())
 		return err
@@ -77,18 +77,18 @@ func (s *server) registerRoutes() error {
 	s.cinemaHandler = handler.NewCinemaHandler(cinemaService)
 
 	// Basic crud operation routes for movie and cinema
-	s.mux.HandleFunc("/movie/add", s.movieHandler.HandleAddMovie)
-	s.mux.HandleFunc("/movie/get", s.movieHandler.HandleGetAllMovie)
-	s.mux.HandleFunc("/movie/update/{id}", s.movieHandler.HandleUpdateMovieById)
-	s.mux.HandleFunc("/movie/delete/{id}", s.movieHandler.HandleDeleteMovieByID)
+	s.router.POST("/movie/add", s.movieHandler.HandleAddMovie)
+	s.router.GET("/movie/get", s.movieHandler.HandleGetAllMovie)
+	s.router.PUT("/movie/update/{id}", s.movieHandler.HandleUpdateMovieById)
+	s.router.DELETE("/movie/delete/{id}", s.movieHandler.HandleDeleteMovieByID)
 
-	s.mux.HandleFunc("/cinema/add", s.cinemaHandler.HandleAddCinema)
-	s.mux.HandleFunc("/cinema/get", s.cinemaHandler.HandleGetAllCinema)
-	s.mux.HandleFunc("/cinema/update/{id}", s.cinemaHandler.HandleUpdateCinema)
-	s.mux.HandleFunc("/cinema/delete/{id}", s.cinemaHandler.HandleDeleteCinema)
+	s.router.POST("/cinema/add", s.cinemaHandler.HandleAddCinema)
+	s.router.GET("/cinema/get", s.cinemaHandler.HandleGetAllCinema)
+	s.router.PUT("/cinema/update/{id}", s.cinemaHandler.HandleUpdateCinema)
+	s.router.DELETE("/cinema/delete/{id}", s.cinemaHandler.HandleDeleteCinema)
 
 	// other routes
-	s.mux.HandleFunc("/health", handler.GetHealth)
+	s.router.GET("/health", handler.GetHealth)
 
 	return nil
 }
