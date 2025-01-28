@@ -78,14 +78,15 @@ func (s *server) registerRoutes() error {
 
 	// Basic crud operation routes for movie and cinema
 	s.router.POST("/movie/add", s.movieHandler.HandleAddMovie)
-	s.router.GET("/movie/get", s.movieHandler.HandleGetAllMovie)
-	s.router.PUT("/movie/update/{id}", s.movieHandler.HandleUpdateMovieById)
-	s.router.DELETE("/movie/delete/{id}", s.movieHandler.HandleDeleteMovieByID)
+	s.router.GET("/movielist", s.movieHandler.HandleGetAllMovie)
+	s.router.GET("/movie/:id", s.movieHandler.HadleGetMovieById)
+	s.router.PUT("/movie/update/:id", s.movieHandler.HandleUpdateMovieById)
+	s.router.DELETE("/movie/delete/:id", s.movieHandler.HandleDeleteMovieByID)
 
 	s.router.POST("/cinema/add", s.cinemaHandler.HandleAddCinema)
 	s.router.GET("/cinema/get", s.cinemaHandler.HandleGetAllCinema)
-	s.router.PUT("/cinema/update/{id}", s.cinemaHandler.HandleUpdateCinema)
-	s.router.DELETE("/cinema/delete/{id}", s.cinemaHandler.HandleDeleteCinema)
+	s.router.PUT("/cinema/update/:id", s.cinemaHandler.HandleUpdateCinema)
+	s.router.DELETE("/cinema/delete/:id", s.cinemaHandler.HandleDeleteCinema)
 
 	// other routes
 	s.router.GET("/health", handler.GetHealth)

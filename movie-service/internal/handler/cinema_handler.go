@@ -5,6 +5,7 @@ import (
 
 	"movie-service/internal/models"
 	"movie-service/internal/service"
+	"movie-service/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,6 +30,7 @@ func NewCinemaHandler(s service.CinemaService) CinemaHandler {
 // POST /cinema/add => add new cinema
 func (h *cinemaHandler) HandleAddCinema(c *gin.Context) {
 	var cinema models.Cinema
+
 	if err := c.ShouldBindJSON(&cinema); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -37,7 +39,7 @@ func (h *cinemaHandler) HandleAddCinema(c *gin.Context) {
 	res, err := h.cinemaService.AddCinema(cinema)
 	if err != nil {
 		switch err {
-		case service.ErrBadRequest:
+		case utils.ErrBadRequest:
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		default:
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -52,7 +54,7 @@ func (h *cinemaHandler) HandleAddCinema(c *gin.Context) {
 func (h *cinemaHandler) HandleGetAllCinema(c *gin.Context) {
 	data, err := h.cinemaService.GetAllCinema()
 	if err != nil {
-		if _, clientError := service.BadRequestCinemaErrors[err]; clientError {
+		if _, clientError := utils.BadRequestCinemaErrors[err]; clientError {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -74,7 +76,7 @@ func (h *cinemaHandler) HandleUpdateCinema(c *gin.Context) {
 	id := c.Param("id")
 	res, err := h.cinemaService.UpdateCinemaById(id, &cinema)
 	if err != nil {
-		if _, clientError := service.BadRequestCinemaErrors[err]; clientError {
+		if _, clientError := utils.BadRequestCinemaErrors[err]; clientError {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -90,7 +92,7 @@ func (h *cinemaHandler) HandleDeleteCinema(c *gin.Context) {
 	id := c.Param("id")
 	res, err := h.cinemaService.DeleteCinemaById(id)
 	if err != nil {
-		if _, clientError := service.BadRequestMovieErrors[err]; clientError {
+		if _, clientError := utils.BadRequestMovieErrors[err]; clientError {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

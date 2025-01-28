@@ -3,6 +3,7 @@ package service
 import (
 	"movie-service/internal/dal"
 	"movie-service/internal/models"
+	"movie-service/utils"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -25,7 +26,7 @@ func NewCinemaService(r dal.CinemaRepository) CinemaService {
 }
 
 func (s *cinemaService) AddCinema(cinema models.Cinema) (*mongo.InsertOneResult, error) {
-	err := ValidateCinema(cinema)
+	err := utils.ValidateCinema(cinema)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +49,7 @@ func (s cinemaService) GetAllCinema() ([]byte, error) {
 }
 
 func (s *cinemaService) UpdateCinemaById(id string, cinema *models.Cinema) (*mongo.UpdateResult, error) {
-	err := ValidateCinema(*cinema)
+	err := utils.ValidateCinema(*cinema)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +64,7 @@ func (s *cinemaService) UpdateCinemaById(id string, cinema *models.Cinema) (*mon
 
 func (s *cinemaService) DeleteCinemaById(id string) (*mongo.DeleteResult, error) {
 	if id == "" {
-		return nil, ErrInvalidId
+		return nil, utils.ErrInvalidId
 	}
 
 	res, err := s.cinemaRepository.DeleteCinemaById(id)

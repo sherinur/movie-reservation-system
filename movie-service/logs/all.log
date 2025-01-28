@@ -138,3 +138,27 @@ time="2025-01-27T17:15:58+05:00" level=info msg="Starting server on port:8070" f
 time="2025-01-28T00:54:26+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
 time="2025-01-28T00:54:26+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
 time="2025-01-28T00:54:26+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T14:56:08+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-28T14:56:08+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T14:56:08+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T15:20:29+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-28T15:20:29+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T15:20:29+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T15:26:38+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-28T15:26:38+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T15:26:38+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T15:36:23+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-28T15:36:23+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T15:36:23+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T15:37:36+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-28T15:37:36+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T15:37:36+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T21:53:32+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-28T21:53:32+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T21:53:32+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T22:03:07+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-28T22:03:07+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T22:03:07+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T22:03:54+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-28T22:03:54+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-01-28T22:03:54+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go

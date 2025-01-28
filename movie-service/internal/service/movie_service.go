@@ -3,6 +3,7 @@ package service
 import (
 	"movie-service/internal/dal"
 	"movie-service/internal/models"
+	"movie-service/utils"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -11,6 +12,7 @@ import (
 type MovieService interface {
 	AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
 	GetAllMovie() ([]byte, error)
+	GetMovieById(id string) ([]byte, error)
 	UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error)
 	DeleteMovieById(id string) (*mongo.DeleteResult, error)
 }
@@ -27,7 +29,7 @@ func NewMovieService(r dal.MovieRepository) MovieService {
 
 func (s *movieService) AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
 	for _, movie := range movielist {
-		err := ValidateMovie(movie)
+		err := utils.ValidateMovie(movie)
 		if err != nil {
 			return nil, err
 		}
@@ -50,8 +52,17 @@ func (s *movieService) GetAllMovie() ([]byte, error) {
 	return data, nil
 }
 
+func (s *movieService) GetMovieById(id string) ([]byte, error) {
+	data, err := s.movieRepository.GetMovieById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
 func (s *movieService) UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error) {
-	err := ValidateMovie(*movie)
+	err := utils.ValidateMovie(*movie)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +77,7 @@ func (s *movieService) UpdateMovieById(id string, movie *models.Movie) (*mongo.U
 
 func (s *movieService) DeleteMovieById(id string) (*mongo.DeleteResult, error) {
 	if id == "" {
-		return nil, ErrInvalidId
+		return nil, utils.ErrInvalidId
 	}
 
 	res, err := s.movieRepository.DeleteMovieById(id)

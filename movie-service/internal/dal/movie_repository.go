@@ -15,6 +15,7 @@ import (
 type MovieRepository interface {
 	AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
 	GetAllMovie() ([]byte, error)
+	GetMovieById(id string) ([]byte, error)
 	UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error)
 	DeleteMovieById(id string) (*mongo.DeleteResult, error)
 }
@@ -51,13 +52,14 @@ func (r *movieRepository) AddMovie(movielist []models.Movie) (*mongo.InsertManyR
 }
 
 func (r *movieRepository) GetAllMovie() ([]byte, error) {
+	var result []bson.M
 	col := r.db.Collection("movie")
+
 	cursor, err := col.Find(context.TODO(), bson.D{})
 	if err != nil {
 		return nil, err
 	}
 
-	var result []bson.M
 	err = cursor.All(context.TODO(), &result)
 	if err != nil {
 		return nil, err
@@ -65,7 +67,29 @@ func (r *movieRepository) GetAllMovie() ([]byte, error) {
 
 	data, err := json.MarshalIndent(result, "", "")
 	if err != nil {
-		return data, err
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (r *movieRepository) GetMovieById(id string) ([]byte, error) {
+	var result bson.M
+	col := r.db.Collection("movie")
+
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	err = col.FindOne(context.TODO(), bson.D{{Key: "_id", Value: objectID}}).Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := json.MarshalIndent(result, "", "")
+	if err != nil {
+		return nil, err
 	}
 
 	return data, nil
