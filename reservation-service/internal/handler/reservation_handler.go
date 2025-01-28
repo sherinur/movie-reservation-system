@@ -2,13 +2,17 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
 	"reservation-service/internal/models"
 	"reservation-service/internal/service"
+	"reservation-service/internal/utilits"
+
+	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
+
+var log = logging.GetLogger()
 
 type ReservationHandler interface {
 	AddReservation(w http.ResponseWriter, r *http.Request)
@@ -28,67 +32,86 @@ func NewReservationHandler(s service.ReservationService) ReservationHandler {
 
 func (rh *reservationHandler) AddReservation(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Only POST method is supported.", http.StatusMethodNotAllowed)
+		utilits.WriteErrorResponse(http.StatusMethodNotAllowed, "method not allowed", ErrMethodNotPost, w, r)
+		log.Warn()
 		return
 	}
 
 	var booking models.Booking
 	if err := json.NewDecoder(r.Body).Decode(&booking); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request body", ErrEmptyData, w, r)
 		return
 	}
 	result, err := rh.reservationService.AddReservation(booking)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Info("error adding new process: " + err.Error())
+		utilits.WriteErrorResponse(http.StatusInternalServerError, "reserving error", err, w, r)
 		return
 	}
+
+	jsonResponse, err := utilits.ConvertToJson(result)
+	if err != nil {
+		log.Info("error while coverting response to json: " + err.Error())
+		utilits.WriteErrorResponse(http.StatusInternalServerError, "converting error", err, w, r)
+		return
+	}
+
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(fmt.Sprintf("%v", result.InsertedID)))
+	w.Write(jsonResponse)
 }
 
 func (rh *reservationHandler) PayReservation(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
-		http.Error(w, "Only PUT method is supported.", http.StatusMethodNotAllowed)
+		utilits.WriteErrorResponse(http.StatusMethodNotAllowed, "method not allowed", ErrMethodNotPut, w, r)
 		return
 	}
 
 	var paying models.Paying
 	if err := json.NewDecoder(r.Body).Decode(&paying); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request body", ErrEmptyData, w, r)
 		return
 	}
 
 	id := strings.TrimPrefix(r.URL.Path, "/booking/")
 	if id == "" {
-		http.Error(w, "Missing update ID", http.StatusBadRequest)
+		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request", ErrNoId, w, r)
 		return
 	}
 
 	result, err := rh.reservationService.PayReservation(id, paying)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error updating reservation: %s", err.Error()), http.StatusInternalServerError)
+		log.Info("error paying the reservation: " + err.Error())
+		utilits.WriteErrorResponse(http.StatusInternalServerError, "updating error", err, w, r)
 		return
 	}
+
+	jsonResponse, err := utilits.ConvertToJson(result)
+	if err != nil {
+		log.Info("error while coverting response to json: " + err.Error())
+		utilits.WriteErrorResponse(http.StatusInternalServerError, "converting error", err, w, r)
+		return
+	}
+
 	w.WriteHeader(http.StatusAccepted)
-	w.Write([]byte(fmt.Sprintf("%v", result.UpsertedID)))
+	w.Write(jsonResponse)
 }
 
 func (rh *reservationHandler) DeleteReservation(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
-		http.Error(w, "Only DELETE method is supported.", http.StatusMethodNotAllowed)
+		utilits.WriteErrorResponse(http.StatusMethodNotAllowed, "method not allowed", ErrMethodNotDelete, w, r)
 		return
 	}
 
 	id := strings.TrimPrefix(r.URL.Path, "/booking/delete/")
 	if id == "" {
-		http.Error(w, "Missing reservation ID", http.StatusBadRequest)
+		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request", ErrNoId, w, r)
 		return
 	}
 	err := rh.reservationService.DeleteReservation(id)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error deleting reservation: %s", err.Error()), http.StatusInternalServerError)
+		utilits.WriteErrorResponse(http.StatusInternalServerError, "deleting error", err, w, r)
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Reservation deleted successfully"))
 }

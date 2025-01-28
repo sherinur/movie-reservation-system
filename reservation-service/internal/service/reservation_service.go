@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -30,11 +29,14 @@ func NewReservationService(r dal.ReservationRepository) ReservationService {
 
 func (s *reservationService) AddReservation(booking models.Booking) (*mongo.InsertOneResult, error) {
 	if len(booking.Tickets) == 0 {
-		return nil, errors.New("booking is empty")
+		return nil, ErrEmptyData
+	}
+	if booking.ScreeningID == "" {
+		return nil, ErrEmptyData
 	}
 	for _, ticket := range booking.Tickets {
 		if ticket.SeatColumn == "" || ticket.SeatRow == "" || ticket.Price <= 0 || ticket.Type == "" {
-			return nil, errors.New("not provided all seat data")
+			return nil, ErrEmptyData
 		}
 	}
 
@@ -59,7 +61,7 @@ func (s *reservationService) AddReservation(booking models.Booking) (*mongo.Inse
 
 func (s *reservationService) PayReservation(id string, paying models.Paying) (*mongo.UpdateResult, error) {
 	if id == "" {
-		return nil, errors.New("id is empty")
+		return nil, ErrNoId
 	}
 
 	process, err := s.reservationRepository.GetById(id)
@@ -67,7 +69,7 @@ func (s *reservationService) PayReservation(id string, paying models.Paying) (*m
 		return nil, err
 	}
 	if process.Status != "processing" {
-		return nil, errors.New("could not pay already paid reservation")
+		return nil, ErrPaidReservation
 	}
 
 	reservation := models.Reservation{
@@ -97,7 +99,7 @@ func (s *reservationService) PayReservation(id string, paying models.Paying) (*m
 
 func (s *reservationService) DeleteReservation(id string) error {
 	if id == "" {
-		return errors.New("id is empty")
+		return ErrNoId
 	}
 
 	return s.reservationRepository.Delete(id)

@@ -2,18 +2,26 @@ package utilits
 
 import (
 	"encoding/base64"
-	"errors"
+	"encoding/json"
 	"net/smtp"
 	"os"
 
 	"github.com/skip2/go-qrcode"
 )
 
+func ConvertToJson(reservation interface{}) ([]byte, error) {
+	jsonBytes, err := json.Marshal(reservation)
+	if err != nil {
+		return nil, err
+	}
+	return jsonBytes, nil
+}
+
 func GenerateQR(QRdata string) (string, error) {
 	var png []byte
 	png, err := qrcode.Encode(QRdata, qrcode.Medium, 256)
 	if err != nil {
-		return "", errors.New("error generating QR Code")
+		return "", err
 	}
 
 	return base64.StdEncoding.EncodeToString(png), nil

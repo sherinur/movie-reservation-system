@@ -4,6 +4,8 @@ go 1.23.2
 
 require (
 	github.com/joho/godotenv v1.5.1
+	github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-20250125170936-009706ca1af8
+	github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-20250127185336-447cff7c59d3
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	go.mongodb.org/mongo-driver v1.17.2
 )
@@ -12,8 +14,6 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
-	github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-20250125170936-009706ca1af8 // indirect
-	github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-20250121131242-3a9b380bdbde // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
