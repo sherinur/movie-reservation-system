@@ -71,3 +71,26 @@ time="2025-01-27T00:56:51+05:00" level=warning msg="Failed to load config. Using
 time="2025-01-27T00:56:51+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
 time="2025-01-27T00:56:51+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
 >>>>>>> main
+time="2025-01-29T18:28:35+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-29T18:28:35+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:28:45+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo on 127.0.0.53:53: server misbehaving }, ] }" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:29:18+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-29T18:29:18+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:29:28+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo on 127.0.0.53:53: server misbehaving }, ] }" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:29:40+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-29T18:29:40+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:49:15+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-29T18:49:15+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:49:15+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:49:15+05:00" level=error msg="Can not start the server: listen tcp :8080: bind: address already in use" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:49:56+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-29T18:49:56+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:50:06+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: localhost:27017, Type: Unknown, Last error: dial tcp 127.0.0.1:27017: connect: connection refused }, ] }" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:50:13+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-29T18:50:13+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:50:13+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:50:22+05:00" level=info msg="Registered an user with email valakas@gmail.com from IP ::1" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-01-29T18:50:24+05:00" level=info msg="User with email valakas@gmail.com logged in from ::1" func="user-service/internal/handler.(*userHandler).HandleLogin" file=user_handler.go
+time="2025-01-29T18:53:21+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-29T18:53:21+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-29T18:53:21+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go

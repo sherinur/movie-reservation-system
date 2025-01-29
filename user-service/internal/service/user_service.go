@@ -12,6 +12,8 @@ type UserService interface {
 	Register(req *models.RegisterRequest) (*mongo.InsertOneResult, error)
 	Authorize(req *models.LoginRequest) (string, error)
 	GetAllUsers() ([]models.User, error)
+	GetUser(id string) (*models.User, error)
+	DeleteUser(id string) error
 }
 
 type userService struct {
@@ -24,15 +26,6 @@ func NewUserService(r dal.UserRepository, secretKey string) UserService {
 		userRepository: r,
 		secretKey:      secretKey,
 	}
-}
-
-func (s *userService) GetAllUsers() ([]models.User, error) {
-	users, err := s.userRepository.GetAllUsers()
-	if err != nil {
-		return nil, err
-	}
-
-	return users, nil
 }
 
 func (s *userService) Authorize(req *models.LoginRequest) (string, error) {
@@ -59,8 +52,6 @@ func (s *userService) Authorize(req *models.LoginRequest) (string, error) {
 }
 
 func (s *userService) Register(req *models.RegisterRequest) (*mongo.InsertOneResult, error) {
-	// TODO: Validate the user id
-
 	// check for uniqueness
 	existingUser, err := s.userRepository.GetUserByEmail(req.Email)
 	if err != nil {
@@ -92,4 +83,26 @@ func (s *userService) Register(req *models.RegisterRequest) (*mongo.InsertOneRes
 	}
 
 	return newUser, nil
+}
+
+func (s *userService) GetUser(id string) (*models.User, error) {
+	user, err := s.userRepository.GetUserById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (s *userService) GetAllUsers() ([]models.User, error) {
+	users, err := s.userRepository.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (s *userService) DeleteUser(id string) error {
+	return s.userRepository.DeleteUserById(id)
 }

@@ -12,6 +12,7 @@ import (
 var ErrEmptyHeader = errors.New("authorization header is empty")
 var ErrNoBearer = errors.New("authorization header does not contain 'Bearer'")
 var ErrInvalidToken = errors.New("invalid token")
+var ErrInvalidClaims = errors.New("invalid token claims")
 
 var secret []byte
 
@@ -30,15 +31,40 @@ func JwtMiddleware() gin.HandlerFunc {
 		tokenString, err := getToken(header)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			c.Abort()
+			return
 		}
 
 		jwtToken, err := jwt.Parse(tokenString, keyFunc)
-
 		if err != nil || !jwtToken.Valid {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			c.Abort()
 			return
 		}
+
+		claims, ok := jwtToken.Claims.(jwt.MapClaims)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": ErrInvalidClaims.Error()})
+			c.Abort()
+			return
+		}
+
+		userId, ok := claims["user_id"].(string)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": ErrInvalidClaims.Error()})
+			c.Abort()
+			return
+		}
+
+		role, ok := claims["role"].(string)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": ErrInvalidClaims.Error()})
+			c.Abort()
+			return
+		}
+
+		c.Set("user_id", userId)
+		c.Set("role", role)
 
 		c.Next()
 	}
