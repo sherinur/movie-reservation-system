@@ -20,6 +20,9 @@ type UserHandler interface {
 	HandleLogin(c *gin.Context)
 	HandleRegister(c *gin.Context)
 	HandleProfile(c *gin.Context)
+	HandleUpdatePassword(c *gin.Context)
+	HandleUpdateEmail(c *gin.Context)
+	HandleDeleteProfile(c *gin.Context)
 }
 
 type userHandler struct {
@@ -97,8 +100,30 @@ func (h *userHandler) HandleRegister(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
 }
 
-// GET /profile => get user profile data (need JWT)
+// GET /users/me => get user profile data (need JWT)
 func (h *userHandler) HandleProfile(c *gin.Context) {
+	userId, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	userIdStr, ok := userId.(string)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
+	}
+
+	user, err := h.userService.GetUser(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+// GET /users => get users profile data (need JWT with admin role)
+func (h *userHandler) HandleGetUsers(c *gin.Context) {
 	users, err := h.userService.GetAllUsers()
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
@@ -106,4 +131,70 @@ func (h *userHandler) HandleProfile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, users)
+}
+
+// DELETE /users/me => delete user profile (need JWT)
+func (h *userHandler) HandleDeleteProfile(c *gin.Context) {
+	userId, exists := c.Get("userId")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	userIdStr, ok := userId.(string)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
+	}
+
+	err := h.userService.DeleteUser(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+// PUT /users/me/password => update user password (need JWT)
+func (h *userHandler) HandleUpdatePassword(c *gin.Context) {
+	// userId, exists := c.Get("userId")
+	// if !exists {
+	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+	// 	return
+	// }
+
+	// userIdStr, ok := userId.(string)
+	// if !ok {
+	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
+	// }
+
+	// err := h.userService.DeleteUser(userIdStr)
+	// if err != nil {
+	// 	c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
+	// 	return
+	// }
+
+	c.Status(http.StatusNoContent)
+}
+
+// PUT /users/me/email => update user email (need JWT)
+func (h *userHandler) HandleUpdateEmail(c *gin.Context) {
+	// userId, exists := c.Get("userId")
+	// if !exists {
+	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+	// 	return
+	// }
+
+	// userIdStr, ok := userId.(string)
+	// if !ok {
+	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
+	// }
+
+	// err := h.userService.DeleteUser(userIdStr)
+	// if err != nil {
+	// 	c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
+	// 	return
+	// }
+
+	c.Status(http.StatusNoContent)
 }
