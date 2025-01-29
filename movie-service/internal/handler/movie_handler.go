@@ -68,7 +68,11 @@ func (h *movieHandler) HadleGetMovieById(c *gin.Context) {
 
 	data, err := h.movieService.GetMovieById(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		if _, clientError := utils.BadRequestMovieErrors[err]; clientError {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
 		return
 	}
 
@@ -102,7 +106,7 @@ func (h *movieHandler) HandleUpdateMovieById(c *gin.Context) {
 func (h *movieHandler) HandleDeleteMovieByID(c *gin.Context) {
 	id := c.Param("id")
 
-	res, err := h.movieService.DeleteMovieById(id)
+	deleteres, err := h.movieService.DeleteMovieById(id)
 	if err != nil {
 		if _, clientError := utils.BadRequestMovieErrors[err]; clientError {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -112,8 +116,14 @@ func (h *movieHandler) HandleDeleteMovieByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNoContent, gin.H{"deleted_count": res.DeletedCount})
+	c.JSON(http.StatusNoContent, gin.H{"deleted_count": deleteres.DeletedCount})
 }
 
 func (h *movieHandler) HandleDeleteAllMovie(c *gin.Context) {
+	deleteres, err := h.movieService.DeleteAllMovie()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusNoContent, gin.H{"deleted_count": deleteres.DeletedCount})
 }

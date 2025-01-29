@@ -82,11 +82,15 @@ func (s *server) registerRoutes() error {
 	s.router.GET("/movie/:id", s.movieHandler.HadleGetMovieById)
 	s.router.PUT("/movie/update/:id", s.movieHandler.HandleUpdateMovieById)
 	s.router.DELETE("/movie/delete/:id", s.movieHandler.HandleDeleteMovieByID)
+	s.router.DELETE("/movie/delete", s.movieHandler.HandleDeleteAllMovie)
 
 	s.router.POST("/cinema/add", s.cinemaHandler.HandleAddCinema)
-	s.router.GET("/cinema/get", s.cinemaHandler.HandleGetAllCinema)
+	s.router.POST("/cinema/hall/:id", s.cinemaHandler.HandleAddHall)
+	s.router.GET("/cinemalist", s.cinemaHandler.HandleGetAllCinema)
+	s.router.GET("/cinema/:id", s.movieHandler.HadleGetMovieById)
 	s.router.PUT("/cinema/update/:id", s.cinemaHandler.HandleUpdateCinema)
 	s.router.DELETE("/cinema/delete/:id", s.cinemaHandler.HandleDeleteCinema)
+	s.router.DELETE("/cinema/delete", s.cinemaHandler.HandleDeleteAllCinema)
 
 	// other routes
 	s.router.GET("/health", handler.GetHealth)

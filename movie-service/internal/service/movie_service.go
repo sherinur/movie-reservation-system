@@ -15,6 +15,7 @@ type MovieService interface {
 	GetMovieById(id string) ([]byte, error)
 	UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error)
 	DeleteMovieById(id string) (*mongo.DeleteResult, error)
+	DeleteAllMovie() (*mongo.DeleteResult, error)
 }
 
 type movieService struct {
@@ -53,6 +54,10 @@ func (s *movieService) GetAllMovie() ([]byte, error) {
 }
 
 func (s *movieService) GetMovieById(id string) ([]byte, error) {
+	if id == "" {
+		return nil, utils.ErrInvalidId
+	}
+
 	data, err := s.movieRepository.GetMovieById(id)
 	if err != nil {
 		return nil, err
@@ -80,10 +85,19 @@ func (s *movieService) DeleteMovieById(id string) (*mongo.DeleteResult, error) {
 		return nil, utils.ErrInvalidId
 	}
 
-	res, err := s.movieRepository.DeleteMovieById(id)
+	deleteres, err := s.movieRepository.DeleteMovieById(id)
 	if err != nil {
 		return nil, err
 	}
 
-	return res, nil
+	return deleteres, nil
+}
+
+func (s *movieService) DeleteAllMovie() (*mongo.DeleteResult, error) {
+	deleteres, err := s.movieRepository.DeleteAllMovie()
+	if err != nil {
+		return nil, err
+	}
+
+	return deleteres, nil
 }

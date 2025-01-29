@@ -18,6 +18,7 @@ type MovieRepository interface {
 	GetMovieById(id string) ([]byte, error)
 	UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error)
 	DeleteMovieById(id string) (*mongo.DeleteResult, error)
+	DeleteAllMovie() (*mongo.DeleteResult, error)
 }
 
 type movieRepository struct {
@@ -123,7 +124,18 @@ func (r *movieRepository) DeleteMovieById(id string) (*mongo.DeleteResult, error
 		return nil, err
 	}
 
-	res, err := col.DeleteOne(context.TODO(), bson.D{{Key: "_id", Value: objectID}})
+	deleteres, err := col.DeleteOne(context.TODO(), bson.D{{Key: "_id", Value: objectID}})
+	if err != nil {
+		return nil, err
+	}
+
+	return deleteres, nil
+}
+
+func (r *movieRepository) DeleteAllMovie() (*mongo.DeleteResult, error) {
+	col := r.db.Collection("movie")
+
+	res, err := col.DeleteMany(context.TODO(), bson.M{})
 	if err != nil {
 		return nil, err
 	}
