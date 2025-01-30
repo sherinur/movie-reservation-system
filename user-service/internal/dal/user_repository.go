@@ -6,15 +6,17 @@ import (
 	"user-service/internal/models"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type UserRepository interface {
+	CreateUser(user *models.User) (*mongo.InsertOneResult, error)
 	GetAllUsers() ([]models.User, error)
 	GetUserById(id string) (*models.User, error)
 	GetUserByEmail(email string) (*models.User, error)
-	CreateUser(user *models.User) (*mongo.InsertOneResult, error)
 	IsEmailExists(email string) (bool, error)
+	DeleteUserById(id string) error
 }
 
 type userRepository struct {
@@ -69,10 +71,14 @@ func (r *userRepository) CreateUser(user *models.User) (*mongo.InsertOneResult, 
 }
 
 func (r *userRepository) GetUserById(id string) (*models.User, error) {
-	filter := bson.D{{Key: "id", Value: id}}
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	filter := bson.D{{Key: "_id", Value: objID}}
 
 	var user models.User
-	err := r.db.Collection("users").FindOne(context.TODO(), filter).Decode(&user)
+	err = r.db.Collection("users").FindOne(context.TODO(), filter).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
@@ -111,4 +117,15 @@ func (r *userRepository) IsEmailExists(email string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (r *userRepository) DeleteUserById(id string) error {
+	filter := bson.D{{Key: "email", Value: id}}
+
+	_, err := r.db.Collection("users").DeleteOne(context.Background(), filter)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

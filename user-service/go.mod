@@ -1,6 +1,6 @@
 module user-service
 
-go 1.22.2
+go 1.23.5
 
 require go.mongodb.org/mongo-driver v1.17.2
 
@@ -9,6 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-00010101000000-000000000000
 	github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-00010101000000-000000000000
+	github.com/sherinur/movie-reservation-system/pkg/middleware v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -55,3 +56,5 @@ require (
 replace github.com/sherinur/movie-reservation-system/pkg/logging => ../pkg/logging
 
 replace github.com/sherinur/movie-reservation-system/pkg/db => ../pkg/db
+
+replace github.com/sherinur/movie-reservation-system/pkg/middleware => ../pkg/middleware

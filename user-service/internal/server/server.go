@@ -11,6 +11,7 @@ import (
 
 	"github.com/sherinur/movie-reservation-system/pkg/db"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
+	"github.com/sherinur/movie-reservation-system/pkg/middleware"
 )
 
 var log = logging.GetLogger()
@@ -29,8 +30,23 @@ type server struct {
 }
 
 func NewServer(cfg *Config) Server {
+	r := gin.Default()
+
+	corsConfig := &middleware.CorsConfig{
+		AllowedOrigins: []string{"http://localhost:4200"},
+		AllowedMethods: []string{"GET", "POST", "UPDATE", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Content-Type", "Authorization"},
+	}
+
+	// cors middleware
+	middleware.SetCorsConfig(corsConfig)
+	r.Use(middleware.CorsMiddleware())
+
+	// jwt middleware
+	middleware.SetSecret([]byte(cfg.JwtSecretKey))
+
 	return &server{
-		router: gin.Default(),
+		router: r,
 		cfg:    cfg,
 	}
 }
@@ -41,19 +57,18 @@ func (s *server) registerRoutes() error {
 		return err
 	}
 
-	// user routes
 	userRepository := dal.NewUserRepository(db)
 	userService := service.NewUserService(userRepository, s.cfg.JwtSecretKey)
 	s.userHandler = handler.NewUserHandler(userService)
 
 	s.router.GET("/health", handler.GetHealth)
 
-	s.router.POST("/login", s.userHandler.HandleLogin)
 	s.router.POST("/register", s.userHandler.HandleRegister)
-	s.router.GET("/profile", s.userHandler.HandleProfile)
-
-	// // other routes
-	// s.mux.HandleFunc("/health", handler.GetHealth)
+	s.router.POST("/login", s.userHandler.HandleLogin)
+	s.router.GET("/users/me", middleware.JwtMiddleware(), s.userHandler.HandleProfile)
+	s.router.PUT("/users/me/password", middleware.JwtMiddleware(), s.userHandler.HandleUpdatePassword)
+	s.router.PUT("/users/me/email", middleware.JwtMiddleware(), s.userHandler.HandleUpdatePassword)
+	s.router.DELETE("/users/me", middleware.JwtMiddleware(), s.userHandler.HandleDeleteProfile)
 
 	return nil
 }
