@@ -94,3 +94,36 @@ time="2025-01-29T18:50:24+05:00" level=info msg="User with email valakas@gmail.c
 time="2025-01-29T18:53:21+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
 time="2025-01-29T18:53:21+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
 time="2025-01-29T18:53:21+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:00:45+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T18:00:45+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:00:45+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:13:09+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T18:13:09+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:13:09+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:14:51+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T18:14:51+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:14:51+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:14:55+05:00" level=info msg="Registered an user with email ernarbukembay@gmail.com from IP ::1" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-01-30T18:16:12+05:00" level=info msg="User with email ernarbukembay@gmail.com logged in from ::1" func="user-service/internal/handler.(*userHandler).HandleLogin" file=user_handler.go
+time="2025-01-30T18:17:23+05:00" level=info msg="User with email ernarbukembay@gmail.com logged in from ::1" func="user-service/internal/handler.(*userHandler).HandleLogin" file=user_handler.go
+time="2025-01-30T18:25:22+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T18:25:22+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:25:22+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:28:07+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T18:28:07+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:28:07+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:29:50+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T18:29:50+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:29:50+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:30:56+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T18:30:56+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:30:56+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:32:32+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T18:32:32+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:32:32+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:35:31+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T18:35:31+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:35:31+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:36:57+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T18:36:57+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T18:36:57+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go

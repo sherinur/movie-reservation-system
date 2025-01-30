@@ -34,7 +34,7 @@ func NewServer(cfg *Config) Server {
 
 	corsConfig := &middleware.CorsConfig{
 		AllowedOrigins: []string{"http://localhost:4200"},
-		AllowedMethods: []string{"GET", "POST", "UPDATE", "DELETE", "OPTIONS"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type", "Authorization"},
 	}
 
@@ -63,8 +63,8 @@ func (s *server) registerRoutes() error {
 
 	s.router.GET("/health", handler.GetHealth)
 
-	s.router.POST("/register", s.userHandler.HandleRegister)
-	s.router.POST("/login", s.userHandler.HandleLogin)
+	s.router.POST("/users/register", s.userHandler.HandleRegister)
+	s.router.POST("/users/login", s.userHandler.HandleLogin)
 	s.router.GET("/users/me", middleware.JwtMiddleware(), s.userHandler.HandleProfile)
 	s.router.PUT("/users/me/password", middleware.JwtMiddleware(), s.userHandler.HandleUpdatePassword)
 	s.router.PUT("/users/me/email", middleware.JwtMiddleware(), s.userHandler.HandleUpdatePassword)

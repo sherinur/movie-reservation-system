@@ -46,7 +46,7 @@ func (h *userHandler) HandleLogin(c *gin.Context) {
 		return
 	}
 
-	jwtToken, err := h.userService.Authorize(&logReq)
+	jwtToken, err := h.userService.Authorize(c.Request.Context(), &logReq)
 	if err != nil {
 		log.Infof("Failed authentication attempt to the profile with email %s from IP %s, error: %s", logReq.Email, c.ClientIP(), err.Error())
 		switch err {
@@ -76,7 +76,7 @@ func (h *userHandler) HandleRegister(c *gin.Context) {
 		return
 	}
 
-	_, err := h.userService.Register(&regReq)
+	_, err := h.userService.Register(c.Request.Context(), &regReq)
 	if err != nil {
 		log.Infof("Failed registration attempt from IP %s, error: %s", c.ClientIP(), err.Error())
 		switch err {
@@ -113,7 +113,7 @@ func (h *userHandler) HandleProfile(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
 	}
 
-	user, err := h.userService.GetUser(userIdStr)
+	user, err := h.userService.GetUser(c.Request.Context(), userIdStr)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
 		return
@@ -124,7 +124,7 @@ func (h *userHandler) HandleProfile(c *gin.Context) {
 
 // GET /users => get users profile data (need JWT with admin role)
 func (h *userHandler) HandleGetUsers(c *gin.Context) {
-	users, err := h.userService.GetAllUsers()
+	users, err := h.userService.GetAllUsers(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
 		return
@@ -135,7 +135,7 @@ func (h *userHandler) HandleGetUsers(c *gin.Context) {
 
 // DELETE /users/me => delete user profile (need JWT)
 func (h *userHandler) HandleDeleteProfile(c *gin.Context) {
-	userId, exists := c.Get("userId")
+	userId, exists := c.Get("user_id")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
@@ -146,7 +146,7 @@ func (h *userHandler) HandleDeleteProfile(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
 	}
 
-	err := h.userService.DeleteUser(userIdStr)
+	err := h.userService.DeleteUser(c.Request.Context(), userIdStr)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
 		return
@@ -157,29 +157,42 @@ func (h *userHandler) HandleDeleteProfile(c *gin.Context) {
 
 // PUT /users/me/password => update user password (need JWT)
 func (h *userHandler) HandleUpdatePassword(c *gin.Context) {
-	// userId, exists := c.Get("userId")
-	// if !exists {
-	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-	// 	return
-	// }
+	userId, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
 
-	// userIdStr, ok := userId.(string)
-	// if !ok {
-	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
-	// }
+	var req models.UpdatePasswordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Invalid request body"})
+		return
+	}
 
-	// err := h.userService.DeleteUser(userIdStr)
-	// if err != nil {
-	// 	c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
-	// 	return
-	// }
+	userIdStr, ok := userId.(string)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
+		return
+	}
 
-	c.Status(http.StatusNoContent)
+	err := h.userService.UpdatePasswordById(c.Request.Context(), userIdStr, req.Password)
+	if err != nil {
+		switch err {
+		case service.ErrInvalidPassword:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Invalid password"})
+			return
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal server error"})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Password updated successfully"})
 }
 
 // PUT /users/me/email => update user email (need JWT)
 func (h *userHandler) HandleUpdateEmail(c *gin.Context) {
-	// userId, exists := c.Get("userId")
+	// userId, exists := c.Get("user_id")
 	// if !exists {
 	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 	// 	return

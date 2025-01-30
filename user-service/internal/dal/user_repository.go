@@ -11,12 +11,13 @@ import (
 )
 
 type UserRepository interface {
-	CreateUser(user *models.User) (*mongo.InsertOneResult, error)
-	GetAllUsers() ([]models.User, error)
-	GetUserById(id string) (*models.User, error)
-	GetUserByEmail(email string) (*models.User, error)
-	IsEmailExists(email string) (bool, error)
-	DeleteUserById(id string) error
+	CreateUser(ctx context.Context, user *models.User) (*mongo.InsertOneResult, error)
+	GetAllUsers(ctx context.Context) ([]models.User, error)
+	GetUserById(ctx context.Context, id string) (*models.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
+	IsEmailExists(ctx context.Context, email string) (bool, error)
+	UpdatePasswordById(ctx context.Context, id string, password string) error
+	DeleteUserById(ctx context.Context, id string) error
 }
 
 type userRepository struct {
@@ -29,7 +30,7 @@ func NewUserRepository(db *mongo.Database) UserRepository {
 	}
 }
 
-func (r *userRepository) GetAllUsers() ([]models.User, error) {
+func (r *userRepository) GetAllUsers(ctx context.Context) ([]models.User, error) {
 	// getting a cursor of users from mongo
 	cur, err := r.db.Collection("users").Find(context.Background(), bson.D{})
 	if err != nil {
@@ -59,7 +60,7 @@ func (r *userRepository) GetAllUsers() ([]models.User, error) {
 	return users, nil
 }
 
-func (r *userRepository) CreateUser(user *models.User) (*mongo.InsertOneResult, error) {
+func (r *userRepository) CreateUser(ctx context.Context, user *models.User) (*mongo.InsertOneResult, error) {
 	coll := r.db.Collection("users")
 
 	result, err := coll.InsertOne(context.Background(), user)
@@ -70,7 +71,7 @@ func (r *userRepository) CreateUser(user *models.User) (*mongo.InsertOneResult, 
 	return result, nil
 }
 
-func (r *userRepository) GetUserById(id string) (*models.User, error) {
+func (r *userRepository) GetUserById(ctx context.Context, id string) (*models.User, error) {
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -89,7 +90,7 @@ func (r *userRepository) GetUserById(id string) (*models.User, error) {
 	return &user, nil
 }
 
-func (r *userRepository) GetUserByEmail(email string) (*models.User, error) {
+func (r *userRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	filter := bson.D{{Key: "email", Value: email}}
 
 	var user models.User
@@ -104,7 +105,7 @@ func (r *userRepository) GetUserByEmail(email string) (*models.User, error) {
 	return &user, nil
 }
 
-func (r *userRepository) IsEmailExists(email string) (bool, error) {
+func (r *userRepository) IsEmailExists(ctx context.Context, email string) (bool, error) {
 	filter := bson.D{{Key: "email", Value: email}}
 
 	var result bson.M
@@ -119,10 +120,28 @@ func (r *userRepository) IsEmailExists(email string) (bool, error) {
 	return true, nil
 }
 
-func (r *userRepository) DeleteUserById(id string) error {
+func (r *userRepository) DeleteUserById(ctx context.Context, id string) error {
 	filter := bson.D{{Key: "email", Value: id}}
 
 	_, err := r.db.Collection("users").DeleteOne(context.Background(), filter)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *userRepository) UpdatePasswordById(ctx context.Context, id string, password string) error {
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	filter := bson.D{{Key: "_id", Value: objID}}
+	set := bson.D{{Key: "password", Value: password}}
+
+	update := bson.D{{Key: "$set", Value: set}}
+	_, err = r.db.Collection("users").UpdateOne(ctx, filter, update)
 	if err != nil {
 		return err
 	}
