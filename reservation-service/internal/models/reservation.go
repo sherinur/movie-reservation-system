@@ -4,6 +4,7 @@ import "time"
 
 type Reservation struct {
 	ScreeningID string    `bson:"screening_id"`
+	UserID      string    `bson:"user_id"`
 	Email       string    `bson:"email"`
 	PhoneNumber string    `bson:"phone_number"`
 	Status      string    `bson:"status"`

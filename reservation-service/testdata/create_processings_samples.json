@@ -1,0 +1,230 @@
+[
+    {
+        "screening_id": "679bg09j53ae5cc94c021c5d",
+        "user_id": "679b90f897ae5cc94c021c5d",
+        "tickets": [
+            {
+                "seat_row": "A",
+                "seat_column": "3",
+                "price": 1500.00,
+                "seat_type": "common",
+                "user_type": "adult"
+            },
+            {
+                "seat_row": "A",
+                "seat_column": "4",
+                "price": 1500.00,
+                "seat_type": "common",
+                "user_type": "adult"
+            }
+        ]
+    },
+    {
+        "screening_id": "679bg09j53ae5cc94c021c5d",
+        "user_id": "679b90f897hh5cc94c021c5d",
+        "tickets": [
+            {
+                "seat_row": "A",
+                "seat_column": "4",
+                "price": 1300.00,
+                "seat_type": "common",
+                "user_type": "kids"
+            },
+            {
+                "seat_row": "A",
+                "seat_column": "5",
+                "price": 1300.00,
+                "seat_type": "common",
+                "user_type": "kids"
+            },
+            {
+                "seat_row": "A",
+                "seat_column": "6",
+                "price": 1300.00,
+                "seat_type": "common",
+                "user_type": "kids"
+            }
+        ]
+    },
+    {
+        "screening_id": "679bg09j53ae5cc94c021c5d",
+        "user_id": "679b90f897ae5cc94c021c5d",
+        "tickets": [
+            {
+                "seat_row": "E",
+                "seat_column": "1",
+                "price": 1800.00,
+                "seat_type": "love",
+                "user_type": "adult"
+            },
+            {
+                "seat_row": "E",
+                "seat_column": "2",
+                "price": 1800.00,
+                "seat_type": "love",
+                "user_type": "adult"
+            }
+        ]
+    },
+    {
+        "screening_id": "679bg09j53ae5cc94c021c5d",
+        "user_id": "679b90f897ae5cc94c021c5d",
+        "tickets": [
+            {
+                "seat_row": "H",
+                "seat_column": "3",
+                "price": 5000.00,
+                "seat_type": "vip",
+                "user_type": "kids"
+            }
+        ]
+    },
+    {
+        "screening_id": "679bg09j53ae5cc94c021c5d",
+        "user_id": "679b90f897ae5cc94c021c5d",
+        "tickets": [
+            {
+                "seat_row": "B",
+                "seat_column": "9",
+                "price": 1450.00,
+                "seat_type": "common",
+                "user_type": "senior"
+            },
+            {
+                "seat_row": "B",
+                "seat_column": "10",
+                "price": 1450.00,
+                "seat_type": "common",
+                "user_type": "senior"
+            }
+        ]
+    },
+    {
+        "screening_id": "679bg09j53ae5cc94c021c5d",
+        "user_id": "679b90f897ae5cc94c021c5d",
+        "tickets": [
+            {
+                "seat_row": "D",
+                "seat_column": "6",
+                "price": 1600.00,
+                "seat_type": "common",
+                "user_type": "student"
+            },
+            {
+                "seat_row": "D",
+                "seat_column": "7",
+                "price": 1600.00,
+                "seat_type": "common",
+                "user_type": "student"
+            },
+            {
+                "seat_row": "D",
+                "seat_column": "8",
+                "price": 1600.00,
+                "seat_type": "common",
+                "user_type": "student"
+            },
+            {
+                "seat_row": "D",
+                "seat_column": "9",
+                "price": 1600.00,
+                "seat_type": "common",
+                "user_type": "student"
+            }
+        ]
+    },
+    {
+        "screening_id": "679bg09j53ae5cc94c021c5d",
+        "user_id": "679b90f897ae5cc94c021c5d",
+        "tickets": [
+            {
+                "seat_row": "A",
+                "seat_column": "3",
+                "price": 1500.00,
+                "seat_type": "common",
+                "user_type": "adult"
+            },
+            {
+                "seat_row": "A",
+                "seat_column": "4",
+                "price": 1500.00,
+                "seat_type": "common",
+                "user_type": "adult"
+            },
+            {
+                "seat_row": "A",
+                "seat_column": "5",
+                "price": 1500.00,
+                "seat_type": "common",
+                "user_type": "adult"
+            },
+            {
+                "seat_row": "A",
+                "seat_column": "6",
+                "price": 1500.00,
+                "seat_type": "common",
+                "user_type": "adult"
+            },
+            {
+                "seat_row": "A",
+                "seat_column": "7",
+                "price": 1500.00,
+                "seat_type": "common",
+                "user_type": "adult"
+            }
+        ]
+    },
+    {
+        "screening_id": "679bg09j53ae5cc94c021c5d",
+        "user_id": "679b90f897ae5cc94c021c5d",
+        "tickets": [
+            {
+                "seat_row": "H",
+                "seat_column": "2",
+                "price": 5000.00,
+                "seat_type": "vip",
+                "user_type": "kids"
+            },
+            {
+                "seat_row": "H",
+                "seat_column": "3",
+                "price": 5000.00,
+                "seat_type": "vip",
+                "user_type": "kids"
+            }
+        ]
+    },
+    {
+        "screening_id": "679bg09j53ae5cc94c021c5d",
+        "user_id": "679b90f897ae5cc94c021c5d",
+        "tickets": [
+            {
+                "seat_row": "J",
+                "seat_column": "7",
+                "price": 1800.00,
+                "seat_type": "love",
+                "user_type": "adult"
+            },
+            {
+                "seat_row": "J",
+                "seat_column": "6",
+                "price": 1800.00,
+                "seat_type": "love",
+                "user_type": "adult"
+            }
+        ]
+    },
+    {
+        "screening_id": "679bg09j53ae5cc94c021c5d",
+        "user_id": "679b90f897ae5cc94c021c5d",
+        "tickets": [
+            {
+                "seat_row": "F",
+                "seat_column": "4",
+                "price": 2000.00,
+                "seat_type": "common",
+                "user_type": "adult"
+            }
+        ]
+    }
+]

@@ -31,17 +31,18 @@ func (s *reservationService) AddReservation(booking models.Booking) (*mongo.Inse
 	if len(booking.Tickets) == 0 {
 		return nil, ErrEmptyData
 	}
-	if booking.ScreeningID == "" {
+	if booking.ScreeningID == "" || booking.UserID == "" {
 		return nil, ErrEmptyData
 	}
 	for _, ticket := range booking.Tickets {
-		if ticket.SeatColumn == "" || ticket.SeatRow == "" || ticket.Price <= 0 || ticket.Type == "" {
+		if ticket.SeatColumn == "" || ticket.SeatRow == "" || ticket.Price <= 0 || ticket.SeatType == "" || ticket.UserType == "" {
 			return nil, ErrEmptyData
 		}
 	}
 
 	process := models.Process{
 		ScreeningID: booking.ScreeningID,
+		UserID:      booking.UserID,
 		Status:      "processing",
 		Tickets:     booking.Tickets,
 		ExpiringAt:  time.Now().Add(20 * time.Second),
@@ -74,6 +75,7 @@ func (s *reservationService) PayReservation(id string, paying models.Paying) (*m
 
 	reservation := models.Reservation{
 		ScreeningID: process.ScreeningID,
+		UserID:      process.UserID,
 		Email:       paying.Email,
 		PhoneNumber: paying.Email,
 		Status:      "paid",
