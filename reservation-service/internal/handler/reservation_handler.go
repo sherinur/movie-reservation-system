@@ -5,7 +5,6 @@ import (
 
 	"reservation-service/internal/models"
 	"reservation-service/internal/service"
-	"reservation-service/internal/utilits"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
@@ -35,10 +34,12 @@ func NewReservationHandler(s service.ReservationService) ReservationHandler {
 func (rh *reservationHandler) GetReservations(c *gin.Context) {
 	result, err := rh.reservationService.GetReservations()
 	if err != nil {
+		log.Warnf("Error getting reservations: %s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal Server Error"})
 		return
 	}
 
+	log.Infof("Successfully got %d reservation objects", len(result))
 	c.JSON(http.StatusOK, result)
 }
 
@@ -46,15 +47,18 @@ func (rh *reservationHandler) GetReservations(c *gin.Context) {
 func (rh *reservationHandler) GetReservation(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
+		log.Infof("Error getting reservation: %s", ErrNoId.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": ErrNoId.Error(), "message": "Invalid request"})
 		return
 	}
 
 	result, err := rh.reservationService.GetReservation(id)
 	if err != nil {
+		log.Warnf("Error getting reservation: %s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal Server Error"})
 	}
 
+	log.Info("Successfully returned reservation objects")
 	c.JSON(http.StatusOK, result)
 }
 
@@ -62,16 +66,18 @@ func (rh *reservationHandler) GetReservation(c *gin.Context) {
 func (rh *reservationHandler) AddReservation(c *gin.Context) {
 	var requestBody models.ProcessingRequest
 	if err := c.ShouldBindJSON(&requestBody); err != nil {
-		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request body", ErrEmptyData, c.Writer, c.Request)
+		log.Infof("Error creating processing: %s", ErrEmptyData.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": ErrEmptyData.Error(), "message": "Invalid Request Body"})
 		return
 	}
 	result, err := rh.reservationService.AddReservation(requestBody)
 	if err != nil {
-		log.Info("error adding new process: " + err.Error())
-		utilits.WriteErrorResponse(http.StatusInternalServerError, "reserving error", err, c.Writer, c.Request)
+		log.Warn("Error adding new process: " + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Reserving error"})
 		return
 	}
 
+	log.Info("Successfully created new processing")
 	c.JSON(http.StatusAccepted, result)
 }
 
@@ -79,23 +85,26 @@ func (rh *reservationHandler) AddReservation(c *gin.Context) {
 func (rh *reservationHandler) PayReservation(c *gin.Context) {
 	var requestBody models.ReservationRequest
 	if err := c.ShouldBindJSON(&requestBody); err != nil {
-		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request body", ErrEmptyData, c.Writer, c.Request)
+		log.Warn("Error paying reservation: " + ErrEmptyData.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrEmptyData.Error(), "message": "Invalid Request Body"})
 		return
 	}
 
 	id := c.Param("id")
 	if id == "" {
-		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request", ErrNoId, c.Writer, c.Request)
+		log.Infof("Error getting reservation: %s", ErrNoId.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": ErrNoId.Error(), "message": "Invalid request"})
 		return
 	}
 
 	result, err := rh.reservationService.PayReservation(id, requestBody)
 	if err != nil {
-		log.Info("error paying the reservation: " + err.Error())
-		utilits.WriteErrorResponse(http.StatusInternalServerError, "updating error", err, c.Writer, c.Request)
+		log.Warn("Error paying the reservation: " + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Updating error"})
 		return
 	}
 
+	log.Info("Successfully paid processing and created reservation")
 	c.JSON(http.StatusOK, result)
 }
 
@@ -103,14 +112,17 @@ func (rh *reservationHandler) PayReservation(c *gin.Context) {
 func (rh *reservationHandler) DeleteReservation(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
-		utilits.WriteErrorResponse(http.StatusBadRequest, "invalid request", ErrNoId, c.Writer, c.Request)
+		log.Infof("Error getting reservation: %s", ErrNoId.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": ErrNoId.Error(), "message": "Invalid request"})
 		return
 	}
 	err := rh.reservationService.DeleteReservation(id)
 	if err != nil {
-		utilits.WriteErrorResponse(http.StatusInternalServerError, "deleting error", err, c.Writer, c.Request)
+		log.Warnf("Error getting reservation: %s", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Deleting error"})
 		return
 	}
 
+	log.Info("Successfully deleted reservation")
 	c.Status(http.StatusNoContent)
 }
