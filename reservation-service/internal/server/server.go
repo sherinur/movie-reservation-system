@@ -66,6 +66,8 @@ func (s *server) registerRoutes() error {
 	service := service.NewReservationService(repository)
 	s.handler = handler.NewReservationHandler(service)
 
+	s.router.GET("/booking", s.handler.GetReservations)
+	s.router.GET("/booking/:id", s.handler.GetReservation)
 	s.router.POST("/booking", s.handler.AddReservation)
 	s.router.PUT("/booking/:id", s.handler.PayReservation)
 	s.router.DELETE("/booking/delete/:id", s.handler.DeleteReservation)

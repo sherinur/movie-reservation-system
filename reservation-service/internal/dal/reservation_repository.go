@@ -13,10 +13,11 @@ import (
 )
 
 type ReservationRepository interface {
+	GetAll() ([]models.Reservation, error)
+	GetById(id string) (*models.Reservation, error)
 	Add(process models.Process) (*mongo.InsertOneResult, error)
 	Update(id string, reservation models.Reservation) (*mongo.UpdateResult, error)
 	Delete(id string) error
-	GetById(id string) (*models.Reservation, error)
 }
 
 type reservationRepository struct {
@@ -25,6 +26,44 @@ type reservationRepository struct {
 
 func NewReservationRepository(db *mongo.Database) ReservationRepository {
 	return &reservationRepository{db: db}
+}
+
+func (r *reservationRepository) GetAll() ([]models.Reservation, error) {
+	coll := r.db.Collection("reservations")
+	var reservations []models.Reservation
+
+	result, err := coll.Find(context.TODO(), bson.D{})
+	if err != nil {
+		return nil, err
+	}
+
+	for result.Next(context.TODO()) {
+		var reservation models.Reservation
+		err = result.Decode(&reservation)
+		if err != nil {
+			return nil, err
+		}
+
+		reservations = append(reservations, reservation)
+	}
+
+	return reservations, nil
+}
+
+func (r *reservationRepository) GetById(id string) (*models.Reservation, error) {
+	coll := r.db.Collection("reservations")
+	ObjID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	var reservation models.Reservation
+	err = coll.FindOne(context.TODO(), bson.M{"_id": ObjID}).Decode(&reservation)
+	if err != nil {
+		return nil, err
+	}
+
+	return &reservation, nil
 }
 
 func (r *reservationRepository) Add(process models.Process) (*mongo.InsertOneResult, error) {
@@ -58,6 +97,7 @@ func (r *reservationRepository) Update(id string, reservation models.Reservation
 	resDoc := bson.M{
 		"_id":          objID,
 		"screening_id": reservation.ScreeningID,
+		"user_id":      reservation.UserID,
 		"email":        reservation.Email,
 		"phone_number": reservation.PhoneNumber,
 		"status":       reservation.Status,
@@ -93,20 +133,4 @@ func (r *reservationRepository) Delete(id string) error {
 		return ErrNotFoundById
 	}
 	return nil
-}
-
-func (r *reservationRepository) GetById(id string) (*models.Reservation, error) {
-	coll := r.db.Collection("reservations")
-	ObjID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-
-	var reservation models.Reservation
-	err = coll.FindOne(context.TODO(), bson.M{"_id": ObjID}).Decode(&reservation)
-	if err != nil {
-		return nil, err
-	}
-
-	return &reservation, nil
 }

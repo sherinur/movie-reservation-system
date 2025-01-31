@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// Processing Body (Unpaid reservation)
 type Process struct {
 	ScreeningID string    `bson:"screening_id"`
 	UserID      string    `bson:"user_id"`

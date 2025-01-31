@@ -1,0 +1,27 @@
+{
+    "screening_id": "679bg09j53ae5cc94c021c5d",
+    "user_id": "",
+    "email": "testing1@gmail.com",
+    "phone_number": "testing1@gmail.com",
+    "status": "paid",
+    "tickets": [
+        {
+            "seat_row": "J",
+            "seat_column": "7",
+            "price": 1800,
+            "seat_type": "love",
+            "user_type": "adult"
+        },
+        {
+            "seat_row": "J",
+            "seat_column": "6",
+            "price": 1800,
+            "seat_type": "love",
+            "user_type": "adult"
+        }
+    ],
+    "total_price": 3600,
+    "qr_code": "iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAABlBMVEX///8AAABVwtN+AAACtklEQVR42uyZwY3rMAxER/BBR5WgTuzGjNgLN6Z0ohJ01EHwfAztTbK/ActAdEqEt8BSIGdIBt/zPTc8niSTPoU1kkP29AlOt+VGQAb8074NecmITJiq09eeAFIAyY2Ko076i7Jw6w0ojisUR4uY6gjXIaB8WMrAFlusE9MNAUBpXB5hy0Nu8MmAvxl1NaBUeZYx/JQ5brlFn+p4ZFA/gB1XprIYAD016/9SdzFw6sMOxy3PEdETU52KY+sH0GMDmMjjqeGT4iCtFm8DxAqmoDBbbEDEdNyHs/T6AHyqzmxtjsxDBpj8jkd4RdEFoCqbuAZmxIGk3/0ePp66AwAVdQy79OH3Zjyt+D6Apwwi7HhgxsBBlemq4465IyCbpI14BKULMxOpJie8TO16QKXnn3xSTz1kRXF6xYyOAE/5BXc1OWzR09OeGn0BfDKFNWxWbUwVGMPPyy9uAUBOHNKZ1RI9s8D1t8npAfCs0E15SIrZotqJCjx6Asx51cYuZcZ89LRWeq+s7gIAlA94qPnOzGe3sGMp9wL0/CrGuGIgk1Xm25o7AHzG5KUWiwZKU7k6epblYzDvAKiorugfX5TTUUbs97C/O/PrAQmC38OzLEVdWBPgKgL50S5eD1TYFKuPa1RLc44PvBHgySRrLgjMMxo08dbp7XpdAEfCqMlpGDIipMyjyUU/gNpFJYwrAzcOuZqmhZ+ylH6AbMIqpV2OvRxPj/sYzG8AaDA7Zx4ZnU9MXtB7u3g58LsD4R42ExCmI6g/hnIx8LtMDj9k1ozDpEGsLK8lSQ/AsZcbbXm4HlKsiz8Jcz1gG06T1ozYUCcLbL8j4Ior6iab7W0wfi7uegGCmZp1EKSNwK7MPQGWMJoX5Lw2TiZldUFHgC2TZRBcbS9nvyUhrO8dyA2A7/mers6/AAAA//8YRqY5vS8ofwAAAABJRU5ErkJggg==",
+    "bought_time": "2025-01-31T06:02:46.254Z",
+    "expiring_at": "0001-01-01T00:00:00Z"
+}

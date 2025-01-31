@@ -12,8 +12,10 @@ import (
 )
 
 type ReservationService interface {
-	AddReservation(booking models.Booking) (*mongo.InsertOneResult, error)
-	PayReservation(id string, paying models.Paying) (*mongo.UpdateResult, error)
+	GetReservations() ([]models.Reservation, error)
+	GetReservation(id string) (*models.Reservation, error)
+	AddReservation(booking models.ProcessingRequest) (*mongo.InsertOneResult, error)
+	PayReservation(id string, paying models.ReservationRequest) (*mongo.UpdateResult, error)
 	DeleteReservation(id string) error
 }
 
@@ -26,29 +28,40 @@ func NewReservationService(r dal.ReservationRepository) ReservationService {
 		reservationRepository: r,
 	}
 }
+func (s *reservationService) GetReservations() ([]models.Reservation, error) {
+	return s.reservationRepository.GetAll()
+}
 
-func (s *reservationService) AddReservation(booking models.Booking) (*mongo.InsertOneResult, error) {
-	if len(booking.Tickets) == 0 {
+func (s *reservationService) GetReservation(id string) (*models.Reservation, error) {
+	if id == "" {
+		return nil, ErrNoId
+	}
+
+	return s.reservationRepository.GetById(id)
+}
+
+func (s *reservationService) AddReservation(requestBody models.ProcessingRequest) (*mongo.InsertOneResult, error) {
+	if len(requestBody.Tickets) == 0 {
 		return nil, ErrEmptyData
 	}
-	if booking.ScreeningID == "" || booking.UserID == "" {
+	if requestBody.ScreeningID == "" || requestBody.UserID == "" {
 		return nil, ErrEmptyData
 	}
-	for _, ticket := range booking.Tickets {
+	for _, ticket := range requestBody.Tickets {
 		if ticket.SeatColumn == "" || ticket.SeatRow == "" || ticket.Price <= 0 || ticket.SeatType == "" || ticket.UserType == "" {
 			return nil, ErrEmptyData
 		}
 	}
 
 	process := models.Process{
-		ScreeningID: booking.ScreeningID,
-		UserID:      booking.UserID,
+		ScreeningID: requestBody.ScreeningID,
+		UserID:      requestBody.UserID,
 		Status:      "processing",
-		Tickets:     booking.Tickets,
-		ExpiringAt:  time.Now().Add(20 * time.Second),
+		Tickets:     requestBody.Tickets,
+		ExpiringAt:  time.Now().Add(10 * time.Minute),
 	}
 
-	for _, ticket := range booking.Tickets {
+	for _, ticket := range requestBody.Tickets {
 		process.TotalPrice += ticket.Price
 	}
 
@@ -60,7 +73,7 @@ func (s *reservationService) AddReservation(booking models.Booking) (*mongo.Inse
 	return result, nil
 }
 
-func (s *reservationService) PayReservation(id string, paying models.Paying) (*mongo.UpdateResult, error) {
+func (s *reservationService) PayReservation(id string, requestBody models.ReservationRequest) (*mongo.UpdateResult, error) {
 	if id == "" {
 		return nil, ErrNoId
 	}
@@ -76,8 +89,8 @@ func (s *reservationService) PayReservation(id string, paying models.Paying) (*m
 	reservation := models.Reservation{
 		ScreeningID: process.ScreeningID,
 		UserID:      process.UserID,
-		Email:       paying.Email,
-		PhoneNumber: paying.Email,
+		Email:       requestBody.Email,
+		PhoneNumber: requestBody.PhoneNumber,
 		Status:      "paid",
 		Tickets:     process.Tickets,
 		TotalPrice:  process.TotalPrice,
