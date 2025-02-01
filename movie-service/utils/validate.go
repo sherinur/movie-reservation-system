@@ -6,13 +6,9 @@ import (
 	"movie-service/internal/models"
 )
 
-func ValidateScreening(screening models.Session) error {
+func ValidateSesesion(screening models.Session) error {
 	if strings.TrimSpace(screening.MovieID) == "" {
 		return ErrScreeningMovieID
-	}
-	err := ValidateMovie(screening.Movie)
-	if err != nil {
-		return err
 	}
 	return nil
 }
@@ -37,11 +33,6 @@ func ValidateHall(hall models.Hall) error {
 
 	for _, seat := range hall.Seats {
 		if err := ValidateSeat(seat); err != nil {
-			return err
-		}
-	}
-	for _, screening := range hall.Session {
-		if err := ValidateScreening(screening); err != nil {
 			return err
 		}
 	}
