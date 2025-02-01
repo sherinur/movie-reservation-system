@@ -12,6 +12,7 @@ import (
 
 // TODO: add logger and return statement with status code
 type MovieHandler interface {
+	HandleAddBatchOfMovie(c *gin.Context)
 	HandleAddMovie(c *gin.Context)
 	HandleGetAllMovie(c *gin.Context)
 	HadleGetMovieById(c *gin.Context)
@@ -30,15 +31,15 @@ func NewMovieHandler(s service.MovieService) MovieHandler {
 	}
 }
 
-// POST /movie/add => add new movie
-func (h *movieHandler) HandleAddMovie(c *gin.Context) {
+func (h *movieHandler) HandleAddBatchOfMovie(c *gin.Context) {
 	var movies []models.Movie
-	if err := c.ShouldBindJSON(&movies); err != nil {
+	err := c.ShouldBindJSON(&movies)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	res, err := h.movieService.AddMovie(movies)
+	res, err := h.movieService.AddBatchOfMovie(movies)
 	if err != nil {
 		if _, clientError := utils.BadRequestMovieErrors[err]; clientError {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -49,6 +50,29 @@ func (h *movieHandler) HandleAddMovie(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"inserted_ids": res.InsertedIDs})
+}
+
+func (h *movieHandler) HandleAddMovie(c *gin.Context) {
+	var movie models.Movie
+	err := c.ShouldBindJSON(&movie)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	insertRes, err := h.movieService.AddMovie(movie)
+	if err != nil {
+		_, clientError := utils.BadRequestMovieErrors[err]
+		switch {
+		case clientError:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"inserted_id": insertRes.InsertedID})
 }
 
 // GET /movie/get => get all movies

@@ -13,7 +13,8 @@ import (
 )
 
 type MovieRepository interface {
-	AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
+	AddBatchOfMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
+	AddMovie(movie models.Movie) (*mongo.InsertOneResult, error)
 	GetAllMovie() ([]byte, error)
 	GetMovieById(id string) ([]byte, error)
 	UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error)
@@ -31,7 +32,7 @@ func NewMovieRepository(db *mongo.Database) MovieRepository {
 	}
 }
 
-func (r *movieRepository) AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
+func (r *movieRepository) AddBatchOfMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
 	col := r.db.Collection("movie")
 
 	doc := []interface{}{}
@@ -50,6 +51,17 @@ func (r *movieRepository) AddMovie(movielist []models.Movie) (*mongo.InsertManyR
 	}
 
 	return res, nil
+}
+
+func (r *movieRepository) AddMovie(movie models.Movie) (*mongo.InsertOneResult, error) {
+	col := r.db.Collection("movie")
+
+	insertRes, err := col.InsertOne(context.TODO(), movie)
+	if err != nil {
+		return nil, err
+	}
+
+	return insertRes, nil
 }
 
 func (r *movieRepository) GetAllMovie() ([]byte, error) {

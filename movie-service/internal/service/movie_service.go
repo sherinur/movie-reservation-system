@@ -10,7 +10,8 @@ import (
 
 // TODO: Implement validation for service
 type MovieService interface {
-	AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
+	AddBatchOfMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
+	AddMovie(movie models.Movie) (*mongo.InsertOneResult, error)
 	GetAllMovie() ([]byte, error)
 	GetMovieById(id string) ([]byte, error)
 	UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error)
@@ -28,7 +29,7 @@ func NewMovieService(r dal.MovieRepository) MovieService {
 	}
 }
 
-func (s *movieService) AddMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
+func (s *movieService) AddBatchOfMovie(movielist []models.Movie) (*mongo.InsertManyResult, error) {
 	for _, movie := range movielist {
 		err := utils.ValidateMovie(movie)
 		if err != nil {
@@ -36,12 +37,26 @@ func (s *movieService) AddMovie(movielist []models.Movie) (*mongo.InsertManyResu
 		}
 	}
 
-	res, err := s.movieRepository.AddMovie(movielist)
+	res, err := s.movieRepository.AddBatchOfMovie(movielist)
 	if err != nil {
 		return nil, err
 	}
 
 	return res, nil
+}
+
+func (s *movieService) AddMovie(movie models.Movie) (*mongo.InsertOneResult, error) {
+	err := utils.ValidateMovie(movie)
+	if err != nil {
+		return nil, err
+	}
+
+	insertRes, err := s.movieRepository.AddMovie(movie)
+	if err != nil {
+		return nil, err
+	}
+
+	return insertRes, nil
 }
 
 func (s *movieService) GetAllMovie() ([]byte, error) {

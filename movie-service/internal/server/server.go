@@ -77,7 +77,8 @@ func (s *server) registerRoutes() error {
 	s.cinemaHandler = handler.NewCinemaHandler(cinemaService)
 
 	// Basic crud operation routes for movie and cinema
-	s.router.POST("/movie/add", s.movieHandler.HandleAddMovie)
+	s.router.POST("/movie", s.movieHandler.HandleAddMovie)
+	s.router.POST("/movie/batch", s.movieHandler.HandleAddBatchOfMovie)
 	s.router.GET("/movielist", s.movieHandler.HandleGetAllMovie)
 	s.router.GET("/movie/:id", s.movieHandler.HadleGetMovieById)
 	s.router.PUT("/movie/update/:id", s.movieHandler.HandleUpdateMovieById)
@@ -85,12 +86,15 @@ func (s *server) registerRoutes() error {
 	s.router.DELETE("/movie/delete", s.movieHandler.HandleDeleteAllMovie)
 
 	s.router.POST("/cinema/add", s.cinemaHandler.HandleAddCinema)
-	s.router.POST("/cinema/hall/:id", s.cinemaHandler.HandleAddHall)
 	s.router.GET("/cinemalist", s.cinemaHandler.HandleGetAllCinema)
 	s.router.GET("/cinema/:id", s.movieHandler.HadleGetMovieById)
 	s.router.PUT("/cinema/update/:id", s.cinemaHandler.HandleUpdateCinema)
 	s.router.DELETE("/cinema/delete/:id", s.cinemaHandler.HandleDeleteCinema)
 	s.router.DELETE("/cinema/delete", s.cinemaHandler.HandleDeleteAllCinema)
+
+	s.router.POST("/cinema/hall/:id", s.cinemaHandler.HandleAddHall)
+	s.router.GET("/cinema/:id/hall/:hallNumber", s.cinemaHandler.HandleGetHall)
+	s.router.DELETE("/cinema/:id/hall/:hallNumber", s.cinemaHandler.HandleDeleteHall)
 
 	// other routes
 	s.router.GET("/health", handler.GetHealth)

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"strconv"
+
 	"movie-service/internal/dal"
 	"movie-service/internal/models"
 	"movie-service/utils"
@@ -10,12 +12,15 @@ import (
 
 type CinemaService interface {
 	AddCinema(cinema models.Cinema) (*mongo.InsertOneResult, error)
-	AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error)
 	GetAllCinema() ([]byte, error)
 	GetCinemaById(id string) ([]byte, error)
 	UpdateCinemaById(id string, cinema *models.Cinema) (*mongo.UpdateResult, error)
 	DeleteCinemaById(id string) (*mongo.DeleteResult, error)
 	DeleteAllCinema() (*mongo.DeleteResult, error)
+
+	AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error)
+	GetHall(cinemaID string, hallNumber string) ([]byte, error)
+	DeleteHall(cinemaID string, hallNumber string) (*mongo.UpdateResult, error)
 }
 
 type cinemaService struct {
@@ -40,24 +45,6 @@ func (s *cinemaService) AddCinema(cinema models.Cinema) (*mongo.InsertOneResult,
 	}
 
 	return res, nil
-}
-
-func (s *cinemaService) AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error) {
-	if id == "" {
-		return nil, utils.ErrInvalidId
-	}
-
-	err := utils.ValidateHall(hall)
-	if err != nil {
-		return nil, err
-	}
-
-	updateResult, err := s.cinemaRepository.AddHall(id, hall)
-	if err != nil {
-		return nil, err
-	}
-
-	return updateResult, nil
 }
 
 func (s cinemaService) GetAllCinema() ([]byte, error) {
@@ -120,4 +107,66 @@ func (s *cinemaService) DeleteAllCinema() (*mongo.DeleteResult, error) {
 	}
 
 	return deleteres, err
+}
+
+func (s *cinemaService) AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error) {
+	if id == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	err := utils.ValidateHall(hall)
+	if err != nil {
+		return nil, err
+	}
+
+	updateResult, err := s.cinemaRepository.AddHall(id, hall)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateResult, nil
+}
+
+func (s *cinemaService) GetHall(cinemaID string, hallNumber string) ([]byte, error) {
+	if cinemaID == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	if hallNumber == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	num, err := strconv.Atoi(hallNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := s.cinemaRepository.GetHall(cinemaID, num)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (s *cinemaService) DeleteHall(cinemaID string, hallNumber string) (*mongo.UpdateResult, error) {
+	if cinemaID == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	if hallNumber == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	num, err := strconv.Atoi(hallNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	updateResult, err := s.cinemaRepository.DeleteHall(cinemaID, num)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateResult, nil
 }
