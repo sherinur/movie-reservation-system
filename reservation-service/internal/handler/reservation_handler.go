@@ -35,7 +35,7 @@ func (rh *reservationHandler) GetReservations(c *gin.Context) {
 	userId, exists := c.Get("user_id")
 	if !exists {
 		log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
-		c.JSON(http.StatusForbidden, gin.H{"error": ErrNotAutorized.Error(), "message": "Not Autorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": ErrNotAutorized.Error(), "message": "Not Autorized"})
 	}
 
 	result, err := rh.reservationService.GetReservations(userId.(string))
@@ -76,6 +76,14 @@ func (rh *reservationHandler) AddReservation(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": ErrEmptyData.Error(), "message": "Invalid Request Body"})
 		return
 	}
+
+	userId, exists := c.Get("user_id")
+	if !exists {
+		log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
+		c.JSON(http.StatusUnauthorized, gin.H{"error": ErrNotAutorized.Error(), "message": "Not Autorized"})
+	}
+
+	requestBody.UserID = userId.(string)
 	result, err := rh.reservationService.AddReservation(requestBody)
 	if err != nil {
 		log.Warn("Error adding new process: " + err.Error())

@@ -29,9 +29,21 @@ type server struct {
 }
 
 func NewServer(cfg *config) Server {
+	r := gin.Default()
+	corsConfig := &middleware.CorsConfig{
+		AllowedOrigins: []string{"http://localhost:4200"},
+		AllowedMethods: []string{"GET", "POST", "UPDATE", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Content-Type", "Authorization"},
+	}
+
+	// cors middleware
+	middleware.SetCorsConfig(corsConfig)
+	r.Use(middleware.CorsMiddleware())
+
+	// jwt middleware
 	middleware.SetSecret([]byte(cfg.SecretKey))
 	return &server{
-		router: gin.Default(),
+		router: r,
 		cfg:    cfg,
 	}
 }

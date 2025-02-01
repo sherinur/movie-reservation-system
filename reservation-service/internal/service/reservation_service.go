@@ -44,7 +44,7 @@ func (s *reservationService) AddReservation(requestBody models.ProcessingRequest
 	if len(requestBody.Tickets) == 0 {
 		return nil, ErrEmptyData
 	}
-	if requestBody.ScreeningID == "" || requestBody.UserID == "" {
+	if requestBody.ScreeningID == "" {
 		return nil, ErrEmptyData
 	}
 	for _, ticket := range requestBody.Tickets {

@@ -30,8 +30,8 @@ func NewReservationRepository(db *mongo.Database) ReservationRepository {
 
 func (r *reservationRepository) GetByUserId(userId string) ([]models.Reservation, error) {
 	coll := r.db.Collection("reservations")
-	ObjID, err := primitive.ObjectIDFromHex(userId)
-	filter := bson.D{{Key: "user_id", Value: ObjID}}
+	//ObjID, err := primitive.ObjectIDFromHex(userId)
+	filter := bson.D{{Key: "user_id", Value: userId}}
 	var reservations []models.Reservation
 
 	result, err := coll.Find(context.TODO(), filter)
