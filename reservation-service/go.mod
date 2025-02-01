@@ -1,12 +1,13 @@
 module reservation-service
 
-go 1.23.2
+go 1.23.5
 
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/joho/godotenv v1.5.1
 	github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-20250125170936-009706ca1af8
 	github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-20250127185336-447cff7c59d3
+	github.com/sherinur/movie-reservation-system/pkg/middleware v0.0.0-20250130122455-731d944a2e79
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	go.mongodb.org/mongo-driver v1.17.2
 )
@@ -22,6 +23,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.20.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect

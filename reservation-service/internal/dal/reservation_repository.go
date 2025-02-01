@@ -13,7 +13,7 @@ import (
 )
 
 type ReservationRepository interface {
-	GetAll() ([]models.Reservation, error)
+	GetByUserId(userId string) ([]models.Reservation, error)
 	GetById(id string) (*models.Reservation, error)
 	Add(process models.Process) (*mongo.InsertOneResult, error)
 	Update(id string, reservation models.Reservation) (*mongo.UpdateResult, error)
@@ -28,11 +28,13 @@ func NewReservationRepository(db *mongo.Database) ReservationRepository {
 	return &reservationRepository{db: db}
 }
 
-func (r *reservationRepository) GetAll() ([]models.Reservation, error) {
+func (r *reservationRepository) GetByUserId(userId string) ([]models.Reservation, error) {
 	coll := r.db.Collection("reservations")
+	ObjID, err := primitive.ObjectIDFromHex(userId)
+	filter := bson.D{{Key: "user_id", Value: ObjID}}
 	var reservations []models.Reservation
 
-	result, err := coll.Find(context.TODO(), bson.D{})
+	result, err := coll.Find(context.TODO(), filter)
 	if err != nil {
 		return nil, err
 	}

@@ -12,7 +12,7 @@ import (
 )
 
 type ReservationService interface {
-	GetReservations() ([]models.Reservation, error)
+	GetReservations(userId string) ([]models.Reservation, error)
 	GetReservation(id string) (*models.Reservation, error)
 	AddReservation(booking models.ProcessingRequest) (*mongo.InsertOneResult, error)
 	PayReservation(id string, paying models.ReservationRequest) (*mongo.UpdateResult, error)
@@ -28,8 +28,8 @@ func NewReservationService(r dal.ReservationRepository) ReservationService {
 		reservationRepository: r,
 	}
 }
-func (s *reservationService) GetReservations() ([]models.Reservation, error) {
-	return s.reservationRepository.GetAll()
+func (s *reservationService) GetReservations(userId string) ([]models.Reservation, error) {
+	return s.reservationRepository.GetByUserId(userId)
 }
 
 func (s *reservationService) GetReservation(id string) (*models.Reservation, error) {
@@ -82,7 +82,7 @@ func (s *reservationService) PayReservation(id string, requestBody models.Reserv
 	if err != nil {
 		return nil, err
 	}
-	if process.Status != "processing" {
+	if process.Status == "paid" {
 		return nil, ErrPaidReservation
 	}
 

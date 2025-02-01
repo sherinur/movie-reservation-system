@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sherinur/movie-reservation-system/pkg/db"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
+	"github.com/sherinur/movie-reservation-system/pkg/middleware"
 )
 
 var log = logging.GetLogger()
@@ -28,6 +29,7 @@ type server struct {
 }
 
 func NewServer(cfg *config) Server {
+	middleware.SetSecret([]byte(cfg.SecretKey))
 	return &server{
 		router: gin.Default(),
 		cfg:    cfg,
@@ -66,11 +68,15 @@ func (s *server) registerRoutes() error {
 	service := service.NewReservationService(repository)
 	s.handler = handler.NewReservationHandler(service)
 
-	s.router.GET("/booking", s.handler.GetReservations)
-	s.router.GET("/booking/:id", s.handler.GetReservation)
-	s.router.POST("/booking", s.handler.AddReservation)
-	s.router.PUT("/booking/:id", s.handler.PayReservation)
-	s.router.DELETE("/booking/delete/:id", s.handler.DeleteReservation)
+	autorized := s.router.Group("/booking")
+	autorized.Use(middleware.JwtMiddleware())
+	{
+		autorized.GET("/", s.handler.GetReservations)
+		autorized.GET("/:id", s.handler.GetReservation)
+		autorized.POST("/", s.handler.AddReservation)
+		autorized.PUT("/:id", s.handler.PayReservation)
+		autorized.DELETE("/delete/:id", s.handler.DeleteReservation)
+	}
 
 	return nil
 }

@@ -32,7 +32,13 @@ func NewReservationHandler(s service.ReservationService) ReservationHandler {
 
 // GetReservations to handle getting all existing reservations
 func (rh *reservationHandler) GetReservations(c *gin.Context) {
-	result, err := rh.reservationService.GetReservations()
+	userId, exists := c.Get("user_id")
+	if !exists {
+		log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
+		c.JSON(http.StatusForbidden, gin.H{"error": ErrNotAutorized.Error(), "message": "Not Autorized"})
+	}
+
+	result, err := rh.reservationService.GetReservations(userId.(string))
 	if err != nil {
 		log.Warnf("Error getting reservations: %s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal Server Error"})
