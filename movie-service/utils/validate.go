@@ -2,16 +2,10 @@ package utils
 
 import (
 	"strings"
+	"time"
 
 	"movie-service/internal/models"
 )
-
-func ValidateSesesion(screening models.Session) error {
-	if strings.TrimSpace(screening.MovieID) == "" {
-		return ErrScreeningMovieID
-	}
-	return nil
-}
 
 func ValidateSeat(seat models.Seat) error {
 	if strings.TrimSpace(seat.Row) == "" || strings.TrimSpace(seat.Column) == "" || strings.TrimSpace(seat.Status) == "" {
@@ -61,41 +55,52 @@ func ValidateCinema(cinema models.Cinema) error {
 }
 
 func ValidateMovie(movie models.Movie) error {
-	if strings.TrimSpace(movie.Title) == "" {
+	switch {
+	case strings.TrimSpace(movie.Title) == "":
 		return ErrMovieTitleEmpty
-	}
-	if strings.TrimSpace(movie.Genre) == "" {
+	case strings.TrimSpace(movie.Genre) == "":
 		return ErrMovieGenreEmpty
-	}
-	if strings.TrimSpace(movie.Description) == "" {
+	case strings.TrimSpace(movie.Description) == "":
 		return ErrMovieDescriptionEmpty
-	}
-	if strings.TrimSpace(movie.PosterImage) == "" {
+	case strings.TrimSpace(movie.PosterImage) == "":
 		return ErrMoviePosterEmpty
-	}
-	if movie.Duration <= 0 {
+	case movie.Duration <= 0:
 		return ErrMovieDurationInvalid
-	}
-	if strings.TrimSpace(movie.Language) == "" {
+	case strings.TrimSpace(movie.Language) == "":
 		return ErrMovieLanguageEmpty
-	}
-	if strings.TrimSpace(movie.ReleaseDate) == "" {
+	case strings.TrimSpace(movie.ReleaseDate) == "":
 		return ErrMovieReleaseDateEmpty
-	}
-	if strings.TrimSpace(movie.Rating) == "" {
+	case strings.TrimSpace(movie.Rating) == "":
 		return ErrMovieRatingEmpty
-	}
-	if strings.TrimSpace(movie.PGrating) == "" {
+	case strings.TrimSpace(movie.PGrating) == "":
 		return ErrMoviePGEmpty
-	}
-	if strings.TrimSpace(movie.Production) == "" {
+	case strings.TrimSpace(movie.Production) == "":
 		return ErrMovieProductionEmpty
-	}
-	if strings.TrimSpace(movie.Producer) == "" {
+	case strings.TrimSpace(movie.Producer) == "":
 		return ErrMovieProducerEmpty
-	}
-	if strings.TrimSpace(movie.Status) == "" {
+	case strings.TrimSpace(movie.Status) == "":
 		return ErrMovieStatusEmpty
+	}
+
+	return nil
+}
+
+func ValidateSesesion(session models.Session) error {
+	switch {
+	case strings.TrimSpace(session.MovieID) == "":
+		return ErrSessionMovieIDEmpty
+	case strings.TrimSpace(session.CinemaID) == "":
+		return ErrSessionCinemaIDEmpty
+	case session.HallNumber < 0:
+		return ErrSessionInvalidHallNumber
+	case session.StartTime.Before(time.Now()):
+		return ErrSessionStartTimeInvalid
+	case session.EndTime.Before(time.Now()):
+		return ErrSessionEndTimeInvalid
+	case session.EndTime.Before(session.StartTime):
+		return ErrSessionEndTimeInvalid
+	case session.AvailableSeats < 0:
+		return ErrSessionInvalidAvailableSeats
 	}
 
 	return nil

@@ -15,6 +15,7 @@ var (
 	ErrHallNoSeats          = errors.New("hall must have seats")
 	ErrCinemaNameAddress    = errors.New("cinema name or address cannot be empty")
 	ErrCinemaNoHalls        = errors.New("cinema must have at least one hall")
+	ErrHallAlreadyExist     = errors.New("hall already exists")
 
 	// Movie errors
 	ErrMovieTitleEmpty       = errors.New("movie title cannot be empty")
@@ -30,6 +31,14 @@ var (
 	ErrMovieStatusEmpty      = errors.New("movie status cannot be empty")
 	ErrMovieDurationInvalid  = errors.New("movie duration must be greater than zero")
 
+	// Session errors
+	ErrSessionMovieIDEmpty          = errors.New("session movie ID cannot be empty")
+	ErrSessionCinemaIDEmpty         = errors.New("session cinema ID cannot be empty")
+	ErrSessionInvalidHallNumber     = errors.New("session hall number cannot be zero or negative")
+	ErrSessionStartTimeInvalid      = errors.New("session start time cannot be in the past")
+	ErrSessionEndTimeInvalid        = errors.New("session end time cannot be before start time and in the past")
+	ErrSessionInvalidAvailableSeats = errors.New("session available seats cannot be negative")
+
 	BadRequestCinemaErrors = map[error]struct{}{
 		ErrInvalidId:            {},
 		ErrValidRating:          {},
@@ -41,6 +50,7 @@ var (
 		ErrHallNoSeats:          {},
 		ErrCinemaNameAddress:    {},
 		ErrCinemaNoHalls:        {},
+		ErrHallAlreadyExist:     {},
 	}
 
 	BadRequestMovieErrors = map[error]struct{}{
@@ -58,5 +68,14 @@ var (
 		ErrMovieProducerEmpty:    {},
 		ErrMovieStatusEmpty:      {},
 		ErrMovieDurationInvalid:  {},
+	}
+
+	BadRequestSessionErrors = map[error]struct{}{
+		ErrSessionMovieIDEmpty:          {},
+		ErrSessionCinemaIDEmpty:         {},
+		ErrSessionInvalidHallNumber:     {},
+		ErrSessionStartTimeInvalid:      {},
+		ErrSessionEndTimeInvalid:        {},
+		ErrSessionInvalidAvailableSeats: {},
 	}
 )

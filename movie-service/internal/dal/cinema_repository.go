@@ -23,6 +23,7 @@ type CinemaRepository interface {
 
 	AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error)
 	GetHall(cinemaID string, hallNumber int) ([]byte, error)
+	GetAllHall(cinemaID string) (models.Hall_list, error)
 	DeleteHall(cinemaID string, hallNumber int) (*mongo.UpdateResult, error)
 }
 
@@ -143,10 +144,10 @@ func (r *cinemaRepository) DeleteAllCinema() (*mongo.DeleteResult, error) {
 	return deleteres, nil
 }
 
-func (r *cinemaRepository) AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error) {
+func (r *cinemaRepository) AddHall(cinemaID string, hall models.Hall) (*mongo.UpdateResult, error) {
 	col := r.db.Collection("cinema")
 
-	objectID, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(cinemaID)
 	if err != nil {
 		return nil, err
 	}
@@ -188,6 +189,26 @@ func (r *cinemaRepository) GetHall(cinemaID string, hallNumber int) ([]byte, err
 	}
 
 	return data, nil
+}
+
+func (r *cinemaRepository) GetAllHall(cinemaID string) (models.Hall_list, error) {
+	var halls models.Hall_list = models.Hall_list{}
+	col := r.db.Collection("cinema")
+
+	objectID, err := primitive.ObjectIDFromHex(cinemaID)
+	if err != nil {
+		return halls, err
+	}
+
+	filter := bson.M{"_id": objectID}
+	projection := bson.M{"hall_list": 1, "_id": 0}
+
+	err = col.FindOne(context.TODO(), filter, options.FindOne().SetProjection(projection)).Decode(&halls)
+	if err != nil {
+		return halls, err
+	}
+
+	return halls, nil
 }
 
 func (r *cinemaRepository) DeleteHall(cinemaID string, hallNumber int) (*mongo.UpdateResult, error) {

@@ -16,10 +16,11 @@ type CinemaHandler interface {
 	HandleUpdateCinema(c *gin.Context)
 	HandleDeleteCinema(c *gin.Context)
 	HandleDeleteAllCinema(c *gin.Context)
-	//TODO: test this handlers
-	//TODO: Wirte comments  for more understanding func or method
+	// TODO: test this handlers
+	// TODO: Wirte comments  for more understanding func or method
 	HandleAddHall(c *gin.Context)
 	HandleGetHall(c *gin.Context)
+	HandleGetAllHall(c *gin.Context)
 	HandleDeleteHall(c *gin.Context)
 }
 
@@ -142,7 +143,7 @@ func (h *cinemaHandler) HandleDeleteAllCinema(c *gin.Context) {
 // If the cinemaService returns an error, it checks if it's a client error and returns a 400 Bad Request error, otherwise, it returns a 500 Internal Server Error.
 // On success, it returns a 200 OK status with the update result.
 func (h *cinemaHandler) HandleAddHall(c *gin.Context) {
-	id := c.Param("id")
+	cinemaID := c.Param("id")
 
 	var hall models.Hall
 	err := c.ShouldBindJSON(&hall)
@@ -151,9 +152,9 @@ func (h *cinemaHandler) HandleAddHall(c *gin.Context) {
 		return
 	}
 
-	updateResult, err := h.cinemaService.AddHall(id, hall)
+	updateResult, err := h.cinemaService.AddHall(cinemaID, hall)
 	if err != nil {
-		_, clientError := utils.BadRequestMovieErrors[err]
+		_, clientError := utils.BadRequestCinemaErrors[err]
 		switch {
 		case clientError:
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -188,6 +189,25 @@ func (h *cinemaHandler) HandleGetHall(c *gin.Context) {
 	}
 
 	c.Data(http.StatusOK, "application/json", data)
+}
+
+func (h *cinemaHandler) HandleGetAllHall(c *gin.Context) {
+	cinemaID := c.Param("id")
+
+	halls, err := h.cinemaService.GetAllHall(cinemaID)
+	if err != nil {
+		_, clientError := utils.BadRequestCinemaErrors[err]
+		switch {
+		case clientError:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
+
+	// c.Data(http.StatusOK, "application/json", halls)
+	c.JSON(http.StatusOK, halls)
 }
 
 // HandleDeleteHall handles the deletion of a specific hall from a cinema.

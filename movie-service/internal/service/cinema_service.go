@@ -20,6 +20,7 @@ type CinemaService interface {
 
 	AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error)
 	GetHall(cinemaID string, hallNumber string) ([]byte, error)
+	GetAllHall(cinemaID string) (models.Hall_list, error)
 	DeleteHall(cinemaID string, hallNumber string) (*mongo.UpdateResult, error)
 }
 
@@ -109,8 +110,8 @@ func (s *cinemaService) DeleteAllCinema() (*mongo.DeleteResult, error) {
 	return deleteres, err
 }
 
-func (s *cinemaService) AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error) {
-	if id == "" {
+func (s *cinemaService) AddHall(cinemaID string, hall models.Hall) (*mongo.UpdateResult, error) {
+	if cinemaID == "" {
 		return nil, utils.ErrInvalidId
 	}
 
@@ -119,7 +120,12 @@ func (s *cinemaService) AddHall(id string, hall models.Hall) (*mongo.UpdateResul
 		return nil, err
 	}
 
-	updateResult, err := s.cinemaRepository.AddHall(id, hall)
+	_, err = s.cinemaRepository.GetHall(cinemaID, hall.Number)
+	if err == nil {
+		return nil, utils.ErrHallAlreadyExist
+	}
+
+	updateResult, err := s.cinemaRepository.AddHall(cinemaID, hall)
 	if err != nil {
 		return nil, err
 	}
@@ -147,6 +153,20 @@ func (s *cinemaService) GetHall(cinemaID string, hallNumber string) ([]byte, err
 	}
 
 	return data, nil
+}
+
+func (s *cinemaService) GetAllHall(cinemaID string) (models.Hall_list, error) {
+	var halls models.Hall_list = models.Hall_list{}
+	if cinemaID == "" {
+		return halls, utils.ErrInvalidId
+	}
+
+	halls, err := s.cinemaRepository.GetAllHall(cinemaID)
+	if err != nil {
+		return halls, err
+	}
+
+	return halls, nil
 }
 
 func (s *cinemaService) DeleteHall(cinemaID string, hallNumber string) (*mongo.UpdateResult, error) {

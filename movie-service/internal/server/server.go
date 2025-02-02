@@ -92,7 +92,8 @@ func (s *server) registerRoutes() error {
 	s.router.DELETE("/cinema/delete/:id", s.cinemaHandler.HandleDeleteCinema)
 	s.router.DELETE("/cinema/delete", s.cinemaHandler.HandleDeleteAllCinema)
 
-	s.router.POST("/cinema/hall/:id", s.cinemaHandler.HandleAddHall)
+	s.router.POST("/cinema/:id/hall", s.cinemaHandler.HandleAddHall)
+	s.router.GET("/cinema/:id/hall_list", s.cinemaHandler.HandleGetAllHall)
 	s.router.GET("/cinema/:id/hall/:hallNumber", s.cinemaHandler.HandleGetHall)
 	s.router.DELETE("/cinema/:id/hall/:hallNumber", s.cinemaHandler.HandleDeleteHall)
 
