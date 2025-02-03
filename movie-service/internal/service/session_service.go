@@ -1,6 +1,7 @@
 package service
 
 import (
+	"movie-service/internal/dal"
 	"movie-service/internal/models"
 	"movie-service/utils"
 
@@ -9,15 +10,16 @@ import (
 
 type SessionService interface {
 	AddSession(session models.Session) (*mongo.InsertOneResult, error)
+	DeleteAllSession() (*mongo.DeleteResult, error)
 }
 
 type sessionService struct {
-	db *mongo.Database
+	sessionRepository dal.SessionRepository
 }
 
-func NewSessionService(db *mongo.Database) SessionService {
+func NewSessionService(r dal.SessionRepository) SessionService {
 	return &sessionService{
-		db: db,
+		sessionRepository: r,
 	}
 }
 
@@ -32,4 +34,13 @@ func (s *sessionService) AddSession(session models.Session) (*mongo.InsertOneRes
 		return nil, err
 	}
 	return insertResult, nil
+}
+
+func (s *sessionService) DeleteAllSession() (*mongo.DeleteResult, error) {
+	deleteResult, err := s.sessionRepository.DeleteAllSession()
+	if err != nil {
+		return nil, err
+	}
+
+	return deleteResult, nil
 }

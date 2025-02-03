@@ -9,7 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type SessionHandler interface{}
+type SessionHandler interface {
+	HandleAddSession(c *gin.Context)
+	HandleDeleteAllSession(c *gin.Context)
+}
 
 type sessionHandler struct {
 	sessionHandler service.SessionService
@@ -42,4 +45,13 @@ func (h *sessionHandler) HandleAddSession(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"inserted_id": insertRes.InsertedID})
+}
+
+func (h *sessionHandler) HandleDeleteAllSession(c *gin.Context) {
+	deleteResult, err := h.sessionHandler.DeleteAllSession()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusNoContent, gin.H{"deleted_count": deleteResult.DeletedCount})
 }

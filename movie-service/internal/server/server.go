@@ -58,9 +58,6 @@ func (s *server) Shutdown() {
 	os.Exit(1)
 }
 
-// opentelemetry/otel
-// load balancer ++ nginx
-
 func (s *server) registerRoutes() error {
 	db, err := db.ConnectMongo(s.cfg.DbUri, s.cfg.DbName)
 	if err != nil {
