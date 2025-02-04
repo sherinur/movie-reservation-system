@@ -27,28 +27,28 @@ type UserHandler interface {
 
 type userHandler struct {
 	userService service.UserService
+	log         *logging.Logger
 }
 
-func NewUserHandler(s service.UserService) UserHandler {
+func NewUserHandler(s service.UserService, logger *logging.Logger) UserHandler {
 	return &userHandler{
 		userService: s,
+		log:         logger,
 	}
 }
-
-var log = logging.GetLogger()
 
 // POST /login => auth and give JWT
 func (h *userHandler) HandleLogin(c *gin.Context) {
 	var logReq models.LoginRequest
 
 	if err := c.ShouldBindJSON(&logReq); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Invalid request body"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid body", "message": "Invalid request body"})
 		return
 	}
 
 	jwtToken, err := h.userService.Authorize(c.Request.Context(), &logReq)
 	if err != nil {
-		log.Infof("Failed authentication attempt to the profile with email %s from IP %s, error: %s", logReq.Email, c.ClientIP(), err.Error())
+		h.log.Infof("Failed authentication attempt to the profile with email %s from IP %s, error: %s", logReq.Email, c.ClientIP(), err.Error())
 		switch err {
 		case service.ErrWrongPassword:
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "message": "Invalid password"})
@@ -57,13 +57,13 @@ func (h *userHandler) HandleLogin(c *gin.Context) {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "message": "User not found"})
 			return
 		default:
-			log.Errorf("User authentication error: %s", err.Error())
+			h.log.Errorf("User authentication error: %s", err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal server error"})
 			return
 		}
 	}
 
-	log.Infof("User with email %s logged in from %s", logReq.Email, c.ClientIP())
+	h.log.Infof("User with email %s logged in from %s", logReq.Email, c.ClientIP())
 	c.JSON(http.StatusOK, gin.H{"token": jwtToken})
 }
 
@@ -78,7 +78,7 @@ func (h *userHandler) HandleRegister(c *gin.Context) {
 
 	_, err := h.userService.Register(c.Request.Context(), &regReq)
 	if err != nil {
-		log.Infof("Failed registration attempt from IP %s, error: %s", c.ClientIP(), err.Error())
+		h.log.Infof("Failed registration attempt from IP %s, error: %s", c.ClientIP(), err.Error())
 		switch err {
 		case service.ErrInvalidPassword:
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Invalid password"})
@@ -90,13 +90,13 @@ func (h *userHandler) HandleRegister(c *gin.Context) {
 			c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "User already exists"})
 			return
 		default:
-			log.Errorf("User registration error: %s", err.Error())
+			h.log.Errorf("User registration error: %s", err.Error())
 			c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
 			return
 		}
 	}
 
-	log.Infof("Registered an user with email %s from IP %s", regReq.Email, c.ClientIP())
+	h.log.Infof("Registered an user with email %s from IP %s", regReq.Email, c.ClientIP())
 	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
 }
 

@@ -32,16 +32,16 @@ func NewUserRepository(db *mongo.Database) UserRepository {
 
 func (r *userRepository) GetAllUsers(ctx context.Context) ([]models.User, error) {
 	// getting a cursor of users from mongo
-	cur, err := r.db.Collection("users").Find(context.Background(), bson.D{})
+	cur, err := r.db.Collection("users").Find(ctx, bson.D{})
 	if err != nil {
 		return nil, err
 	}
-	defer cur.Close(context.Background())
+	defer cur.Close(ctx)
 
 	var users []models.User
 
 	// cursor iteration
-	for cur.Next(context.Background()) {
+	for cur.Next(ctx) {
 		user := models.User{}
 
 		err := cur.Decode(&user)
@@ -63,7 +63,7 @@ func (r *userRepository) GetAllUsers(ctx context.Context) ([]models.User, error)
 func (r *userRepository) CreateUser(ctx context.Context, user *models.User) (*mongo.InsertOneResult, error) {
 	coll := r.db.Collection("users")
 
-	result, err := coll.InsertOne(context.Background(), user)
+	result, err := coll.InsertOne(ctx, user)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (r *userRepository) GetUserById(ctx context.Context, id string) (*models.Us
 	filter := bson.D{{Key: "_id", Value: objID}}
 
 	var user models.User
-	err = r.db.Collection("users").FindOne(context.TODO(), filter).Decode(&user)
+	err = r.db.Collection("users").FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
@@ -94,7 +94,7 @@ func (r *userRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 	filter := bson.D{{Key: "email", Value: email}}
 
 	var user models.User
-	err := r.db.Collection("users").FindOne(context.TODO(), filter).Decode(&user)
+	err := r.db.Collection("users").FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
@@ -109,7 +109,7 @@ func (r *userRepository) IsEmailExists(ctx context.Context, email string) (bool,
 	filter := bson.D{{Key: "email", Value: email}}
 
 	var result bson.M
-	err := r.db.Collection("users").FindOne(context.Background(), filter).Decode(&result)
+	err := r.db.Collection("users").FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return false, nil
@@ -123,7 +123,7 @@ func (r *userRepository) IsEmailExists(ctx context.Context, email string) (bool,
 func (r *userRepository) DeleteUserById(ctx context.Context, id string) error {
 	filter := bson.D{{Key: "email", Value: id}}
 
-	_, err := r.db.Collection("users").DeleteOne(context.Background(), filter)
+	_, err := r.db.Collection("users").DeleteOne(ctx, filter)
 	if err != nil {
 		return err
 	}
