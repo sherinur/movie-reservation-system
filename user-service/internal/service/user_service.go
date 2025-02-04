@@ -55,6 +55,11 @@ func (s *userService) Authorize(ctx context.Context, req *models.LoginRequest) (
 }
 
 func (s *userService) Register(ctx context.Context, req *models.RegisterRequest) (*mongo.InsertOneResult, error) {
+	// email validation
+	if !utils.ValidateEmail(req.Email) {
+		return nil, ErrInvalidEmail
+	}
+
 	// check for uniqueness
 	existingUser, err := s.userRepository.GetUserByEmail(ctx, req.Email)
 	if err != nil {

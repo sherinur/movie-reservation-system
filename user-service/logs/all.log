@@ -35,3 +35,39 @@ time="2025-02-04T19:22:47+05:00" level=info msg="User with email nurislam@gmail.
 time="2025-02-04T19:23:33+05:00" level=info msg="User with email nurislam@gmail.com logged in from ::1" func="user-service/internal/handler.(*userHandler).HandleLogin" file=user_handler.go
 time="2025-02-04T19:50:33+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
 time="2025-02-04T19:50:33+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-04T20:38:06+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-04T20:38:06+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-04T20:38:06+05:00" level=info msg="Failed authentication attempt to the profile with email john@example.com from IP ::1, error: user not found" func="user-service/internal/handler.(*userHandler).HandleLogin" file=user_handler.go
+time="2025-02-04T20:38:09+05:00" level=info msg="Failed authentication attempt to the profile with email john@example.com from IP ::1, error: user not found" func="user-service/internal/handler.(*userHandler).HandleLogin" file=user_handler.go
+time="2025-02-04T23:31:16+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-04T23:31:16+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-04T23:31:40+05:00" level=info msg="Registered an user with email john@example.com from IP ::1" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-04T23:34:57+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-04T23:34:57+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-04T23:34:59+05:00" level=info msg="Failed registration attempt from IP ::1, error: the user is already exists" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-04T23:35:02+05:00" level=info msg="Failed registration attempt from IP ::1, error: the user is already exists" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-04T23:35:03+05:00" level=info msg="Failed registration attempt from IP ::1, error: the user is already exists" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-04T23:35:03+05:00" level=info msg="Failed registration attempt from IP ::1, error: the user is already exists" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-04T23:35:04+05:00" level=info msg="Failed registration attempt from IP ::1, error: the user is already exists" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-04T23:35:05+05:00" level=info msg="Failed registration attempt from IP ::1, error: the user is already exists" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-05T00:06:48+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-05T00:06:48+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-05T00:06:50+05:00" level=info msg="Failed registration attempt from IP ::1, error: password is not valid" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-05T00:08:03+05:00" level=info msg="Failed registration attempt from IP ::1, error: the user is already exists" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-05T00:08:09+05:00" level=info msg="Failed registration attempt from IP ::1, error: the user is already exists" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-05T00:08:12+05:00" level=info msg="Registered an user with email john@exampl.com from IP ::1" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-05T00:11:07+05:00" level=info msg="Failed registration attempt from IP ::1, error: password is not valid" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-05T00:21:18+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-05T00:21:18+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-05T00:21:20+05:00" level=info msg="Failed registration attempt from IP ::1, error: password is not valid" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-05T00:24:20+05:00" level=info msg="Failed registration attempt from IP ::1, error: password is not valid" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-05T00:58:12+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-05T00:58:12+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-05T00:58:13+05:00" level=info msg="Failed registration attempt from IP ::1, error: password is not valid" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-05T00:58:18+05:00" level=info msg="Registered an user with email sm from IP ::1" func="user-service/internal/handler.(*userHandler).HandleRegister" file=user_handler.go
+time="2025-02-05T01:17:44+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-05T01:17:44+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-05T01:18:24+05:00" level=info msg="Failed authentication attempt to the profile with email  from IP ::1, error: user not found" func="user-service/internal/handler.(*userHandler).HandleLogin" file=user_handler.go
+time="2025-02-05T01:21:15+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-05T01:21:15+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-05T01:21:16+05:00" level=info msg="Failed authentication attempt to the profile with email  from IP ::1, error: user not found" func="user-service/internal/handler.(*userHandler).HandleLogin" file=user_handler.go

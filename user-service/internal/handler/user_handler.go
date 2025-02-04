@@ -80,6 +80,9 @@ func (h *userHandler) HandleRegister(c *gin.Context) {
 	if err != nil {
 		h.log.Infof("Failed registration attempt from IP %s, error: %s", c.ClientIP(), err.Error())
 		switch err {
+		case service.ErrInvalidEmail:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Invalid email"})
+			return
 		case service.ErrInvalidPassword:
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Invalid password"})
 			return
