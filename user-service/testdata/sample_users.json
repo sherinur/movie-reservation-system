@@ -1,0 +1,177 @@
+[
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0001",
+        "username": "john_doe",
+        "email": "john@example.com",
+        "password": "J0hn@Secure!",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0002",
+        "username": "alice_smith",
+        "email": "alice@example.com",
+        "password": "Alic3@Strong1",
+        "role": "admin"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0003",
+        "username": "charlie_brown",
+        "email": "charlie@example.com",
+        "password": "Ch@rli3Best9",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0004",
+        "username": "david_wilson",
+        "email": "david@example.com",
+        "password": "D@vid9876&",
+        "role": "moderator"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0005",
+        "username": "emily_jones",
+        "email": "emily@example.com",
+        "password": "Emily@Secure99",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0006",
+        "username": "frank_adams",
+        "email": "frank@example.com",
+        "password": "Fr@nk777Best!",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0007",
+        "username": "grace_hall",
+        "email": "grace@example.com",
+        "password": "Gr@ce#Pass8",
+        "role": "admin"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0008",
+        "username": "henry_king",
+        "email": "henry@example.com",
+        "password": "H3nry!Passw1",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0009",
+        "username": "isabella_lee",
+        "email": "isabella@example.com",
+        "password": "Isa!B3ll@88",
+        "role": "moderator"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0010",
+        "username": "jackson_white",
+        "email": "jackson@example.com",
+        "password": "J@cks0nRocks99",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0011",
+        "username": "kevin_harris",
+        "email": "kevin@example.com",
+        "password": "K3v!nSecure*7",
+        "role": "admin"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0012",
+        "username": "lily_thomas",
+        "email": "lily@example.com",
+        "password": "L!lyBestPass",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0013",
+        "username": "michael_taylor",
+        "email": "michael@example.com",
+        "password": "Mich@el#321",
+        "role": "moderator"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0014",
+        "username": "nancy_clark",
+        "email": "nancy@example.com",
+        "password": "N@ncY*Pass99",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0015",
+        "username": "oliver_scott",
+        "email": "oliver@example.com",
+        "password": "O!liv3rSecure!",
+        "role": "admin"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0016",
+        "username": "paul_evans",
+        "email": "paul@example.com",
+        "password": "P@ulPassw0rd",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0017",
+        "username": "quinn_martin",
+        "email": "quinn@example.com",
+        "password": "Qu!nn@Best123",
+        "role": "moderator"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0018",
+        "username": "rachel_walker",
+        "email": "rachel@example.com",
+        "password": "R@chel#L0ve",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0019",
+        "username": "samuel_edwards",
+        "email": "samuel@example.com",
+        "password": "S@mmyBest99!",
+        "role": "admin"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0020",
+        "username": "tina_hughes",
+        "email": "tina@example.com",
+        "password": "T!na@Secure45",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0021",
+        "username": "victor_bennett",
+        "email": "victor@example.com",
+        "password": "V!ctor99*Pass",
+        "role": "moderator"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0022",
+        "username": "wendy_carter",
+        "email": "wendy@example.com",
+        "password": "W3ndySecure@!",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0023",
+        "username": "xavier_cooper",
+        "email": "xavier@example.com",
+        "password": "X@vier!Pass12",
+        "role": "admin"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0024",
+        "username": "yasmine_wood",
+        "email": "yasmine@example.com",
+        "password": "Y@smine88!Wow",
+        "role": "user"
+    },
+    {
+        "_id": "65bb5f2e58b8f66c1c8b0025",
+        "username": "zachary_baker",
+        "email": "zachary@example.com",
+        "password": "Z@charyPass77",
+        "role": "moderator"
+    }
+]

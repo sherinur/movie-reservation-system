@@ -11,12 +11,13 @@ import (
 )
 
 type UserRepository interface {
-	CreateUser(user *models.User) (*mongo.InsertOneResult, error)
-	GetAllUsers() ([]models.User, error)
-	GetUserById(id string) (*models.User, error)
-	GetUserByEmail(email string) (*models.User, error)
-	IsEmailExists(email string) (bool, error)
-	DeleteUserById(id string) error
+	CreateUser(ctx context.Context, user *models.User) (*mongo.InsertOneResult, error)
+	GetAllUsers(ctx context.Context) ([]models.User, error)
+	GetUserById(ctx context.Context, id string) (*models.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
+	IsEmailExists(ctx context.Context, email string) (bool, error)
+	UpdatePasswordById(ctx context.Context, id string, password string) error
+	DeleteUserById(ctx context.Context, id string) error
 }
 
 type userRepository struct {
@@ -29,18 +30,18 @@ func NewUserRepository(db *mongo.Database) UserRepository {
 	}
 }
 
-func (r *userRepository) GetAllUsers() ([]models.User, error) {
+func (r *userRepository) GetAllUsers(ctx context.Context) ([]models.User, error) {
 	// getting a cursor of users from mongo
-	cur, err := r.db.Collection("users").Find(context.Background(), bson.D{})
+	cur, err := r.db.Collection("users").Find(ctx, bson.D{})
 	if err != nil {
 		return nil, err
 	}
-	defer cur.Close(context.Background())
+	defer cur.Close(ctx)
 
 	var users []models.User
 
 	// cursor iteration
-	for cur.Next(context.Background()) {
+	for cur.Next(ctx) {
 		user := models.User{}
 
 		err := cur.Decode(&user)
@@ -59,10 +60,10 @@ func (r *userRepository) GetAllUsers() ([]models.User, error) {
 	return users, nil
 }
 
-func (r *userRepository) CreateUser(user *models.User) (*mongo.InsertOneResult, error) {
+func (r *userRepository) CreateUser(ctx context.Context, user *models.User) (*mongo.InsertOneResult, error) {
 	coll := r.db.Collection("users")
 
-	result, err := coll.InsertOne(context.Background(), user)
+	result, err := coll.InsertOne(ctx, user)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +71,7 @@ func (r *userRepository) CreateUser(user *models.User) (*mongo.InsertOneResult, 
 	return result, nil
 }
 
-func (r *userRepository) GetUserById(id string) (*models.User, error) {
+func (r *userRepository) GetUserById(ctx context.Context, id string) (*models.User, error) {
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -78,7 +79,7 @@ func (r *userRepository) GetUserById(id string) (*models.User, error) {
 	filter := bson.D{{Key: "_id", Value: objID}}
 
 	var user models.User
-	err = r.db.Collection("users").FindOne(context.TODO(), filter).Decode(&user)
+	err = r.db.Collection("users").FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
@@ -89,11 +90,11 @@ func (r *userRepository) GetUserById(id string) (*models.User, error) {
 	return &user, nil
 }
 
-func (r *userRepository) GetUserByEmail(email string) (*models.User, error) {
+func (r *userRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	filter := bson.D{{Key: "email", Value: email}}
 
 	var user models.User
-	err := r.db.Collection("users").FindOne(context.TODO(), filter).Decode(&user)
+	err := r.db.Collection("users").FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
@@ -104,11 +105,11 @@ func (r *userRepository) GetUserByEmail(email string) (*models.User, error) {
 	return &user, nil
 }
 
-func (r *userRepository) IsEmailExists(email string) (bool, error) {
+func (r *userRepository) IsEmailExists(ctx context.Context, email string) (bool, error) {
 	filter := bson.D{{Key: "email", Value: email}}
 
 	var result bson.M
-	err := r.db.Collection("users").FindOne(context.Background(), filter).Decode(&result)
+	err := r.db.Collection("users").FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return false, nil
@@ -119,10 +120,28 @@ func (r *userRepository) IsEmailExists(email string) (bool, error) {
 	return true, nil
 }
 
-func (r *userRepository) DeleteUserById(id string) error {
+func (r *userRepository) DeleteUserById(ctx context.Context, id string) error {
 	filter := bson.D{{Key: "email", Value: id}}
 
-	_, err := r.db.Collection("users").DeleteOne(context.Background(), filter)
+	_, err := r.db.Collection("users").DeleteOne(ctx, filter)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *userRepository) UpdatePasswordById(ctx context.Context, id string, password string) error {
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	filter := bson.D{{Key: "_id", Value: objID}}
+	set := bson.D{{Key: "password", Value: password}}
+
+	update := bson.D{{Key: "$set", Value: set}}
+	_, err = r.db.Collection("users").UpdateOne(ctx, filter, update)
 	if err != nil {
 		return err
 	}

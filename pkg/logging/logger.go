@@ -9,22 +9,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var log *logrus.Logger
-
-func GetLogger() *logrus.Logger {
-	if log == nil {
-		Init()
-	}
-
-	return log
+type Logger struct {
+	*logrus.Logger
 }
 
-func Init() {
-	if log != nil {
-		return
-	}
-
-	log = logrus.New()
+func NewLogger(env string) *Logger {
+	log := logrus.New()
 	log.SetReportCaller(true)
 
 	// logging format configuration
@@ -38,6 +28,10 @@ func Init() {
 	// print to stdout
 	log.SetOutput(os.Stdout)
 
+	if env == "test" {
+		return &Logger{log}
+	}
+
 	logFile, err := os.OpenFile("logs/all.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o666)
 	if err != nil {
 		log.Fatalf("Cannot open the logs file: %s", err.Error())
@@ -45,5 +39,7 @@ func Init() {
 
 	log.SetOutput(io.MultiWriter(os.Stdout, logFile))
 
-	log.Info("Successfully initialized the logrus logger")
+	return &Logger{
+		log,
+	}
 }

@@ -1,0 +1,7 @@
+{
+    "_id": "65bb5f2e58b8f66c1c8b4567",
+    "username": "john_doe",
+    "email": "john@example.com",
+    "password": "$2a$10$EIXK7N0hTphCkPqG//LwOe3tWmY",
+    "role": "user"
+}

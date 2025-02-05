@@ -1,6 +1,7 @@
-package server
+package configs
 
 import (
+	"log"
 	"os"
 	"sync"
 
@@ -18,15 +19,17 @@ type Config struct {
 	DbName       string
 	JwtSecretKey string
 	ExpHours     string
+	GoEnv        string
 }
 
 func GetConfig() *Config {
 	once.Do(func() {
 		config, err := ParseEnvConfig()
 		if err != nil {
-			log.Errorf("Error of parsing environment variables: %s", err.Error())
-			log.Warn("Failed to load config. Using default values.")
-			instance = GetDefaultConfig()
+			log.Fatalf("Error of parsing environment variables: %s", err.Error())
+
+			// log.Warn("Failed to load config. Using default values.")
+			// instance = GetDefaultConfig()
 		} else {
 			instance = config
 		}
@@ -42,6 +45,7 @@ func GetDefaultConfig() *Config {
 		DbName:       "userDB",
 		JwtSecretKey: "a5d52d1471164c78450ee0f6095cfN2f2c712e45525010b0e46e936cc61e6d205",
 		ExpHours:     "1440",
+		GoEnv:        "dev",
 	}
 }
 
@@ -57,9 +61,10 @@ func ParseEnvConfig() (*Config, error) {
 		mongoDbName  = os.Getenv("DB_NAME")
 		jwtSecretKey = os.Getenv("JWT_SECRET_KEY")
 		expHours     = os.Getenv("EXP_HOURS")
+		goEnv        = os.Getenv("GO_ENV")
 	)
 
-	if port == "" || mongoUri == "" || mongoDbName == "" || jwtSecretKey == "" {
+	if port == "" || mongoUri == "" || mongoDbName == "" || jwtSecretKey == "" || goEnv == "" {
 		return nil, ErrInvalidEnv
 	}
 
@@ -69,5 +74,6 @@ func ParseEnvConfig() (*Config, error) {
 		DbName:       mongoDbName,
 		JwtSecretKey: jwtSecretKey,
 		ExpHours:     expHours,
+		GoEnv:        goEnv,
 	}, nil
 }

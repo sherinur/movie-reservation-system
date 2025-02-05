@@ -18,4 +18,4 @@ deploy:
 	@echo "Deploying the project..."
 	make build
 	docker compose -f ./docker-compose.yml  up --build -d
-	make -C web/ run
+	# make -C web/ run
