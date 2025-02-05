@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-// Paid Reservation Body
+// Reservation Body
 type Reservation struct {
 	ScreeningID string    `bson:"screening_id"`
 	UserID      string    `bson:"user_id"`

@@ -30,7 +30,7 @@ func NewReservationHandler(s service.ReservationService) ReservationHandler {
 	}
 }
 
-// GetReservations to handle getting all existing reservations
+// GET /booking --> returns all reservation of a user
 func (rh *reservationHandler) GetReservations(c *gin.Context) {
 	userId, exists := c.Get("user_id")
 	if !exists {
@@ -38,18 +38,22 @@ func (rh *reservationHandler) GetReservations(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": ErrNotAutorized.Error(), "message": "Not Autorized"})
 	}
 
-	result, err := rh.reservationService.GetReservations(userId.(string))
+	result, err := rh.reservationService.GetReservations(c.Request.Context(), userId.(string))
 	if err != nil {
 		log.Warnf("Error getting reservations: %s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal Server Error"})
 		return
 	}
 
-	log.Infof("Successfully got %d reservation objects", len(result))
-	c.JSON(http.StatusOK, result)
+	if result == nil {
+		c.JSON(http.StatusOK, gin.H{})
+	} else {
+		log.Infof("Successfully got %d reservation objects", len(result))
+		c.JSON(http.StatusOK, result)
+	}
 }
 
-// GerReservation to handle getting reservation by id
+// GET /booking/id --> returns specific reservation
 func (rh *reservationHandler) GetReservation(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -58,7 +62,7 @@ func (rh *reservationHandler) GetReservation(c *gin.Context) {
 		return
 	}
 
-	result, err := rh.reservationService.GetReservation(id)
+	result, err := rh.reservationService.GetReservation(c.Request.Context(), id)
 	if err != nil {
 		log.Warnf("Error getting reservation: %s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal Server Error"})
@@ -84,7 +88,7 @@ func (rh *reservationHandler) AddReservation(c *gin.Context) {
 	}
 
 	requestBody.UserID = userId.(string)
-	result, err := rh.reservationService.AddReservation(requestBody)
+	result, err := rh.reservationService.AddReservation(c.Request.Context(), requestBody)
 	if err != nil {
 		log.Warn("Error adding new process: " + err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Reserving error"})
@@ -111,7 +115,14 @@ func (rh *reservationHandler) PayReservation(c *gin.Context) {
 		return
 	}
 
-	result, err := rh.reservationService.PayReservation(id, requestBody)
+	userId, exists := c.Get("user_id")
+	if !exists {
+		log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
+		c.JSON(http.StatusUnauthorized, gin.H{"error": ErrNotAutorized.Error(), "message": "Not Autorized"})
+	}
+
+	requestBody.UserID = userId.(string)
+	result, err := rh.reservationService.PayReservation(c.Request.Context(), id, requestBody)
 	if err != nil {
 		log.Warn("Error paying the reservation: " + err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Updating error"})
@@ -130,7 +141,14 @@ func (rh *reservationHandler) DeleteReservation(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": ErrNoId.Error(), "message": "Invalid request"})
 		return
 	}
-	err := rh.reservationService.DeleteReservation(id)
+
+	userId, exists := c.Get("user_id")
+	if !exists {
+		log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
+		c.JSON(http.StatusUnauthorized, gin.H{"error": ErrNotAutorized.Error(), "message": "Not Autorized"})
+	}
+
+	err := rh.reservationService.DeleteReservation(c.Request.Context(), id, userId.(string))
 	if err != nil {
 		log.Warnf("Error getting reservation: %s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Deleting error"})

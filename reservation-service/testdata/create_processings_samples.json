@@ -1,7 +1,6 @@
 [
     {
         "screening_id": "679bg09j53ae5cc94c021c5d",
-        "user_id": "679b90f897ae5cc94c021c5d",
         "tickets": [
             {
                 "seat_row": "A",
@@ -21,7 +20,6 @@
     },
     {
         "screening_id": "679bg09j53ae5cc94c021c5d",
-        "user_id": "679b90f897hh5cc94c021c5d",
         "tickets": [
             {
                 "seat_row": "A",
@@ -48,7 +46,6 @@
     },
     {
         "screening_id": "679bg09j53ae5cc94c021c5d",
-        "user_id": "679b90f897ae5cc94c021c5d",
         "tickets": [
             {
                 "seat_row": "E",
@@ -68,7 +65,6 @@
     },
     {
         "screening_id": "679bg09j53ae5cc94c021c5d",
-        "user_id": "679b90f897ae5cc94c021c5d",
         "tickets": [
             {
                 "seat_row": "H",
@@ -81,7 +77,6 @@
     },
     {
         "screening_id": "679bg09j53ae5cc94c021c5d",
-        "user_id": "679b90f897ae5cc94c021c5d",
         "tickets": [
             {
                 "seat_row": "B",
@@ -101,7 +96,6 @@
     },
     {
         "screening_id": "679bg09j53ae5cc94c021c5d",
-        "user_id": "679b90f897ae5cc94c021c5d",
         "tickets": [
             {
                 "seat_row": "D",
@@ -135,7 +129,6 @@
     },
     {
         "screening_id": "679bg09j53ae5cc94c021c5d",
-        "user_id": "679b90f897ae5cc94c021c5d",
         "tickets": [
             {
                 "seat_row": "A",
@@ -176,7 +169,6 @@
     },
     {
         "screening_id": "679bg09j53ae5cc94c021c5d",
-        "user_id": "679b90f897ae5cc94c021c5d",
         "tickets": [
             {
                 "seat_row": "H",
@@ -196,7 +188,6 @@
     },
     {
         "screening_id": "679bg09j53ae5cc94c021c5d",
-        "user_id": "679b90f897ae5cc94c021c5d",
         "tickets": [
             {
                 "seat_row": "J",
@@ -216,7 +207,6 @@
     },
     {
         "screening_id": "679bg09j53ae5cc94c021c5d",
-        "user_id": "679b90f897ae5cc94c021c5d",
         "tickets": [
             {
                 "seat_row": "F",

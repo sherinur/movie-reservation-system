@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -12,11 +13,11 @@ import (
 )
 
 type ReservationService interface {
-	GetReservations(userId string) ([]models.Reservation, error)
-	GetReservation(id string) (*models.Reservation, error)
-	AddReservation(booking models.ProcessingRequest) (*mongo.InsertOneResult, error)
-	PayReservation(id string, paying models.ReservationRequest) (*mongo.UpdateResult, error)
-	DeleteReservation(id string) error
+	GetReservations(ctx context.Context, userId string) ([]models.Reservation, error)
+	GetReservation(ctx context.Context, id string) (*models.Reservation, error)
+	AddReservation(ctx context.Context, booking models.ProcessingRequest) (*mongo.InsertOneResult, error)
+	PayReservation(ctx context.Context, id string, paying models.ReservationRequest) (*mongo.UpdateResult, error)
+	DeleteReservation(ctx context.Context, id, userID string) error
 }
 
 type reservationService struct {
@@ -28,19 +29,20 @@ func NewReservationService(r dal.ReservationRepository) ReservationService {
 		reservationRepository: r,
 	}
 }
-func (s *reservationService) GetReservations(userId string) ([]models.Reservation, error) {
-	return s.reservationRepository.GetByUserId(userId)
+
+func (s *reservationService) GetReservations(ctx context.Context, userId string) ([]models.Reservation, error) {
+	return s.reservationRepository.GetByUserId(ctx, userId)
 }
 
-func (s *reservationService) GetReservation(id string) (*models.Reservation, error) {
+func (s *reservationService) GetReservation(ctx context.Context, id string) (*models.Reservation, error) {
 	if id == "" {
 		return nil, ErrNoId
 	}
 
-	return s.reservationRepository.GetById(id)
+	return s.reservationRepository.GetById(ctx, id)
 }
 
-func (s *reservationService) AddReservation(requestBody models.ProcessingRequest) (*mongo.InsertOneResult, error) {
+func (s *reservationService) AddReservation(ctx context.Context, requestBody models.ProcessingRequest) (*mongo.InsertOneResult, error) {
 	if len(requestBody.Tickets) == 0 {
 		return nil, ErrEmptyData
 	}
@@ -53,7 +55,7 @@ func (s *reservationService) AddReservation(requestBody models.ProcessingRequest
 		}
 	}
 
-	process := models.Process{
+	process := models.Reservation{
 		ScreeningID: requestBody.ScreeningID,
 		UserID:      requestBody.UserID,
 		Status:      "processing",
@@ -65,7 +67,7 @@ func (s *reservationService) AddReservation(requestBody models.ProcessingRequest
 		process.TotalPrice += ticket.Price
 	}
 
-	result, err := s.reservationRepository.Add(process)
+	result, err := s.reservationRepository.AddReservation(ctx, process)
 	if err != nil {
 		return nil, err
 	}
@@ -73,17 +75,20 @@ func (s *reservationService) AddReservation(requestBody models.ProcessingRequest
 	return result, nil
 }
 
-func (s *reservationService) PayReservation(id string, requestBody models.ReservationRequest) (*mongo.UpdateResult, error) {
+func (s *reservationService) PayReservation(ctx context.Context, id string, requestBody models.ReservationRequest) (*mongo.UpdateResult, error) {
 	if id == "" {
 		return nil, ErrNoId
 	}
 
-	process, err := s.reservationRepository.GetById(id)
+	process, err := s.reservationRepository.GetById(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 	if process.Status == "paid" {
 		return nil, ErrPaidReservation
+	}
+	if process.UserID != requestBody.UserID {
+		return nil, ErrWrongUser
 	}
 
 	reservation := models.Reservation{
@@ -104,7 +109,7 @@ func (s *reservationService) PayReservation(id string, requestBody models.Reserv
 	}
 	reservation.QRCode = QR
 
-	result, err := s.reservationRepository.Update(id, reservation)
+	result, err := s.reservationRepository.UpdateReservation(ctx, id, reservation)
 	if err != nil {
 		return nil, err
 	}
@@ -112,10 +117,18 @@ func (s *reservationService) PayReservation(id string, requestBody models.Reserv
 	return result, nil
 }
 
-func (s *reservationService) DeleteReservation(id string) error {
+func (s *reservationService) DeleteReservation(ctx context.Context, id, userID string) error {
 	if id == "" {
 		return ErrNoId
 	}
 
-	return s.reservationRepository.Delete(id)
+	reservation, err := s.reservationRepository.GetById(ctx, id)
+	if err != nil {
+		return err
+	}
+	if reservation.UserID != userID {
+		return ErrWrongUser
+	}
+
+	return s.reservationRepository.Delete(ctx, id)
 }
