@@ -10,6 +10,9 @@ import (
 
 type SessionService interface {
 	AddSession(session models.Session) (*mongo.InsertOneResult, error)
+	GetAllSession() ([]models.Session, error)
+	UpdateSessionByID(sessionID string, session models.Session) (*mongo.UpdateResult, error)
+	DeleteSessionByID(sessionID string) (*mongo.DeleteResult, error)
 	DeleteAllSession() (*mongo.DeleteResult, error)
 }
 
@@ -34,6 +37,46 @@ func (s *sessionService) AddSession(session models.Session) (*mongo.InsertOneRes
 		return nil, err
 	}
 	return insertResult, nil
+}
+
+func (s *sessionService) GetAllSession() ([]models.Session, error) {
+	session, err := s.sessionRepository.GetAllSession()
+	if err != nil {
+		return nil, err
+	}
+
+	return session, nil
+}
+
+func (s *sessionService) UpdateSessionByID(sessionID string, session models.Session) (*mongo.UpdateResult, error) {
+	if sessionID == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	err := utils.ValidateSesesion(session)
+	if err != nil {
+		return nil, err
+	}
+
+	updateResult, err := s.sessionRepository.UpdateSessionByID(sessionID, session)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateResult, nil
+}
+
+func (s *sessionService) DeleteSessionByID(sessionID string) (*mongo.DeleteResult, error) {
+	if sessionID == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	deleteResult, err := s.sessionRepository.DeleteSessionByID(sessionID)
+	if err != nil {
+		return nil, err
+	}
+
+	return deleteResult, nil
 }
 
 func (s *sessionService) DeleteAllSession() (*mongo.DeleteResult, error) {

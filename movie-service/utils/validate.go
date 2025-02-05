@@ -8,20 +8,18 @@ import (
 )
 
 func ValidateSeat(seat models.Seat) error {
-	if strings.TrimSpace(seat.Row) == "" || strings.TrimSpace(seat.Column) == "" || strings.TrimSpace(seat.Status) == "" {
+	switch {
+	case strings.TrimSpace(seat.Row) == "", strings.TrimSpace(seat.Column) == "", strings.TrimSpace(seat.Status) == "":
 		return ErrSeatValidation
 	}
 	return nil
 }
 
 func ValidateHall(hall models.Hall) error {
-	if hall.Number == 0 {
+	switch {
+	case hall.Number < 1:
 		return ErrHallNumberZero
-	}
-	if hall.RowCount == 0 || hall.ColumnCount == 0 {
-		return ErrHallDimensionInvalid
-	}
-	if len(hall.Seats) == 0 {
+	case len(hall.Seats) == 0:
 		return ErrHallNoSeats
 	}
 
