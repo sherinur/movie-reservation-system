@@ -3,17 +3,14 @@ package server
 import (
 	"os"
 
-	"user-service/internal/dal"
+	"user-service/configs"
 	"user-service/internal/handler"
-	"user-service/internal/service"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/sherinur/movie-reservation-system/pkg/db"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
+	"github.com/sherinur/movie-reservation-system/pkg/middleware"
 )
-
-var log = logging.GetLogger()
 
 type Server interface {
 	Start() error
@@ -23,54 +20,48 @@ type Server interface {
 
 type server struct {
 	router *gin.Engine
-	cfg    *Config
+	cfg    *configs.Config
+	log    *logging.Logger
 
 	userHandler handler.UserHandler
 }
 
-func NewServer(cfg *Config) Server {
+func NewServer(cfg *configs.Config) Server {
+	r := gin.Default()
+
+	corsConfig := &middleware.CorsConfig{
+		AllowedOrigins: []string{"http://localhost:4200"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Content-Type", "Authorization"},
+	}
+
+	// cors middleware
+	middleware.SetCorsConfig(corsConfig)
+	r.Use(middleware.CorsMiddleware())
+
+	// jwt middleware
+	middleware.SetSecret([]byte(cfg.JwtSecretKey))
+
 	return &server{
-		router: gin.Default(),
+		router: r,
 		cfg:    cfg,
+		log:    logging.NewLogger("dev"),
 	}
-}
-
-func (s *server) registerRoutes() error {
-	db, err := db.ConnectMongo(s.cfg.DbUri, s.cfg.DbName)
-	if err != nil {
-		return err
-	}
-
-	// user routes
-	userRepository := dal.NewUserRepository(db)
-	userService := service.NewUserService(userRepository, s.cfg.JwtSecretKey)
-	s.userHandler = handler.NewUserHandler(userService)
-
-	s.router.GET("/health", handler.GetHealth)
-
-	s.router.POST("/login", s.userHandler.HandleLogin)
-	s.router.POST("/register", s.userHandler.HandleRegister)
-	s.router.GET("/profile", s.userHandler.HandleProfile)
-
-	// // other routes
-	// s.mux.HandleFunc("/health", handler.GetHealth)
-
-	return nil
 }
 
 func (s *server) Start() error {
-	log.Info("Registering routes...")
+	s.log.Info("Registering routes...")
 	err := s.registerRoutes()
 	if err != nil {
-		log.Errorf("Could not register routes: %s", err.Error())
+		s.log.Errorf("Could not register routes: %s", err.Error())
 		return err
 	}
 
-	log.Info("Starting server on port" + s.cfg.Port)
+	s.log.Info("Starting server on port" + s.cfg.Port)
 
 	err = s.router.Run(s.cfg.Port)
 	if err != nil {
-		log.Errorf("Can not start the server: %s", err.Error())
+		s.log.Errorf("Can not start the server: %s", err.Error())
 		return err
 	}
 

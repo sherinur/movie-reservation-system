@@ -12,9 +12,9 @@ var expHours = 1440
 
 func GenerateJWT(user *models.User, jwtSecretKey []byte) (string, error) {
 	payload := jwt.MapClaims{
-		"sub":    user.Email,
-		"status": "client",
-		"exp":    time.Now().Add(time.Hour * time.Duration(expHours)).Unix(),
+		"role":    "user",
+		"user_id": user.ID,
+		"exp":     time.Now().Add(time.Hour * time.Duration(expHours)).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
