@@ -3,15 +3,16 @@ package main
 import (
 	"os"
 
+	"user-service/configs"
 	"user-service/internal/server"
-
-	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
 func main() {
-	logging.Init()
+	cfg := configs.GetConfig()
+	if cfg.GoEnv == "test" {
+		return
+	}
 
-	cfg := server.GetConfig()
 	apiServer := server.NewServer(cfg)
 
 	err := apiServer.Start()

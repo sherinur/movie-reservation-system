@@ -1,6 +1,8 @@
 package service
 
 import (
+	"context"
+
 	"user-service/internal/dal"
 	"user-service/internal/models"
 	"user-service/internal/utils"
@@ -9,11 +11,12 @@ import (
 )
 
 type UserService interface {
-	Register(req *models.RegisterRequest) (*mongo.InsertOneResult, error)
-	Authorize(req *models.LoginRequest) (string, error)
-	GetAllUsers() ([]models.User, error)
-	GetUser(id string) (*models.User, error)
-	DeleteUser(id string) error
+	Register(ctx context.Context, req *models.RegisterRequest) (*mongo.InsertOneResult, error)
+	Authorize(ctx context.Context, req *models.LoginRequest) (string, error)
+	GetAllUsers(ctx context.Context) ([]models.User, error)
+	GetUser(ctx context.Context, id string) (*models.User, error)
+	UpdatePasswordById(ctx context.Context, id string, password string) error
+	DeleteUser(ctx context.Context, id string) error
 }
 
 type userService struct {
@@ -28,9 +31,9 @@ func NewUserService(r dal.UserRepository, secretKey string) UserService {
 	}
 }
 
-func (s *userService) Authorize(req *models.LoginRequest) (string, error) {
+func (s *userService) Authorize(ctx context.Context, req *models.LoginRequest) (string, error) {
 	// login validation
-	user, err := s.userRepository.GetUserByEmail(req.Email)
+	user, err := s.userRepository.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		return "", err
 	}
@@ -51,9 +54,14 @@ func (s *userService) Authorize(req *models.LoginRequest) (string, error) {
 	return jwtToken, nil
 }
 
-func (s *userService) Register(req *models.RegisterRequest) (*mongo.InsertOneResult, error) {
+func (s *userService) Register(ctx context.Context, req *models.RegisterRequest) (*mongo.InsertOneResult, error) {
+	// email validation
+	if !utils.ValidateEmail(req.Email) {
+		return nil, ErrInvalidEmail
+	}
+
 	// check for uniqueness
-	existingUser, err := s.userRepository.GetUserByEmail(req.Email)
+	existingUser, err := s.userRepository.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		return nil, err
 	} else if existingUser != nil {
@@ -77,7 +85,7 @@ func (s *userService) Register(req *models.RegisterRequest) (*mongo.InsertOneRes
 		Password: req.Password,
 	}
 
-	newUser, err := s.userRepository.CreateUser(&user)
+	newUser, err := s.userRepository.CreateUser(ctx, &user)
 	if err != nil {
 		return nil, err
 	}
@@ -85,8 +93,8 @@ func (s *userService) Register(req *models.RegisterRequest) (*mongo.InsertOneRes
 	return newUser, nil
 }
 
-func (s *userService) GetUser(id string) (*models.User, error) {
-	user, err := s.userRepository.GetUserById(id)
+func (s *userService) GetUser(ctx context.Context, id string) (*models.User, error) {
+	user, err := s.userRepository.GetUserById(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -94,8 +102,8 @@ func (s *userService) GetUser(id string) (*models.User, error) {
 	return user, nil
 }
 
-func (s *userService) GetAllUsers() ([]models.User, error) {
-	users, err := s.userRepository.GetAllUsers()
+func (s *userService) GetAllUsers(ctx context.Context) ([]models.User, error) {
+	users, err := s.userRepository.GetAllUsers(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -103,6 +111,15 @@ func (s *userService) GetAllUsers() ([]models.User, error) {
 	return users, nil
 }
 
-func (s *userService) DeleteUser(id string) error {
-	return s.userRepository.DeleteUserById(id)
+func (s *userService) DeleteUser(ctx context.Context, id string) error {
+	return s.userRepository.DeleteUserById(ctx, id)
+}
+
+func (s *userService) UpdatePasswordById(ctx context.Context, id string, password string) error {
+	// password validation
+	if !utils.ValidatePassword(password) {
+		return ErrInvalidPassword
+	}
+
+	return s.userRepository.UpdatePasswordById(ctx, id, password)
 }

@@ -53,3 +53,9 @@ var usernameRegex = regexp.MustCompile(`^[a-zA-Z0-9_-]{1,39}$`)
 func ValidateUsername(username string) bool {
 	return usernameRegex.MatchString(username)
 }
+
+var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+
+func ValidateEmail(email string) bool {
+	return emailRegex.MatchString(email)
+}
