@@ -20,7 +20,7 @@ type CinemaService interface {
 
 	AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error)
 	GetHall(cinemaID string, hallNumber string) ([]byte, error)
-	GetAllHall(cinemaID string) (models.Hall_list, error)
+	GetAllHall(cinemaID string) ([]models.Hall, error)
 	DeleteHall(cinemaID string, hallNumber string) (*mongo.UpdateResult, error)
 }
 
@@ -155,8 +155,8 @@ func (s *cinemaService) GetHall(cinemaID string, hallNumber string) ([]byte, err
 	return data, nil
 }
 
-func (s *cinemaService) GetAllHall(cinemaID string) (models.Hall_list, error) {
-	var halls models.Hall_list = models.Hall_list{}
+func (s *cinemaService) GetAllHall(cinemaID string) ([]models.Hall, error) {
+	var halls []models.Hall
 	if cinemaID == "" {
 		return halls, utils.ErrInvalidId
 	}

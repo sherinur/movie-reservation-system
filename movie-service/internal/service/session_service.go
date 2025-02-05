@@ -32,7 +32,7 @@ func (s *sessionService) AddSession(session models.Session) (*mongo.InsertOneRes
 		return nil, err
 	}
 
-	insertResult, err := s.AddSession(session)
+	insertResult, err := s.sessionRepository.AddSession(session)
 	if err != nil {
 		return nil, err
 	}

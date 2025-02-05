@@ -55,10 +55,6 @@ github.com/pelletier/go-toml/v2 v2.2.3 h1:YmeHyLY8mFWbdkNWwpr+qIL2bEqT0o95WSdkNH
 github.com/pelletier/go-toml/v2 v2.2.3/go.mod h1:MfCQTFTvCcUyyvvwm1+G6H/jORL20Xlb6rzQu9GuUkc=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-20250125170936-009706ca1af8 h1:afNMmt0IZyMXnvEElTYJJtlVNhHYZR3yH1l7EJv/bEI=
-github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-20250125170936-009706ca1af8/go.mod h1:Pj4wExXBWY5AsHPDWGa4lOUrtF6t1KiDe+bHBD7Yshk=
-github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-20250125170936-009706ca1af8 h1:yJLmigQhvUAzKMyld3w+nByRj9+kObDzENsYPx3i1sY=
-github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-20250125170936-009706ca1af8/go.mod h1:6MiOS9L4KaJTHVrjBRtKImrdAyM664wZE5h10BLiHE4=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

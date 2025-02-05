@@ -23,7 +23,7 @@ type CinemaRepository interface {
 
 	AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error)
 	GetHall(cinemaID string, hallNumber int) ([]byte, error)
-	GetAllHall(cinemaID string) (models.Hall_list, error)
+	GetAllHall(cinemaID string) ([]models.Hall, error)
 	DeleteHall(cinemaID string, hallNumber int) (*mongo.UpdateResult, error)
 }
 
@@ -177,13 +177,17 @@ func (r *cinemaRepository) GetHall(cinemaID string, hallNumber int) ([]byte, err
 	filter := bson.M{"hall_list.number": hallNumber}
 	projection := bson.M{"hall_list.$": 1}
 
-	var result bson.M
+	var result = models.Hall_list{}
 	err := col.FindOne(context.TODO(), filter, options.FindOne().SetProjection(projection)).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := json.MarshalIndent(result, "", "")
+	if len(result.Hall_list) == 0 {
+		return nil, mongo.ErrNoDocuments
+	}
+
+	data, err := json.MarshalIndent(result.Hall_list[0], "", "")
 	if err != nil {
 		return nil, err
 	}
@@ -191,8 +195,8 @@ func (r *cinemaRepository) GetHall(cinemaID string, hallNumber int) ([]byte, err
 	return data, nil
 }
 
-func (r *cinemaRepository) GetAllHall(cinemaID string) (models.Hall_list, error) {
-	var halls models.Hall_list = models.Hall_list{}
+func (r *cinemaRepository) GetAllHall(cinemaID string) ([]models.Hall, error) {
+	var halls []models.Hall
 	col := r.db.Collection("cinema")
 
 	objectID, err := primitive.ObjectIDFromHex(cinemaID)
@@ -203,12 +207,13 @@ func (r *cinemaRepository) GetAllHall(cinemaID string) (models.Hall_list, error)
 	filter := bson.M{"_id": objectID}
 	projection := bson.M{"hall_list": 1, "_id": 0}
 
-	err = col.FindOne(context.TODO(), filter, options.FindOne().SetProjection(projection)).Decode(&halls)
+	var result models.Hall_list
+	err = col.FindOne(context.TODO(), filter, options.FindOne().SetProjection(projection)).Decode(&result)
 	if err != nil {
 		return halls, err
 	}
 
-	return halls, nil
+	return result.Hall_list, nil
 }
 
 func (r *cinemaRepository) DeleteHall(cinemaID string, hallNumber int) (*mongo.UpdateResult, error) {

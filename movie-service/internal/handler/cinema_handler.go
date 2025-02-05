@@ -9,16 +9,17 @@ import (
 	"movie-service/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
 type CinemaHandler interface {
 	HandleAddCinema(c *gin.Context)
 	HandleGetAllCinema(c *gin.Context)
+	HadleGetCinemaById(c *gin.Context)
 	HandleUpdateCinema(c *gin.Context)
 	HandleDeleteCinema(c *gin.Context)
 	HandleDeleteAllCinema(c *gin.Context)
-	// TODO: test this handlers
-	// TODO: Wirte comments  for more understanding func or method
+
 	HandleAddHall(c *gin.Context)
 	HandleGetHall(c *gin.Context)
 	HandleGetAllHall(c *gin.Context)
@@ -27,11 +28,13 @@ type CinemaHandler interface {
 
 type cinemaHandler struct {
 	cinemaService service.CinemaService
+	log           *logging.Logger
 }
 
-func NewCinemaHandler(s service.CinemaService) CinemaHandler {
+func NewCinemaHandler(s service.CinemaService, logger *logging.Logger) CinemaHandler {
 	return &cinemaHandler{
 		cinemaService: s,
+		log:           logger,
 	}
 }
 
@@ -45,7 +48,7 @@ func (h *cinemaHandler) HandleAddCinema(c *gin.Context) {
 
 	insertResult, err := h.cinemaService.AddCinema(cinema)
 	if err != nil {
-		log.Infof("Failed to add cinema from IP %s , error: %s", c.ClientIP(), err.Error())
+		h.log.Infof("Failed to add cinema from IP %s , error: %s", c.ClientIP(), err.Error())
 		_, clientError := utils.BadRequestCinemaErrors[err]
 		switch {
 		case clientError:
@@ -56,14 +59,14 @@ func (h *cinemaHandler) HandleAddCinema(c *gin.Context) {
 		return
 	}
 
-	log.Infof("Cinema add with ID %s from IP %s", insertResult.InsertedID, c.ClientIP())
+	h.log.Infof("Cinema add with ID %s from IP %s", insertResult.InsertedID, c.ClientIP())
 	c.JSON(http.StatusOK, gin.H{"inserted_id": insertResult.InsertedID})
 }
 
 func (h *cinemaHandler) HandleGetAllCinema(c *gin.Context) {
 	data, err := h.cinemaService.GetAllCinema()
 	if err != nil {
-		log.Infof("Failed to get cinema from IP %s, error: %s", c.ClientIP(), err.Error())
+		h.log.Infof("Failed to get cinema from IP %s, error: %s", c.ClientIP(), err.Error())
 		_, clientError := utils.BadRequestCinemaErrors[err]
 		switch {
 		case clientError:
@@ -74,7 +77,7 @@ func (h *cinemaHandler) HandleGetAllCinema(c *gin.Context) {
 		return
 	}
 
-	log.Infof("Cinema get from IP %s ", c.ClientIP())
+	h.log.Infof("Cinema get from IP %s ", c.ClientIP())
 	c.Data(http.StatusOK, "application/json", data)
 }
 
@@ -83,7 +86,7 @@ func (h *cinemaHandler) HadleGetCinemaById(c *gin.Context) {
 
 	data, err := h.cinemaService.GetCinemaById(id)
 	if err != nil {
-		log.Infof("Failed to get cinema with ID %s from IP %s", id, c.ClientIP())
+		h.log.Infof("Failed to get cinema with ID %s from IP %s", id, c.ClientIP())
 		_, clientError := utils.BadRequestCinemaErrors[err]
 		switch {
 		case clientError:
@@ -94,7 +97,7 @@ func (h *cinemaHandler) HadleGetCinemaById(c *gin.Context) {
 		return
 	}
 
-	log.Infof("Cinema get with ID %s from IP %s", id, c.ClientIP())
+	h.log.Infof("Cinema get with ID %s from IP %s", id, c.ClientIP())
 	c.Data(http.StatusOK, "application/json", data)
 }
 
@@ -108,7 +111,7 @@ func (h *cinemaHandler) HandleUpdateCinema(c *gin.Context) {
 	id := c.Param("id")
 	updateResult, err := h.cinemaService.UpdateCinemaById(id, &cinema)
 	if err != nil {
-		log.Infof("Failed to update cinema with ID %s from IP %s, error: %s", id, c.ClientIP(), err.Error())
+		h.log.Infof("Failed to update cinema with ID %s from IP %s, error: %s", id, c.ClientIP(), err.Error())
 		_, clientError := utils.BadRequestCinemaErrors[err]
 		switch {
 		case clientError:
@@ -119,7 +122,7 @@ func (h *cinemaHandler) HandleUpdateCinema(c *gin.Context) {
 		return
 	}
 
-	log.Infof("Cinema updated with ID %s from IP %s", id, c.ClientIP())
+	h.log.Infof("Cinema updated with ID %s from IP %s", id, c.ClientIP())
 	c.JSON(http.StatusOK, gin.H{"matched_count": updateResult.MatchedCount})
 }
 
@@ -128,7 +131,7 @@ func (h *cinemaHandler) HandleDeleteCinema(c *gin.Context) {
 
 	deleteResult, err := h.cinemaService.DeleteCinemaById(id)
 	if err != nil {
-		log.Infof("Failed to delete cinema with ID %s from IP %s", id, c.ClientIP())
+		h.log.Infof("Failed to delete cinema with ID %s from IP %s", id, c.ClientIP())
 		_, clientError := utils.BadRequestMovieErrors[err]
 		switch {
 		case clientError:
@@ -139,18 +142,18 @@ func (h *cinemaHandler) HandleDeleteCinema(c *gin.Context) {
 		return
 	}
 
-	log.Infof("Cinema delete with ID %s from IP %s", id, c.ClientIP())
+	h.log.Infof("Cinema delete with ID %s from IP %s", id, c.ClientIP())
 	c.JSON(http.StatusNoContent, gin.H{"deleted_count": deleteResult.DeletedCount})
 }
 
 func (h *cinemaHandler) HandleDeleteAllCinema(c *gin.Context) {
 	deleteResult, err := h.cinemaService.DeleteAllCinema()
 	if err != nil {
-		log.Infof("Failed to delete all cinema from IP %s, error: %s", c.ClientIP(), err.Error())
+		h.log.Infof("Failed to delete all cinema from IP %s, error: %s", c.ClientIP(), err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	log.Infof("Cinema delete with IDs %s from IP %s", strconv.Itoa(int(deleteResult.DeletedCount)), c.ClientIP())
+	h.log.Infof("%s deleted from IP %s", strconv.Itoa(int(deleteResult.DeletedCount)), c.ClientIP())
 	c.JSON(http.StatusNoContent, gin.H{"deleted_count": deleteResult.DeletedCount})
 }
 
@@ -172,7 +175,7 @@ func (h *cinemaHandler) HandleAddHall(c *gin.Context) {
 
 	updateResult, err := h.cinemaService.AddHall(cinemaID, hall)
 	if err != nil {
-		log.Infof("Failed to add hall in cinema with ID %s from IP %s, error: %s", cinemaID, c.ClientIP(), err.Error())
+		h.log.Infof("Failed to add hall in cinema with ID %s from IP %s, error: %s", cinemaID, c.ClientIP(), err.Error())
 		_, clientError := utils.BadRequestCinemaErrors[err]
 		switch {
 		case clientError:
@@ -183,7 +186,7 @@ func (h *cinemaHandler) HandleAddHall(c *gin.Context) {
 		return
 	}
 
-	log.Infof("Hall added in cinema with ID %s from IP %s", cinemaID, c.ClientIP())
+	h.log.Infof("Hall added in cinema with ID %s from IP %s", cinemaID, c.ClientIP())
 	c.JSON(http.StatusOK, gin.H{"updated": updateResult})
 }
 
@@ -198,7 +201,7 @@ func (h *cinemaHandler) HandleGetHall(c *gin.Context) {
 
 	data, err := h.cinemaService.GetHall(cinemaID, hallNumber)
 	if err != nil {
-		log.Infof("Failed to get hall %s from cinema with ID %s, error: %s", hallNumber, cinemaID, c.ClientIP())
+		h.log.Infof("Failed to get hall %s from cinema with ID %s, error: %s", hallNumber, cinemaID, c.ClientIP())
 		_, clientError := utils.BadRequestCinemaErrors[err]
 		switch {
 		case clientError:
@@ -209,7 +212,7 @@ func (h *cinemaHandler) HandleGetHall(c *gin.Context) {
 		return
 	}
 
-	log.Infof("Hall %s get from cinema with ID %s form IP %s", hallNumber, cinemaID, c.ClientIP())
+	h.log.Infof("Hall %s get from cinema with ID %s form IP %s", hallNumber, cinemaID, c.ClientIP())
 	c.Data(http.StatusOK, "application/json", data)
 }
 
@@ -219,7 +222,7 @@ func (h *cinemaHandler) HandleGetAllHall(c *gin.Context) {
 	halls, err := h.cinemaService.GetAllHall(cinemaID)
 
 	if err != nil {
-		log.Infof("Failed to get all hall from cinema wit ID %s form IP %s,error: %s", cinemaID, c.ClientIP(), err.Error())
+		h.log.Infof("Failed to get all hall from cinema wit ID %s form IP %s,error: %s", cinemaID, c.ClientIP(), err.Error())
 		_, clientError := utils.BadRequestCinemaErrors[err]
 		switch {
 		case clientError:
@@ -231,7 +234,7 @@ func (h *cinemaHandler) HandleGetAllHall(c *gin.Context) {
 	}
 
 	// c.Data(http.StatusOK, "application/json", halls)
-	log.Infof("All hall get from cinema with ID %s from IP %s", cinemaID, c.ClientIP())
+	h.log.Infof("All hall get from cinema with ID %s from IP %s", cinemaID, c.ClientIP())
 	c.JSON(http.StatusOK, halls)
 }
 
@@ -246,7 +249,7 @@ func (h *cinemaHandler) HandleDeleteHall(c *gin.Context) {
 
 	updateResult, err := h.cinemaService.DeleteHall(cinemaID, hallNumber)
 	if err != nil {
-		log.Infof("Failed to delete hall %s in cinema wiht ID %s from IP %s, error: %s", hallNumber, cinemaID, c.ClientIP(), err.Error())
+		h.log.Infof("Failed to delete hall %s in cinema wiht ID %s from IP %s, error: %s", hallNumber, cinemaID, c.ClientIP(), err.Error())
 		_, clientError := utils.BadRequestCinemaErrors[err]
 		switch {
 		case clientError:
@@ -257,6 +260,6 @@ func (h *cinemaHandler) HandleDeleteHall(c *gin.Context) {
 		return
 	}
 
-	log.Infof("Hall %s deleted in cinema with ID %s form IP %s", hallNumber, cinemaID, c.ClientIP())
+	h.log.Infof("Hall %s deleted in cinema with ID %s form IP %s", hallNumber, cinemaID, c.ClientIP())
 	c.JSON(http.StatusNoContent, gin.H{"deleted_count": updateResult.ModifiedCount})
 }

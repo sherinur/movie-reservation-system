@@ -59,7 +59,7 @@ func (r *sessionRepository) AddSession(session models.Session) (*mongo.InsertOne
 }
 
 func (r *sessionRepository) GetAllSession() ([]models.Session, error) {
-	col := r.db.Collection("session")
+	col := r.db.Collection("sessions")
 
 	cursor, err := col.Find(context.TODO(), bson.D{})
 	if err != nil {
