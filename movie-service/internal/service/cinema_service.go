@@ -12,14 +12,14 @@ import (
 
 type CinemaService interface {
 	AddCinema(cinema models.Cinema) (*mongo.InsertOneResult, error)
-	GetAllCinema() ([]byte, error)
-	GetCinemaById(id string) ([]byte, error)
+	GetAllCinema() ([]models.Cinema, error)
+	GetCinemaById(id string) (*models.Cinema, error)
 	UpdateCinemaById(id string, cinema *models.Cinema) (*mongo.UpdateResult, error)
 	DeleteCinemaById(id string) (*mongo.DeleteResult, error)
 	DeleteAllCinema() (*mongo.DeleteResult, error)
 
 	AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error)
-	GetHall(cinemaID string, hallNumber string) ([]byte, error)
+	GetHall(cinemaID string, hallNumber string) (*models.Hall, error)
 	GetAllHall(cinemaID string) ([]models.Hall, error)
 	DeleteHall(cinemaID string, hallNumber string) (*mongo.UpdateResult, error)
 }
@@ -48,7 +48,7 @@ func (s *cinemaService) AddCinema(cinema models.Cinema) (*mongo.InsertOneResult,
 	return res, nil
 }
 
-func (s cinemaService) GetAllCinema() ([]byte, error) {
+func (s cinemaService) GetAllCinema() ([]models.Cinema, error) {
 	data, err := s.cinemaRepository.GetAllCinema()
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (s cinemaService) GetAllCinema() ([]byte, error) {
 	return data, nil
 }
 
-func (s cinemaService) GetCinemaById(id string) ([]byte, error) {
+func (s cinemaService) GetCinemaById(id string) (*models.Cinema, error) {
 	if id == "" {
 		return nil, utils.ErrInvalidId
 	}
@@ -133,7 +133,7 @@ func (s *cinemaService) AddHall(cinemaID string, hall models.Hall) (*mongo.Updat
 	return updateResult, nil
 }
 
-func (s *cinemaService) GetHall(cinemaID string, hallNumber string) ([]byte, error) {
+func (s *cinemaService) GetHall(cinemaID string, hallNumber string) (*models.Hall, error) {
 	if cinemaID == "" {
 		return nil, utils.ErrInvalidId
 	}

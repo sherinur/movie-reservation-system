@@ -94,7 +94,7 @@ func (h *movieHandler) HandleGetAllMovie(c *gin.Context) {
 	}
 
 	h.log.Infof("All movie returned form IP %s", c.ClientIP())
-	c.Data(http.StatusOK, "application/json", data)
+	c.JSON(http.StatusOK, data)
 }
 
 func (h *movieHandler) HadleGetMovieById(c *gin.Context) {
@@ -114,7 +114,7 @@ func (h *movieHandler) HadleGetMovieById(c *gin.Context) {
 	}
 
 	h.log.Infof("Movie returned from IP %s", c.ClientIP())
-	c.Data(http.StatusOK, "application/json", data)
+	c.JSON(http.StatusOK, data)
 }
 
 func (h *movieHandler) HandleUpdateMovieById(c *gin.Context) {
@@ -126,7 +126,7 @@ func (h *movieHandler) HandleUpdateMovieById(c *gin.Context) {
 		return
 	}
 
-	deleteResult, err := h.movieService.UpdateMovieById(id, &movie)
+	updateResult, err := h.movieService.UpdateMovieById(id, &movie)
 	if err != nil {
 		h.log.Infof("Failed to update movie with ID %s from IP %s, error: %s", id, c.ClientIP(), err.Error())
 		_, clientError := utils.BadRequestMovieErrors[err]
@@ -140,8 +140,7 @@ func (h *movieHandler) HandleUpdateMovieById(c *gin.Context) {
 	}
 
 	h.log.Infof("Movie updated with ID %s from IP %s", id, c.ClientIP())
-	c.JSON(http.StatusOK, gin.H{"matched_count": deleteResult.MatchedCount})
-
+	c.JSON(http.StatusOK, gin.H{"matched_count": updateResult.MatchedCount})
 }
 
 func (h *movieHandler) HandleDeleteMovieByID(c *gin.Context) {

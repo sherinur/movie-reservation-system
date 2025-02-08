@@ -1,10 +1,11 @@
 package handler
 
 import (
+	"net/http"
+
 	"movie-service/internal/models"
 	"movie-service/internal/service"
 	"movie-service/utils"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
@@ -14,6 +15,7 @@ import (
 type SessionHandler interface {
 	HandleAddSession(c *gin.Context)
 	HandleGetAllSession(c *gin.Context)
+	HandleGetSessionByID(c *gin.Context)
 	HandleUpdateSessionByID(c *gin.Context)
 	HandleDeleteSessionByID(c *gin.Context)
 	HandleDeleteAllSession(c *gin.Context)
@@ -33,7 +35,7 @@ func NewSessionHandler(s service.SessionService, logger *logging.Logger) Session
 
 func (h *sessionHandler) HandleAddSession(c *gin.Context) {
 	var session models.Session
-	err := c.ShouldBindJSON(session)
+	err := c.ShouldBindJSON(&session)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -67,6 +69,26 @@ func (h *sessionHandler) HandleGetAllSession(c *gin.Context) {
 	}
 
 	h.log.Infof("All session get from IP %s", c.ClientIP())
+	c.JSON(http.StatusOK, session)
+}
+
+func (h *sessionHandler) HandleGetSessionByID(c *gin.Context) {
+	sessionID := c.Param("id")
+
+	session, err := h.sessionHandler.GetSessionByID(sessionID)
+	if err != nil {
+		h.log.Infof("Failed to get session with ID %s from IP %s, error: %s", sessionID, c.ClientIP(), err.Error())
+		_, clientError := utils.BadRequestSessionErrors[err]
+		switch {
+		case clientError:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
+
+	h.log.Infof("Session retrieved with ID %s from IP %s", sessionID, c.ClientIP())
 	c.JSON(http.StatusOK, session)
 }
 

@@ -2,27 +2,26 @@ package dal
 
 import (
 	"context"
-	"encoding/json"
+	"strings"
 
 	"movie-service/internal/models"
 	"movie-service/utils"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type CinemaRepository interface {
 	AddCinema(cinema models.Cinema) (*mongo.InsertOneResult, error)
-	GetAllCinema() ([]byte, error)
-	GetCinemaById(id string) ([]byte, error)
+	GetAllCinema() ([]models.Cinema, error)
+	GetCinemaById(id string) (*models.Cinema, error)
 	UpdateCinemaById(id string, movie *models.Cinema) (*mongo.UpdateResult, error)
 	DeleteCinemaById(id string) (*mongo.DeleteResult, error)
 	DeleteAllCinema() (*mongo.DeleteResult, error)
 
 	AddHall(id string, hall models.Hall) (*mongo.UpdateResult, error)
-	GetHall(cinemaID string, hallNumber int) ([]byte, error)
+	GetHall(cinemaID string, hallNumber int) (*models.Hall, error)
 	GetAllHall(cinemaID string) ([]models.Hall, error)
 	DeleteHall(cinemaID string, hallNumber int) (*mongo.UpdateResult, error)
 }
@@ -40,12 +39,15 @@ func NewCinemaRepository(db *mongo.Database) CinemaRepository {
 func (r *cinemaRepository) AddCinema(cinema models.Cinema) (*mongo.InsertOneResult, error) {
 	col := r.db.Collection("cinema")
 
-	bsonDoc, err := utils.ConvertToBsonD(cinema)
-	if err != nil {
-		return nil, err
+	if len(strings.TrimSpace(cinema.ID)) == 0 {
+		cinema.ID = utils.GenerateID()
 	}
 
-	res, err := col.InsertOne(context.TODO(), bsonDoc)
+	for i := range cinema.HallList {
+		cinema.HallList[i].AvailableSeats = len(cinema.HallList[i].Seats)
+	}
+
+	res, err := col.InsertOne(context.TODO(), cinema)
 	if err != nil {
 		return nil, err
 	}
@@ -53,55 +55,43 @@ func (r *cinemaRepository) AddCinema(cinema models.Cinema) (*mongo.InsertOneResu
 	return res, nil
 }
 
-func (r *cinemaRepository) GetAllCinema() ([]byte, error) {
+func (r *cinemaRepository) GetAllCinema() ([]models.Cinema, error) {
 	col := r.db.Collection("cinema")
 	cursor, err := col.Find(context.TODO(), bson.D{})
 	if err != nil {
 		return nil, err
 	}
 
-	var result []bson.M
-	err = cursor.All(context.TODO(), &result)
+	var cinema_list []models.Cinema
+	err = cursor.All(context.TODO(), &cinema_list)
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := json.MarshalIndent(result, "", "")
-	if err != nil {
-		return data, err
-	}
-
-	return data, nil
+	return cinema_list, nil
 }
 
-func (r *cinemaRepository) GetCinemaById(id string) ([]byte, error) {
-	var result bson.M
+func (r *cinemaRepository) GetCinemaById(id string) (*models.Cinema, error) {
 	col := r.db.Collection("cinema")
 
-	objectID, err := primitive.ObjectIDFromHex(id)
+	var cinema models.Cinema
+	err := col.FindOne(context.TODO(), bson.D{{Key: "_id", Value: id}}).Decode(&cinema)
 	if err != nil {
 		return nil, err
 	}
 
-	err = col.FindOne(context.TODO(), bson.D{{Key: "_id", Value: objectID}}).Decode(&result)
-	if err != nil {
-		return nil, err
-	}
-
-	data, err := json.MarshalIndent(result, "", "")
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
+	return &cinema, nil
 }
 
 func (r *cinemaRepository) UpdateCinemaById(id string, cinema *models.Cinema) (*mongo.UpdateResult, error) {
 	col := r.db.Collection("cinema")
 
-	objectID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
+	if len(strings.TrimSpace(cinema.ID)) == 0 {
+		cinema.ID = id
+	}
+
+	for i := range cinema.HallList {
+		cinema.HallList[i].AvailableSeats = len(cinema.HallList[i].Seats)
 	}
 
 	update, err := utils.ConvertToBsonD(cinema)
@@ -109,7 +99,7 @@ func (r *cinemaRepository) UpdateCinemaById(id string, cinema *models.Cinema) (*
 		return nil, err
 	}
 
-	res, err := col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: objectID}}, bson.D{{Key: "$set", Value: update}})
+	res, err := col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: id}}, bson.D{{Key: "$set", Value: update}})
 	if err != nil {
 		return nil, err
 	}
@@ -120,12 +110,7 @@ func (r *cinemaRepository) UpdateCinemaById(id string, cinema *models.Cinema) (*
 func (r *cinemaRepository) DeleteCinemaById(id string) (*mongo.DeleteResult, error) {
 	col := r.db.Collection("cinema")
 
-	objectID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-
-	deleteres, err := col.DeleteOne(context.TODO(), bson.D{{Key: "_id", Value: objectID}})
+	deleteres, err := col.DeleteOne(context.TODO(), bson.D{{Key: "_id", Value: id}})
 	if err != nil {
 		return nil, err
 	}
@@ -147,23 +132,14 @@ func (r *cinemaRepository) DeleteAllCinema() (*mongo.DeleteResult, error) {
 func (r *cinemaRepository) AddHall(cinemaID string, hall models.Hall) (*mongo.UpdateResult, error) {
 	col := r.db.Collection("cinema")
 
-	objectID, err := primitive.ObjectIDFromHex(cinemaID)
-	if err != nil {
-		return nil, err
-	}
-
-	newHall, err := utils.ConvertToBsonD(hall)
-	if err != nil {
-		return nil, err
-	}
-
+	hall.AvailableSeats = len(hall.Seats)
 	update := bson.M{
 		"$push": bson.M{
-			"hall_list": newHall,
+			"hall_list": hall,
 		},
 	}
 
-	updateResult, err := col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: objectID}}, update)
+	updateResult, err := col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: cinemaID}}, update)
 	if err != nil {
 		return nil, err
 	}
@@ -171,44 +147,35 @@ func (r *cinemaRepository) AddHall(cinemaID string, hall models.Hall) (*mongo.Up
 	return updateResult, nil
 }
 
-func (r *cinemaRepository) GetHall(cinemaID string, hallNumber int) ([]byte, error) {
+func (r *cinemaRepository) GetHall(cinemaID string, hallNumber int) (*models.Hall, error) {
 	col := r.db.Collection("cinema")
 
-	filter := bson.M{"hall_list.number": hallNumber}
+	filter := bson.M{"hall_list.number": hallNumber, "_id": cinemaID}
 	projection := bson.M{"hall_list.$": 1}
 
-	var result = models.Hall_list{}
-	err := col.FindOne(context.TODO(), filter, options.FindOne().SetProjection(projection)).Decode(&result)
+	hall_list := models.Hall_list{}
+	err := col.FindOne(context.TODO(), filter, options.FindOne().SetProjection(projection)).Decode(&hall_list)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(result.Hall_list) == 0 {
+	if len(hall_list.Hall_list) == 0 {
 		return nil, mongo.ErrNoDocuments
 	}
 
-	data, err := json.MarshalIndent(result.Hall_list[0], "", "")
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
+	hall := hall_list.Hall_list[0]
+	return &hall, nil
 }
 
 func (r *cinemaRepository) GetAllHall(cinemaID string) ([]models.Hall, error) {
 	var halls []models.Hall
 	col := r.db.Collection("cinema")
 
-	objectID, err := primitive.ObjectIDFromHex(cinemaID)
-	if err != nil {
-		return halls, err
-	}
-
-	filter := bson.M{"_id": objectID}
+	filter := bson.M{"_id": cinemaID}
 	projection := bson.M{"hall_list": 1, "_id": 0}
 
 	var result models.Hall_list
-	err = col.FindOne(context.TODO(), filter, options.FindOne().SetProjection(projection)).Decode(&result)
+	err := col.FindOne(context.TODO(), filter, options.FindOne().SetProjection(projection)).Decode(&result)
 	if err != nil {
 		return halls, err
 	}
@@ -219,12 +186,7 @@ func (r *cinemaRepository) GetAllHall(cinemaID string) ([]models.Hall, error) {
 func (r *cinemaRepository) DeleteHall(cinemaID string, hallNumber int) (*mongo.UpdateResult, error) {
 	col := r.db.Collection("cinema")
 
-	objectID, err := primitive.ObjectIDFromHex(cinemaID)
-	if err != nil {
-		return nil, err
-	}
-
-	filter := bson.M{"_id": objectID}
+	filter := bson.M{"_id": cinemaID}
 	update := bson.M{
 		"$pull": bson.M{
 			"hall_list": bson.M{"number": hallNumber},

@@ -230,3 +230,135 @@ time="2025-02-02T17:15:21+05:00" level=info msg="Starting server on port:8070" f
 time="2025-02-02T17:19:39+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
 time="2025-02-02T17:19:39+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
 time="2025-02-02T17:19:39+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-06T16:27:20+05:00" level=info msg="All movie returned form IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-06T16:27:29+05:00" level=info msg="Cinema get from IP ::1 " func="movie-service/internal/handler.(*cinemaHandler).HandleGetAllCinema" file=cinema_handler.go
+time="2025-02-06T16:28:05+05:00" level=info msg="Hall 1 get from cinema with ID 679f5160acb57fcfcc620640 form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go
+time="2025-02-06T16:28:08+05:00" level=info msg="Hall 2 get from cinema with ID 679f5160acb57fcfcc620640 form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go
+time="2025-02-06T16:28:57+05:00" level=info msg="Hall added in cinema with ID 679f5160acb57fcfcc620640 from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleAddHall" file=cinema_handler.go
+time="2025-02-06T16:29:12+05:00" level=info msg="Hall 13 get from cinema with ID 679f5160acb57fcfcc620640 form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go
+time="2025-02-06T16:29:21+05:00" level=info msg="All hall get from cinema with ID 679f5160acb57fcfcc620640 from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetAllHall" file=cinema_handler.go
+time="2025-02-06T16:31:31+05:00" level=info msg="Hall 13 deleted in cinema with ID 679f5160acb57fcfcc620640 form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleDeleteHall" file=cinema_handler.go
+time="2025-02-06T16:31:37+05:00" level=info msg="Failed to get hall 13 from cinema with ID 679f5160acb57fcfcc620640, error: ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go
+time="2025-02-06T16:32:12+05:00" level=info msg="Hall added in cinema with ID 679f5160acb57fcfcc620640 from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleAddHall" file=cinema_handler.go
+time="2025-02-06T16:32:21+05:00" level=info msg="All hall get from cinema with ID 679f5160acb57fcfcc620640 from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetAllHall" file=cinema_handler.go
+time="2025-02-06T16:33:24+05:00" level=info msg="Failed to add hall in cinema with ID 679f5160acb57fcfcc620640 from IP ::1, error: hall already exists" func="movie-service/internal/handler.(*cinemaHandler).HandleAddHall" file=cinema_handler.go
+time="2025-02-06T16:33:37+05:00" level=info msg="Hall 13 get from cinema with ID 679f5160acb57fcfcc620640 form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go
+time="2025-02-07T22:12:39+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-07T22:12:39+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-07T22:13:52+05:00" level=info msg="All session get from IP ::1" func="movie-service/internal/handler.(*sessionHandler).HandleGetAllSession" file=session_handler.go
+time="2025-02-07T22:15:05+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-07T22:15:05+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-07T22:15:13+05:00" level=info msg="Failed to add session from IP ::1,error: session start time cannot be in the past" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-07T22:15:24+05:00" level=info msg="Failed to add session from IP ::1,error: mongo: no documents in result" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-07T22:16:27+05:00" level=info msg="Failed to add session from IP ::1,error: mongo: no documents in result" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-07T22:17:05+05:00" level=info msg="Cinema get from IP ::1 " func="movie-service/internal/handler.(*cinemaHandler).HandleGetAllCinema" file=cinema_handler.go
+time="2025-02-07T22:17:41+05:00" level=info msg="Hall 3 get from cinema with ID 679f5160acb57fcfcc620640 form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go
+time="2025-02-07T22:17:44+05:00" level=info msg="Hall 1 get from cinema with ID 679f5160acb57fcfcc620640 form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go
+time="2025-02-07T22:17:47+05:00" level=info msg="Failed to add session from IP ::1,error: mongo: no documents in result" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T20:48:46+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T20:48:46+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T20:50:07+05:00" level=info msg="Failed to add session from IP ::1,error: session start time cannot be in the past" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T20:50:17+05:00" level=info msg="Failed to add session from IP ::1,error: mongo: no documents in result" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T20:50:42+05:00" level=info msg="Cinema get from IP ::1 " func="movie-service/internal/handler.(*cinemaHandler).HandleGetAllCinema" file=cinema_handler.go
+time="2025-02-08T20:50:48+05:00" level=info msg="Failed to add session from IP ::1,error: mongo: no documents in result" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T20:51:07+05:00" level=info msg="Failed to add session from IP ::1,error: mongo: no documents in result" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T20:53:43+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T20:53:43+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T20:53:49+05:00" level=info msg="Failed to add session from IP ::1,error: mongo: no documents in result" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T20:56:15+05:00" level=info msg="Hall 1 get from cinema with ID 679f5160acb57fcfcc620640 form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go
+time="2025-02-08T21:08:54+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T21:08:54+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T21:09:00+05:00" level=info msg="Hall 1 get from cinema with ID 679f5160acb57fcfcc620640 form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go
+time="2025-02-08T21:15:32+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T21:15:32+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T21:15:39+05:00" level=info msg="Session added wit ID ObjectID(\"67a7832bf0b1e3167150c71f\") from IP ::1" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T21:18:07+05:00" level=info msg="All session get from IP ::1" func="movie-service/internal/handler.(*sessionHandler).HandleGetAllSession" file=session_handler.go
+time="2025-02-08T21:20:00+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T21:20:00+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T21:20:06+05:00" level=info msg="All session get from IP ::1" func="movie-service/internal/handler.(*sessionHandler).HandleGetAllSession" file=session_handler.go
+time="2025-02-08T21:22:00+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T21:22:00+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T21:22:07+05:00" level=info msg="All session get from IP ::1" func="movie-service/internal/handler.(*sessionHandler).HandleGetAllSession" file=session_handler.go
+time="2025-02-08T21:23:26+05:00" level=info msg="All session deleted from IP ::1" func="movie-service/internal/handler.(*sessionHandler).HandleDeleteAllSession" file=session_handler.go
+time="2025-02-08T21:59:58+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T21:59:58+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T22:02:40+05:00" level=info msg="Failed to add session from IP ::1,error: encoding/hex: invalid byte: U+006C 'l'" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T22:04:37+05:00" level=info msg="Failed to add session from IP ::1,error: encoding/hex: invalid byte: U+0067 'g'" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T22:14:12+05:00" level=info msg="Failed to add session from IP ::1,error: encoding/hex: invalid byte: U+004B 'K'" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T22:14:39+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T22:14:39+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T22:14:43+05:00" level=info msg="Failed to add session from IP ::1,error: encoding/hex: invalid byte: U+004C 'L'" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T22:18:43+05:00" level=info msg="Failed to add session from IP ::1,error: encoding/hex: invalid byte: U+0057 'W'" func="movie-service/internal/handler.(*sessionHandler).HandleAddSession" file=session_handler.go
+time="2025-02-08T22:25:28+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T22:25:28+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T22:25:51+05:00" level=info msg="All movie returned form IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-08T22:26:14+05:00" level=info msg="Movie returned from IP ::1" func="movie-service/internal/handler.(*movieHandler).HadleGetMovieById" file=movie_handler.go
+time="2025-02-08T22:27:30+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T22:27:30+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T22:27:43+05:00" level=info msg="All movie returned form IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-08T22:27:54+05:00" level=info msg="Movie returned from IP ::1" func="movie-service/internal/handler.(*movieHandler).HadleGetMovieById" file=movie_handler.go
+time="2025-02-08T23:07:19+05:00" level=info msg="Failed to add movie from IP ::1, error: movie poster image cannot be empty" func="movie-service/internal/handler.(*movieHandler).HandleAddMovie" file=movie_handler.go
+time="2025-02-08T23:07:30+05:00" level=info msg="Movie added with ID 679a1e60e99b0670005b9409, from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleAddMovie" file=movie_handler.go
+time="2025-02-08T23:09:35+05:00" level=info msg="Movie returned from IP ::1" func="movie-service/internal/handler.(*movieHandler).HadleGetMovieById" file=movie_handler.go
+time="2025-02-08T23:34:59+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T23:34:59+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T23:36:03+05:00" level=info msg="21 movie deleted from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleDeleteAllMovie" file=movie_handler.go
+time="2025-02-08T23:36:09+05:00" level=info msg="All movie returned form IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-08T23:37:10+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T23:37:10+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T23:37:41+05:00" level=info msg="Failed to add movie from IP ::1, error: movie poster image cannot be empty" func="movie-service/internal/handler.(*movieHandler).HandleAddMovie" file=movie_handler.go
+time="2025-02-08T23:38:24+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T23:38:24+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T23:38:28+05:00" level=info msg="Movie added with ID , from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleAddMovie" file=movie_handler.go
+time="2025-02-08T23:39:40+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T23:39:40+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T23:40:02+05:00" level=info msg="Movie added with ID V7-Fy28CRBWxbp65rvgCKQ==, from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleAddMovie" file=movie_handler.go
+time="2025-02-08T23:43:18+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T23:43:18+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-08T23:44:28+05:00" level=info msg="All movie returned form IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-08T23:56:47+05:00" level=info msg="1 movie deleted from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleDeleteAllMovie" file=movie_handler.go
+time="2025-02-08T23:57:35+05:00" level=info msg="Batch of movies added with IDs: [OcgdLvIcQSmKN0TCys8w-Q== sIsHHuERTQCzPKqt8TM01g== avCo2ziNS-aeJh91Yn40HQ== f5fuELZlSf6EHkRRrIpw0Q== MfxyxWUpRRS93OAdUDjEjw== u5WBP3-RSEOJu8wDSXUWiQ== GVH4hEHtSKGG98DDE2vCXQ== _uQqjk60Qsq_b1Rp1EkBkQ== _d9x-fOSQz6vBr6oy9KJVQ== dLj1tFVhQ_-a1muSdLu8cw== Ohi5nm1RSiadArizCMd3Fg== bZ1oEZRsTSCmMGLinCN5lA== BdfpS7W5QlCJeHaVCADUmA== r1ZwPa6_SpOZE2q4-IxCzA== 9i_F-YVHS3qLlU8rfMN9cw== qtrBlkk4SFqd_naeQXcJ-w== rvH2OovVQaqmYpwFULrkbw== hXd9OLodSEGimDUz5MYmqA== -f1EVcI7SRy4eQl2qlJmAA== 6Zy9CfUqR8-hJh82liW8_w==] from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleAddBatchOfMovie" file=movie_handler.go
+time="2025-02-08T23:58:59+05:00" level=info msg="Failed to update movie with ID OcgdLvIcQSmKN0TCys8w-Q== from IP ::1, error: write exception: write errors: [Performing an update on the path '_id' would modify the immutable field '_id']" func="movie-service/internal/handler.(*movieHandler).HandleUpdateMovieById" file=movie_handler.go
+time="2025-02-09T00:07:27+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:07:27+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:07:41+05:00" level=info msg="Movie updated with ID OcgdLvIcQSmKN0TCys8w-Q== from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleUpdateMovieById" file=movie_handler.go
+time="2025-02-09T00:10:04+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:10:04+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:10:10+05:00" level=info msg="All movie returned form IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-09T00:10:19+05:00" level=info msg="Movie returned from IP ::1" func="movie-service/internal/handler.(*movieHandler).HadleGetMovieById" file=movie_handler.go
+time="2025-02-09T00:10:39+05:00" level=info msg="Movie updated with ID OcgdLvIcQSmKN0TCys8w-Q== from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleUpdateMovieById" file=movie_handler.go
+time="2025-02-09T00:11:55+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:11:55+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:12:02+05:00" level=info msg="Movie updated with ID OcgdLvIcQSmKN0TCys8w-Q== from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleUpdateMovieById" file=movie_handler.go
+time="2025-02-09T00:13:00+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:13:00+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:13:05+05:00" level=info msg="Failed to update movie with ID OcgdLvIcQSmKN0TCys8w-Q== from IP ::1, error: movie PG rating must be G, PG, PG-13, R, NC-17" func="movie-service/internal/handler.(*movieHandler).HandleUpdateMovieById" file=movie_handler.go
+time="2025-02-09T00:13:13+05:00" level=info msg="Failed to update movie with ID OcgdLvIcQSmKN0TCys8w-Q== from IP ::1, error: movie PG rating must be G, PG, PG-13, R, NC-17" func="movie-service/internal/handler.(*movieHandler).HandleUpdateMovieById" file=movie_handler.go
+time="2025-02-09T00:13:20+05:00" level=info msg="Failed to update movie with ID OcgdLvIcQSmKN0TCys8w-Q== from IP ::1, error: movie PG rating must be G, PG, PG-13, R, NC-17" func="movie-service/internal/handler.(*movieHandler).HandleUpdateMovieById" file=movie_handler.go
+time="2025-02-09T00:13:30+05:00" level=info msg="Movie updated with ID OcgdLvIcQSmKN0TCys8w-Q== from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleUpdateMovieById" file=movie_handler.go
+time="2025-02-09T00:14:18+05:00" level=info msg="Movie delete with ID OcgdLvIcQSmKN0TCys8w-Q== from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleDeleteMovieByID" file=movie_handler.go
+time="2025-02-09T00:14:22+05:00" level=info msg="Faile to get movie by ID OcgdLvIcQSmKN0TCys8w-Q== from IP ::1, error: mongo: no documents in result" func="movie-service/internal/handler.(*movieHandler).HadleGetMovieById" file=movie_handler.go
+time="2025-02-09T00:16:06+05:00" level=info msg="19 movie deleted from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleDeleteAllMovie" file=movie_handler.go
+time="2025-02-09T00:16:43+05:00" level=info msg="1 deleted from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleDeleteAllCinema" file=cinema_handler.go
+time="2025-02-09T00:17:25+05:00" level=info msg="Cinema add with ID hHwwrM3WS52Br_6wd8iZ5A== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleAddCinema" file=cinema_handler.go
+time="2025-02-09T00:17:36+05:00" level=info msg="Cinema get from IP ::1 " func="movie-service/internal/handler.(*cinemaHandler).HandleGetAllCinema" file=cinema_handler.go
+time="2025-02-09T00:17:54+05:00" level=info msg="Cinema get with ID hHwwrM3WS52Br_6wd8iZ5A== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HadleGetCinemaById" file=cinema_handler.go
+time="2025-02-09T00:22:44+05:00" level=info msg="Failed to update cinema with ID hHwwrM3WS52Br_6wd8iZ5A== from IP ::1, error: write exception: write errors: [Performing an update on the path '_id' would modify the immutable field '_id']" func="movie-service/internal/handler.(*cinemaHandler).HandleUpdateCinema" file=cinema_handler.go
+time="2025-02-09T00:25:18+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:25:18+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:25:23+05:00" level=info msg="Cinema updated with ID hHwwrM3WS52Br_6wd8iZ5A== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleUpdateCinema" file=cinema_handler.go
+time="2025-02-09T00:25:32+05:00" level=info msg="Cinema get with ID hHwwrM3WS52Br_6wd8iZ5A== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HadleGetCinemaById" file=cinema_handler.go
+time="2025-02-09T00:25:39+05:00" level=info msg="Cinema updated with ID hHwwrM3WS52Br_6wd8iZ5A== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleUpdateCinema" file=cinema_handler.go
+time="2025-02-09T00:25:42+05:00" level=info msg="Cinema get with ID hHwwrM3WS52Br_6wd8iZ5A== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HadleGetCinemaById" file=cinema_handler.go
+time="2025-02-09T00:26:32+05:00" level=info msg="Cinema delete with ID hHwwrM3WS52Br_6wd8iZ5A== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleDeleteCinema" file=cinema_handler.go
+time="2025-02-09T00:26:39+05:00" level=info msg="Cinema add with ID qCoICYuYQV-xMr1iCXwgfQ== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleAddCinema" file=cinema_handler.go
+time="2025-02-09T00:26:57+05:00" level=info msg="1 deleted from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleDeleteAllCinema" file=cinema_handler.go
+time="2025-02-09T00:27:37+05:00" level=info msg="Cinema add with ID apAcIqZzTCG3ZRK9vewJMA== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleAddCinema" file=cinema_handler.go
+time="2025-02-09T00:27:53+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:27:53+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-09T00:28:01+05:00" level=info msg="Cinema get from IP ::1 " func="movie-service/internal/handler.(*cinemaHandler).HandleGetAllCinema" file=cinema_handler.go
+time="2025-02-09T00:28:52+05:00" level=info msg="Hall 1 get from cinema with ID apAcIqZzTCG3ZRK9vewJMA== form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go
+time="2025-02-09T00:29:40+05:00" level=info msg="Cinema get with ID apAcIqZzTCG3ZRK9vewJMA== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HadleGetCinemaById" file=cinema_handler.go
+time="2025-02-09T00:30:30+05:00" level=info msg="Failed to add hall in cinema with ID apAcIqZzTCG3ZRK9vewJMA== from IP ::1, error: hall already exists" func="movie-service/internal/handler.(*cinemaHandler).HandleAddHall" file=cinema_handler.go
+time="2025-02-09T00:30:38+05:00" level=info msg="Hall added in cinema with ID apAcIqZzTCG3ZRK9vewJMA== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleAddHall" file=cinema_handler.go
+time="2025-02-09T00:30:48+05:00" level=info msg="Hall 12 get from cinema with ID apAcIqZzTCG3ZRK9vewJMA== form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go

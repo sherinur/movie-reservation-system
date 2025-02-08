@@ -32,6 +32,7 @@ func NewServer(cfg *Config) Server {
 	return &server{
 		router: gin.Default(),
 		cfg:    cfg,
+		log:    logging.NewLogger("dev"),
 	}
 }
 
@@ -64,7 +65,7 @@ func (s *server) registerRoutes() error {
 		return err
 	}
 
-	// Registr routes
+	// Register routes
 	movieRepository := dal.NewMovieRepository(db)
 	movieService := service.NewMovieService(movieRepository)
 	s.movieHandler = handler.NewMovieHandler(movieService, s.log)
@@ -73,7 +74,7 @@ func (s *server) registerRoutes() error {
 	cinemaService := service.NewCinemaService(cinemaRepository)
 	s.cinemaHandler = handler.NewCinemaHandler(cinemaService, s.log)
 
-	sessionRepository := dal.NewSessionRepository(db)
+	sessionRepository := dal.NewSessionRepository(db, cinemaRepository)
 	sessionService := service.NewSessionService(sessionRepository)
 	s.sessionHandler = handler.NewSessionHandler(sessionService, s.log)
 
@@ -84,14 +85,14 @@ func (s *server) registerRoutes() error {
 	s.router.GET("/movie/:id", s.movieHandler.HadleGetMovieById)
 	s.router.PUT("/movie/:id", s.movieHandler.HandleUpdateMovieById)
 	s.router.DELETE("/movie/:id", s.movieHandler.HandleDeleteMovieByID)
-	s.router.DELETE("/movielist", s.movieHandler.HandleDeleteAllMovie)
+	s.router.DELETE("/movie", s.movieHandler.HandleDeleteAllMovie)
 
 	s.router.POST("/cinema", s.cinemaHandler.HandleAddCinema)
-	s.router.GET("/cinemalist", s.cinemaHandler.HandleGetAllCinema)
+	s.router.GET("/cinema", s.cinemaHandler.HandleGetAllCinema)
 	s.router.GET("/cinema/:id", s.cinemaHandler.HadleGetCinemaById)
 	s.router.PUT("/cinema/:id", s.cinemaHandler.HandleUpdateCinema)
 	s.router.DELETE("/cinema/:id", s.cinemaHandler.HandleDeleteCinema)
-	s.router.DELETE("/cinemalist", s.cinemaHandler.HandleDeleteAllCinema)
+	s.router.DELETE("/cinema", s.cinemaHandler.HandleDeleteAllCinema)
 
 	s.router.POST("/cinema/:id/hall", s.cinemaHandler.HandleAddHall)
 	s.router.GET("/cinema/:id/hall_list", s.cinemaHandler.HandleGetAllHall)
@@ -99,7 +100,7 @@ func (s *server) registerRoutes() error {
 	s.router.DELETE("/cinema/:id/hall/:hallNumber", s.cinemaHandler.HandleDeleteHall)
 
 	s.router.POST("/session", s.sessionHandler.HandleAddSession)
-	s.router.GET("/sessionlist", s.sessionHandler.HandleGetAllSession)
+	s.router.GET("/session", s.sessionHandler.HandleGetAllSession)
 	s.router.PUT("/session/:id", s.sessionHandler.HandleUpdateSessionByID)
 	s.router.DELETE("/session/:id", s.sessionHandler.HandleDeleteSessionByID)
 	s.router.DELETE("/session", s.sessionHandler.HandleDeleteAllSession)

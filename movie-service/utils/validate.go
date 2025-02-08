@@ -53,6 +53,15 @@ func ValidateCinema(cinema models.Cinema) error {
 }
 
 func ValidateMovie(movie models.Movie) error {
+	var pgratinglist = map[string]struct{}{
+		"G":     {},
+		"PG":    {},
+		"PG-13": {},
+		"R":     {},
+		"NC-17": {},
+	}
+
+	_, ValidPGrating := pgratinglist[movie.PGrating]
 	switch {
 	case strings.TrimSpace(movie.Title) == "":
 		return ErrMovieTitleEmpty
@@ -70,8 +79,8 @@ func ValidateMovie(movie models.Movie) error {
 		return ErrMovieReleaseDateEmpty
 	case strings.TrimSpace(movie.Rating) == "":
 		return ErrMovieRatingEmpty
-	case strings.TrimSpace(movie.PGrating) == "":
-		return ErrMoviePGEmpty
+	case !ValidPGrating:
+		return ErrInvalidMoviePGrating
 	case strings.TrimSpace(movie.Production) == "":
 		return ErrMovieProductionEmpty
 	case strings.TrimSpace(movie.Producer) == "":
@@ -99,6 +108,8 @@ func ValidateSesesion(session models.Session) error {
 		return ErrSessionEndTimeInvalid
 	case session.AvailableSeats < 0:
 		return ErrSessionInvalidAvailableSeats
+	case len(session.Seats) != 0:
+		return ErrSeatCannotBeSet
 	}
 
 	return nil

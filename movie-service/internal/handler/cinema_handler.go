@@ -78,9 +78,8 @@ func (h *cinemaHandler) HandleGetAllCinema(c *gin.Context) {
 	}
 
 	h.log.Infof("Cinema get from IP %s ", c.ClientIP())
-	c.Data(http.StatusOK, "application/json", data)
+	c.JSON(http.StatusOK, data)
 }
-
 func (h *cinemaHandler) HadleGetCinemaById(c *gin.Context) {
 	id := c.Param("id")
 
@@ -98,7 +97,7 @@ func (h *cinemaHandler) HadleGetCinemaById(c *gin.Context) {
 	}
 
 	h.log.Infof("Cinema get with ID %s from IP %s", id, c.ClientIP())
-	c.Data(http.StatusOK, "application/json", data)
+	c.JSON(http.StatusOK, data)
 }
 
 func (h *cinemaHandler) HandleUpdateCinema(c *gin.Context) {
@@ -213,14 +212,13 @@ func (h *cinemaHandler) HandleGetHall(c *gin.Context) {
 	}
 
 	h.log.Infof("Hall %s get from cinema with ID %s form IP %s", hallNumber, cinemaID, c.ClientIP())
-	c.Data(http.StatusOK, "application/json", data)
+	c.JSON(http.StatusOK, data)
 }
 
 func (h *cinemaHandler) HandleGetAllHall(c *gin.Context) {
 	cinemaID := c.Param("id")
 
 	halls, err := h.cinemaService.GetAllHall(cinemaID)
-
 	if err != nil {
 		h.log.Infof("Failed to get all hall from cinema wit ID %s form IP %s,error: %s", cinemaID, c.ClientIP(), err.Error())
 		_, clientError := utils.BadRequestCinemaErrors[err]

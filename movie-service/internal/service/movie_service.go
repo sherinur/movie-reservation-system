@@ -12,8 +12,8 @@ import (
 type MovieService interface {
 	AddBatchOfMovie(movielist []models.Movie) (*mongo.InsertManyResult, error)
 	AddMovie(movie models.Movie) (*mongo.InsertOneResult, error)
-	GetAllMovie() ([]byte, error)
-	GetMovieById(id string) ([]byte, error)
+	GetAllMovie() ([]models.Movie, error)
+	GetMovieById(id string) (*models.Movie, error)
 	UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error)
 	DeleteMovieById(id string) (*mongo.DeleteResult, error)
 	DeleteAllMovie() (*mongo.DeleteResult, error)
@@ -59,7 +59,7 @@ func (s *movieService) AddMovie(movie models.Movie) (*mongo.InsertOneResult, err
 	return insertRes, nil
 }
 
-func (s *movieService) GetAllMovie() ([]byte, error) {
+func (s *movieService) GetAllMovie() ([]models.Movie, error) {
 	data, err := s.movieRepository.GetAllMovie()
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (s *movieService) GetAllMovie() ([]byte, error) {
 	return data, nil
 }
 
-func (s *movieService) GetMovieById(id string) ([]byte, error) {
+func (s *movieService) GetMovieById(id string) (*models.Movie, error) {
 	if id == "" {
 		return nil, utils.ErrInvalidId
 	}

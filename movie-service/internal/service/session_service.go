@@ -11,6 +11,7 @@ import (
 type SessionService interface {
 	AddSession(session models.Session) (*mongo.InsertOneResult, error)
 	GetAllSession() ([]models.Session, error)
+	GetSessionByID(sessionID string) (*models.Session, error)
 	UpdateSessionByID(sessionID string, session models.Session) (*mongo.UpdateResult, error)
 	DeleteSessionByID(sessionID string) (*mongo.DeleteResult, error)
 	DeleteAllSession() (*mongo.DeleteResult, error)
@@ -41,6 +42,19 @@ func (s *sessionService) AddSession(session models.Session) (*mongo.InsertOneRes
 
 func (s *sessionService) GetAllSession() ([]models.Session, error) {
 	session, err := s.sessionRepository.GetAllSession()
+	if err != nil {
+		return nil, err
+	}
+
+	return session, nil
+}
+
+func (s *sessionService) GetSessionByID(sessionID string) (*models.Session, error) {
+	if sessionID == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	session, err := s.sessionRepository.GetSessionByID(sessionID)
 	if err != nil {
 		return nil, err
 	}

@@ -25,7 +25,7 @@ var (
 	ErrMovieLanguageEmpty    = errors.New("movie language cannot be empty")
 	ErrMovieReleaseDateEmpty = errors.New("movie release date cannot be empty")
 	ErrMovieRatingEmpty      = errors.New("movie rating cannot be empty")
-	ErrMoviePGEmpty          = errors.New("movie PG rating cannot be empty")
+	ErrInvalidMoviePGrating  = errors.New("movie PG rating must be G, PG, PG-13, R, NC-17")
 	ErrMovieProductionEmpty  = errors.New("movie production cannot be empty")
 	ErrMovieProducerEmpty    = errors.New("movie producer cannot be empty")
 	ErrMovieStatusEmpty      = errors.New("movie status cannot be empty")
@@ -38,6 +38,7 @@ var (
 	ErrSessionStartTimeInvalid      = errors.New("session start time cannot be in the past")
 	ErrSessionEndTimeInvalid        = errors.New("session end time cannot be before start time and in the past")
 	ErrSessionInvalidAvailableSeats = errors.New("session available seats cannot be negative")
+	ErrSeatCannotBeSet              = errors.New("session seat can not be seat")
 
 	BadRequestCinemaErrors = map[error]struct{}{
 		ErrInvalidId:            {},
@@ -63,7 +64,7 @@ var (
 		ErrMovieLanguageEmpty:    {},
 		ErrMovieReleaseDateEmpty: {},
 		ErrMovieRatingEmpty:      {},
-		ErrMoviePGEmpty:          {},
+		ErrInvalidMoviePGrating:  {},
 		ErrMovieProductionEmpty:  {},
 		ErrMovieProducerEmpty:    {},
 		ErrMovieStatusEmpty:      {},

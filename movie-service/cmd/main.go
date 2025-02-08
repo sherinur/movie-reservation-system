@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	cfg := server.GetConfig()
 	apiServer := server.NewServer(cfg)
 

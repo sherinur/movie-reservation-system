@@ -1,8 +1,9 @@
 package models
 
 type Hall struct {
-	Number int    `json:"number" bson:"number"`
-	Seats  []Seat `json:"seats" bson:"seats"`
+	Number         int    `json:"number" bson:"number"`
+	AvailableSeats int    `json:"available_seats" bson:"available_seats"`
+	Seats          []Seat `json:"seats" bson:"seats"`
 }
 
 type Hall_list struct {

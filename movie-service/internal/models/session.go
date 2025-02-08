@@ -1,8 +1,11 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Session struct {
+	ID             string    `json:"id" bson:"_id"`
 	MovieID        string    `json:"movie_id" bson:"movie_id"`
 	CinemaID       string    `json:"cinema_id" bson:"cinema_id"`
 	HallNumber     int       `json:"hall_number" bson:"hall_number"`
