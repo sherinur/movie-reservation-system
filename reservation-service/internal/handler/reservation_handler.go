@@ -10,8 +10,6 @@ import (
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
-var log = logging.GetLogger()
-
 type ReservationHandler interface {
 	GetReservations(c *gin.Context)
 	GetReservation(c *gin.Context)
@@ -22,11 +20,13 @@ type ReservationHandler interface {
 
 type reservationHandler struct {
 	reservationService service.ReservationService
+	log                *logging.Logger
 }
 
-func NewReservationHandler(s service.ReservationService) ReservationHandler {
+func NewReservationHandler(s service.ReservationService, Log *logging.Logger) ReservationHandler {
 	return &reservationHandler{
 		reservationService: s,
+		log:                Log,
 	}
 }
 
@@ -34,13 +34,14 @@ func NewReservationHandler(s service.ReservationService) ReservationHandler {
 func (rh *reservationHandler) GetReservations(c *gin.Context) {
 	userId, exists := c.Get("user_id")
 	if !exists {
-		log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
+		rh.log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
 		c.JSON(http.StatusUnauthorized, gin.H{"error": ErrNotAutorized.Error(), "message": "Not Autorized"})
+		return
 	}
 
 	result, err := rh.reservationService.GetReservations(c.Request.Context(), userId.(string))
 	if err != nil {
-		log.Warnf("Error getting reservations: %s", err.Error())
+		rh.log.Warnf("Error getting reservations: %s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal Server Error"})
 		return
 	}
@@ -48,7 +49,7 @@ func (rh *reservationHandler) GetReservations(c *gin.Context) {
 	if result == nil {
 		c.JSON(http.StatusOK, gin.H{})
 	} else {
-		log.Infof("Successfully got %d reservation objects", len(result))
+		rh.log.Infof("Successfully got %d reservation objects", len(result))
 		c.JSON(http.StatusOK, result)
 	}
 }
@@ -57,18 +58,19 @@ func (rh *reservationHandler) GetReservations(c *gin.Context) {
 func (rh *reservationHandler) GetReservation(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
-		log.Infof("Error getting reservation: %s", ErrNoId.Error())
+		rh.log.Infof("Error getting reservation: %s", ErrNoId.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": ErrNoId.Error(), "message": "Invalid request"})
 		return
 	}
 
 	result, err := rh.reservationService.GetReservation(c.Request.Context(), id)
 	if err != nil {
-		log.Warnf("Error getting reservation: %s", err.Error())
+		rh.log.Warnf("Error getting reservation: %s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal Server Error"})
+		return
 	}
 
-	log.Info("Successfully returned reservation objects")
+	rh.log.Info("Successfully returned reservation objects")
 	c.JSON(http.StatusOK, result)
 }
 
@@ -76,26 +78,27 @@ func (rh *reservationHandler) GetReservation(c *gin.Context) {
 func (rh *reservationHandler) AddReservation(c *gin.Context) {
 	var requestBody models.ProcessingRequest
 	if err := c.ShouldBindJSON(&requestBody); err != nil {
-		log.Infof("Error creating processing: %s", ErrEmptyData.Error())
+		rh.log.Infof("Error creating processing: %s", ErrEmptyData.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": ErrEmptyData.Error(), "message": "Invalid Request Body"})
 		return
 	}
 
 	userId, exists := c.Get("user_id")
 	if !exists {
-		log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
+		rh.log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
 		c.JSON(http.StatusUnauthorized, gin.H{"error": ErrNotAutorized.Error(), "message": "Not Autorized"})
+		return
 	}
 
 	requestBody.UserID = userId.(string)
 	result, err := rh.reservationService.AddReservation(c.Request.Context(), requestBody)
 	if err != nil {
-		log.Warn("Error adding new process: " + err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Reserving error"})
+		rh.log.Warn("Error adding new process: " + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Reserving error"})
 		return
 	}
 
-	log.Info("Successfully created new processing")
+	rh.log.Info("Successfully created new processing")
 	c.JSON(http.StatusAccepted, result)
 }
 
@@ -103,33 +106,34 @@ func (rh *reservationHandler) AddReservation(c *gin.Context) {
 func (rh *reservationHandler) PayReservation(c *gin.Context) {
 	var requestBody models.ReservationRequest
 	if err := c.ShouldBindJSON(&requestBody); err != nil {
-		log.Warn("Error paying reservation: " + ErrEmptyData.Error())
+		rh.log.Warn("Error paying reservation: " + ErrEmptyData.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrEmptyData.Error(), "message": "Invalid Request Body"})
 		return
 	}
 
 	id := c.Param("id")
 	if id == "" {
-		log.Infof("Error getting reservation: %s", ErrNoId.Error())
+		rh.log.Infof("Error getting reservation: %s", ErrNoId.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": ErrNoId.Error(), "message": "Invalid request"})
 		return
 	}
 
 	userId, exists := c.Get("user_id")
 	if !exists {
-		log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
+		rh.log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
 		c.JSON(http.StatusUnauthorized, gin.H{"error": ErrNotAutorized.Error(), "message": "Not Autorized"})
+		return
 	}
 
 	requestBody.UserID = userId.(string)
 	result, err := rh.reservationService.PayReservation(c.Request.Context(), id, requestBody)
 	if err != nil {
-		log.Warn("Error paying the reservation: " + err.Error())
+		rh.log.Warn("Error paying the reservation: " + err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Updating error"})
 		return
 	}
 
-	log.Info("Successfully paid processing and created reservation")
+	rh.log.Info("Successfully paid processing and created reservation")
 	c.JSON(http.StatusOK, result)
 }
 
@@ -137,24 +141,25 @@ func (rh *reservationHandler) PayReservation(c *gin.Context) {
 func (rh *reservationHandler) DeleteReservation(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
-		log.Infof("Error getting reservation: %s", ErrNoId.Error())
+		rh.log.Infof("Error getting reservation: %s", ErrNoId.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": ErrNoId.Error(), "message": "Invalid request"})
 		return
 	}
 
 	userId, exists := c.Get("user_id")
 	if !exists {
-		log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
+		rh.log.Warnf("Error getting reservations: %s", ErrNotAutorized.Error())
 		c.JSON(http.StatusUnauthorized, gin.H{"error": ErrNotAutorized.Error(), "message": "Not Autorized"})
+		return
 	}
 
 	err := rh.reservationService.DeleteReservation(c.Request.Context(), id, userId.(string))
 	if err != nil {
-		log.Warnf("Error getting reservation: %s", err.Error())
+		rh.log.Warnf("Error getting reservation: %s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Deleting error"})
 		return
 	}
 
-	log.Info("Successfully deleted reservation")
+	rh.log.Info("Successfully deleted reservation")
 	c.Status(http.StatusNoContent)
 }

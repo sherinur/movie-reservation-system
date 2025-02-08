@@ -13,8 +13,6 @@ import (
 	"github.com/sherinur/movie-reservation-system/pkg/middleware"
 )
 
-var log = logging.GetLogger()
-
 type Server interface {
 	Start() error
 	Shutdown()
@@ -24,6 +22,7 @@ type Server interface {
 type server struct {
 	router *gin.Engine
 	cfg    *config
+	log    *logging.Logger
 
 	handler handler.ReservationHandler
 }
@@ -45,20 +44,21 @@ func NewServer(cfg *config) Server {
 	return &server{
 		router: r,
 		cfg:    cfg,
+		log:    logging.NewLogger("dev"),
 	}
 }
 
 func (s *server) Start() error {
 	err := s.registerRoutes()
 	if err != nil {
-		log.Errorf("Could not register routes: %s", err.Error())
+		s.log.Errorf("Could not register routes: %s", err.Error())
 	}
 
-	log.Info("Sarting server at the port" + s.cfg.Port)
+	s.log.Info("Sarting server at the port" + s.cfg.Port)
 
 	err = s.router.Run(s.cfg.Port)
 	if err != nil {
-		log.Errorf("Error starting server: %s", err.Error())
+		s.log.Errorf("Error starting server: %s", err.Error())
 	}
 
 	return nil
@@ -74,18 +74,18 @@ func (s *server) registerRoutes() error {
 		return err
 	}
 
-	log.Info("Registering routes..")
+	s.log.Info("Registering routes..")
 
 	repository := dal.NewReservationRepository(database)
 	service := service.NewReservationService(repository)
-	s.handler = handler.NewReservationHandler(service)
+	s.handler = handler.NewReservationHandler(service, s.log)
 
 	autorized := s.router.Group("/booking")
 	autorized.Use(middleware.JwtMiddleware())
 	{
+		autorized.POST("/", s.handler.AddReservation)
 		autorized.GET("/", s.handler.GetReservations)
 		autorized.GET("/:id", s.handler.GetReservation)
-		autorized.POST("/", s.handler.AddReservation)
 		autorized.PUT("/:id", s.handler.PayReservation)
 		autorized.DELETE("/delete/:id", s.handler.DeleteReservation)
 	}
