@@ -7,11 +7,11 @@ import (
 	"user-service/internal/models"
 	"user-service/internal/utils"
 
-	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService interface {
-	Register(ctx context.Context, req *models.RegisterRequest) (*mongo.InsertOneResult, error)
+	Register(ctx context.Context, req *models.RegisterRequest) error
 	Authorize(ctx context.Context, req *models.LoginRequest) (string, error)
 	GetAllUsers(ctx context.Context) ([]models.User, error)
 	GetUser(ctx context.Context, id string) (*models.User, error)
@@ -22,12 +22,14 @@ type UserService interface {
 type userService struct {
 	userRepository dal.UserRepository
 	secretKey      string
+	hashCost       int
 }
 
 func NewUserService(r dal.UserRepository, secretKey string) UserService {
 	return &userService{
 		userRepository: r,
 		secretKey:      secretKey,
+		hashCost:       bcrypt.DefaultCost,
 	}
 }
 
@@ -42,8 +44,12 @@ func (s *userService) Authorize(ctx context.Context, req *models.LoginRequest) (
 		return "", ErrNoUser
 	}
 
-	if req.Password != user.Password {
-		return "", ErrWrongPassword
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
+		switch err {
+		case bcrypt.ErrMismatchedHashAndPassword:
+			return "", ErrWrongPassword
+		}
+		return "", err
 	}
 
 	jwtToken, err := utils.GenerateJWT(user, []byte(s.secretKey))
@@ -54,43 +60,49 @@ func (s *userService) Authorize(ctx context.Context, req *models.LoginRequest) (
 	return jwtToken, nil
 }
 
-func (s *userService) Register(ctx context.Context, req *models.RegisterRequest) (*mongo.InsertOneResult, error) {
+func (s *userService) Register(ctx context.Context, req *models.RegisterRequest) error {
 	// email validation
 	if !utils.ValidateEmail(req.Email) {
-		return nil, ErrInvalidEmail
+		return ErrInvalidEmail
 	}
 
 	// check for uniqueness
 	existingUser, err := s.userRepository.GetUserByEmail(ctx, req.Email)
 	if err != nil {
-		return nil, err
+		return err
 	} else if existingUser != nil {
-		return nil, ErrUserExists
+		return ErrUserExists
 	}
 
 	// password validation
 	if !utils.ValidatePassword(req.Password) {
-		return nil, ErrInvalidPassword
+		return ErrInvalidPassword
 	}
 
 	// username validation
 	if !utils.ValidateUsername(req.Username) {
-		return nil, ErrInvalidUsername
+		return ErrInvalidUsername
+	}
+
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), s.hashCost)
+	if err != nil {
+		return err
 	}
 
 	// create a new user
 	user := models.User{
 		Username: req.Username,
 		Email:    req.Email,
-		Password: req.Password,
+		Password: string(hashPassword),
+		Role:     "User",
 	}
 
-	newUser, err := s.userRepository.CreateUser(ctx, &user)
+	_, err = s.userRepository.CreateUser(ctx, &user)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return newUser, nil
+	return nil
 }
 
 func (s *userService) GetUser(ctx context.Context, id string) (*models.User, error) {
@@ -121,5 +133,10 @@ func (s *userService) UpdatePasswordById(ctx context.Context, id string, passwor
 		return ErrInvalidPassword
 	}
 
-	return s.userRepository.UpdatePasswordById(ctx, id, password)
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(password), s.hashCost)
+	if err != nil {
+		return err
+	}
+
+	return s.userRepository.UpdatePasswordById(ctx, id, string(hashPassword))
 }

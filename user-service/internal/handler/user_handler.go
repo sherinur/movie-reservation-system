@@ -76,7 +76,7 @@ func (h *userHandler) HandleRegister(c *gin.Context) {
 		return
 	}
 
-	_, err := h.userService.Register(c.Request.Context(), &regReq)
+	err := h.userService.Register(c.Request.Context(), &regReq)
 	if err != nil {
 		h.log.Infof("Failed registration attempt from IP %s, error: %s", c.ClientIP(), err.Error())
 		switch err {
