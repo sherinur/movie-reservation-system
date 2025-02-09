@@ -18,8 +18,9 @@ func (s *server) registerRoutes() error {
 	}
 
 	userRepository := dal.NewUserRepository(db)
-	userService := service.NewUserService(userRepository, s.cfg.JwtSecretKey)
-	s.userHandler = handler.NewUserHandler(userService, s.log)
+	userService := service.NewUserService(userRepository)
+	tokenService := service.NewTokenService(s.cfg.JwtAccessSecret, s.cfg.JwtRefreshSecret, s.cfg.JwtExpiration)
+	s.userHandler = handler.NewUserHandler(userService, tokenService, s.log)
 
 	s.router.GET("/health", handler.GetHealth)
 

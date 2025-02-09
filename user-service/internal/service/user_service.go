@@ -12,7 +12,7 @@ import (
 
 type UserService interface {
 	Register(ctx context.Context, req *models.RegisterRequest) error
-	Authorize(ctx context.Context, req *models.LoginRequest) (string, error)
+	Authorize(ctx context.Context, req *models.LoginRequest) (*models.User, error)
 	GetAllUsers(ctx context.Context) ([]models.User, error)
 	GetUser(ctx context.Context, id string) (*models.User, error)
 	UpdatePasswordById(ctx context.Context, id string, password string) error
@@ -21,43 +21,36 @@ type UserService interface {
 
 type userService struct {
 	userRepository dal.UserRepository
-	secretKey      string
 	hashCost       int
 }
 
-func NewUserService(r dal.UserRepository, secretKey string) UserService {
+func NewUserService(r dal.UserRepository) UserService {
 	return &userService{
 		userRepository: r,
-		secretKey:      secretKey,
 		hashCost:       bcrypt.DefaultCost,
 	}
 }
 
-func (s *userService) Authorize(ctx context.Context, req *models.LoginRequest) (string, error) {
+func (s *userService) Authorize(ctx context.Context, req *models.LoginRequest) (*models.User, error) {
 	// login validation
 	user, err := s.userRepository.GetUserByEmail(ctx, req.Email)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	if user == nil {
-		return "", ErrNoUser
+		return nil, ErrNoUser
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 		switch err {
 		case bcrypt.ErrMismatchedHashAndPassword:
-			return "", ErrWrongPassword
+			return nil, ErrWrongPassword
 		}
-		return "", err
+		return nil, err
 	}
 
-	jwtToken, err := utils.GenerateJWT(user, []byte(s.secretKey))
-	if err != nil {
-		return "", err
-	}
-
-	return jwtToken, nil
+	return user, nil
 }
 
 func (s *userService) Register(ctx context.Context, req *models.RegisterRequest) error {

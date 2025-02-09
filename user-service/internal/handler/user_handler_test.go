@@ -33,8 +33,9 @@ func setupTestRouter() (*gin.Engine, error) {
 	}
 
 	repo := dal.NewUserRepository(db)
-	service := service.NewUserService(repo, secret)
-	handler := NewUserHandler(service, logging.NewLogger("test"))
+	userService := service.NewUserService(repo)
+	tokenService := service.NewTokenService(secret, secret, 3600)
+	handler := NewUserHandler(userService, tokenService, logging.NewLogger("test"))
 
 	r.POST("/users/register", handler.HandleRegister)
 	r.POST("/users/login", handler.HandleLogin)
