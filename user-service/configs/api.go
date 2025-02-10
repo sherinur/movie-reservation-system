@@ -15,13 +15,14 @@ var (
 )
 
 type Config struct {
-	Port             string
-	DbUri            string
-	DbName           string
-	JwtAccessSecret  string
-	JwtRefreshSecret string
-	JwtExpiration    int
-	GoEnv            string
+	Port                 string
+	DbUri                string
+	DbName               string
+	JwtAccessSecret      string
+	JwtRefreshSecret     string
+	JwtAccessExpiration  int
+	JwtRefreshExpiration int
+	GoEnv                string
 }
 
 func GetConfig() *Config {
@@ -58,31 +59,42 @@ func ParseEnvConfig() (*Config, error) {
 	}
 
 	var (
-		port             = os.Getenv("PORT")
-		mongoUri         = os.Getenv("MONGO_URI")
-		mongoDbName      = os.Getenv("DB_NAME")
-		jwtAccessSecret  = os.Getenv("JWT_ACCESS_SECRET")
-		jwtRefreshSecret = os.Getenv("JWT_REFRESH_SECRET")
-		jwtExpirationStr = os.Getenv("JWT_EXPIRATION")
-		goEnv            = os.Getenv("GO_ENV")
+		port                    = os.Getenv("PORT")
+		mongoUri                = os.Getenv("MONGO_URI")
+		mongoDbName             = os.Getenv("DB_NAME")
+		jwtAccessSecret         = os.Getenv("JWT_ACCESS_SECRET")
+		jwtRefreshSecret        = os.Getenv("JWT_REFRESH_SECRET")
+		jwtRefreshExpirationStr = os.Getenv("JWT_EXPIRATION")
+		jwtAccessExpirationStr  = os.Getenv("JWT_EXPIRATION")
+		goEnv                   = os.Getenv("GO_ENV")
 	)
 
-	if port == "" || mongoUri == "" || mongoDbName == "" || jwtAccessSecret == "" || jwtRefreshSecret == "" || goEnv == "" || jwtExpirationStr == "" {
-		return nil, ErrInvalidEnv
+	requiredEnvVars := []string{port, mongoUri, mongoDbName, jwtAccessSecret, jwtRefreshSecret, goEnv, jwtRefreshExpirationStr, jwtAccessExpirationStr}
+
+	for _, envVar := range requiredEnvVars {
+		if envVar == "" {
+			return nil, ErrInvalidEnv
+		}
 	}
 
-	jwtExpiration, err := strconv.Atoi(jwtExpirationStr)
+	jwtAccessExpiration, err := strconv.Atoi(jwtAccessExpirationStr)
+	if err != nil {
+		return nil, err
+	}
+
+	jwtRefreshExpiration, err := strconv.Atoi(jwtRefreshExpirationStr)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Config{
-		Port:             ":" + port,
-		DbUri:            mongoUri,
-		DbName:           mongoDbName,
-		JwtAccessSecret:  jwtAccessSecret,
-		JwtRefreshSecret: jwtRefreshSecret,
-		JwtExpiration:    jwtExpiration,
-		GoEnv:            goEnv,
+		Port:                 ":" + port,
+		DbUri:                mongoUri,
+		DbName:               mongoDbName,
+		JwtAccessSecret:      jwtAccessSecret,
+		JwtRefreshSecret:     jwtRefreshSecret,
+		JwtAccessExpiration:  jwtAccessExpiration,
+		JwtRefreshExpiration: jwtRefreshExpiration,
+		GoEnv:                goEnv,
 	}, nil
 }

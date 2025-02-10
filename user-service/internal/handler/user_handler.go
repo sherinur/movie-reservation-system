@@ -59,8 +59,10 @@ func (h *userHandler) HandleLogin(c *gin.Context) {
 		}
 	}
 
-	payload := h.tokenService.CreatePayload(user)
-	accessToken, refreshToken, err := h.tokenService.GenerateTokens(payload)
+	accessPayload := h.tokenService.CreateAccessPayload(user)
+	refreshPayload := h.tokenService.CreateAccessPayload(user)
+
+	accessToken, refreshToken, err := h.tokenService.GenerateTokens(accessPayload, refreshPayload)
 	if err != nil {
 		h.log.Errorf("User authentication error: %s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal server error"})
@@ -71,7 +73,17 @@ func (h *userHandler) HandleLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"accessToken": accessToken, "refreshToken": refreshToken})
 }
 
-// POST /register => new user registration
+// HandleRegister registers a new user
+// @Summary Register user
+// @Description Registers a new user with email and password
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body RegisterRequest true "User registration request"
+// @Success 201 {object} RegisterResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /users/register [post]
 func (h *userHandler) HandleRegister(c *gin.Context) {
 	var regReq models.RegisterRequest
 

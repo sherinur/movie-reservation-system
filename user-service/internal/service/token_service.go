@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"time"
 
 	"user-service/internal/models"
@@ -10,36 +9,35 @@ import (
 )
 
 type TokenService interface {
-	GenerateTokens(payload jwt.MapClaims) (string, string, error)
-	CreatePayload(user *models.User) jwt.MapClaims
+	GenerateTokens(accessPayload jwt.MapClaims, refreshPayload jwt.MapClaims) (string, string, error)
+	CreateAccessPayload(user *models.User) jwt.MapClaims
+	CreateRefreshPayload(user *models.User) jwt.MapClaims
 }
 
 type tokenService struct {
-	jwtAccessSecret  []byte
-	jwtRefreshSecret []byte
-	jwtExpiration    int
+	jwtAccessSecret      []byte
+	jwtRefreshSecret     []byte
+	jwtAccessExpiration  int
+	jwtRefreshExpiration int
 }
 
-func NewTokenService(accessSecret string, refreshSecret string, expiration int) TokenService {
+func NewTokenService(accessSecret string, refreshSecret string, accessExpiration int, refreshExpiration int) TokenService {
 	return &tokenService{
-		jwtAccessSecret:  []byte(accessSecret),
-		jwtRefreshSecret: []byte(refreshSecret),
-		jwtExpiration:    expiration,
+		jwtAccessSecret:      []byte(accessSecret),
+		jwtRefreshSecret:     []byte(refreshSecret),
+		jwtAccessExpiration:  accessExpiration,
+		jwtRefreshExpiration: refreshExpiration,
 	}
 }
 
-func (s *tokenService) GenerateTokens(payload jwt.MapClaims) (string, string, error) {
-	fmt.Println("payload:", payload)
-	fmt.Println("accessSecret:", s.jwtAccessSecret)
-	fmt.Println("refreshSecret:", s.jwtRefreshSecret)
-
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
+func (s *tokenService) GenerateTokens(accessPayload jwt.MapClaims, refreshPayload jwt.MapClaims) (string, string, error) {
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessPayload)
 	accessTokenStr, err := accessToken.SignedString(s.jwtAccessSecret)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshPayload)
 	refreshTokenStr, err := refreshToken.SignedString(s.jwtRefreshSecret)
 	if err != nil {
 		return "", "", err
@@ -48,10 +46,18 @@ func (s *tokenService) GenerateTokens(payload jwt.MapClaims) (string, string, er
 	return accessTokenStr, refreshTokenStr, nil
 }
 
-func (s *tokenService) CreatePayload(user *models.User) jwt.MapClaims {
+func (s *tokenService) CreateAccessPayload(user *models.User) jwt.MapClaims {
 	return jwt.MapClaims{
 		"role":    user.Role,
 		"user_id": user.ID,
-		"exp":     time.Now().Add(time.Second * time.Duration(s.jwtExpiration)).Unix(),
+		"exp":     time.Now().Add(time.Second * time.Duration(s.jwtAccessExpiration)).Unix(),
+	}
+}
+
+func (s *tokenService) CreateRefreshPayload(user *models.User) jwt.MapClaims {
+	return jwt.MapClaims{
+		"role":    user.Role,
+		"user_id": user.ID,
+		"exp":     time.Now().Add(time.Second * time.Duration(s.jwtRefreshExpiration)).Unix(),
 	}
 }

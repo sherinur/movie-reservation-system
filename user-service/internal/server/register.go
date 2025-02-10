@@ -7,6 +7,9 @@ import (
 
 	"github.com/sherinur/movie-reservation-system/pkg/db"
 	"github.com/sherinur/movie-reservation-system/pkg/middleware"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // TODO: make the middleware not global, composite in server struct
@@ -17,9 +20,11 @@ func (s *server) registerRoutes() error {
 		return err
 	}
 
+	s.router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	userRepository := dal.NewUserRepository(db)
 	userService := service.NewUserService(userRepository)
-	tokenService := service.NewTokenService(s.cfg.JwtAccessSecret, s.cfg.JwtRefreshSecret, s.cfg.JwtExpiration)
+	tokenService := service.NewTokenService(s.cfg.JwtAccessSecret, s.cfg.JwtRefreshSecret, s.cfg.JwtAccessExpiration, s.cfg.JwtRefreshExpiration)
 	s.userHandler = handler.NewUserHandler(userService, tokenService, s.log)
 
 	s.router.GET("/health", handler.GetHealth)
