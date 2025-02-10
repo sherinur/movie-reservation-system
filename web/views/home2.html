@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-wrapper"></div>
+
+    <header class="text-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <img src="logo.png" class="card-img-top" alt="logo">
+            </div>
+            <div>
+                <a href="/logout" class="btn btn-outline-light  custom-red-btn me-2">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h3 class="custom-white">Theater</h3>
+                    <div class="btn-group mb-3" role="group">
+                        <button class="btn btn-outline-light">Bukit Bintang</button>
+                        <button class="btn btn-outline-light selected">IOI Putrajaye</button>
+                        <button class="btn btn-outline-light">KB Mall</button>
+                    </div>
+                    
+                    <h3 class="custom-white">Date</h3>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button class="btn btn-outline-light">22 Oct Mon</button>
+                        <button class="btn btn-outline-light selected">22 Oct Mon</button>
+                        <button class="btn btn-outline-light">22 Oct Mon</button>
+                        <button class="btn btn-outline-light">22 Oct Mon</button>
+                        <button class="btn btn-outline-light">22 Oct Mon</button>
+                    </div>
+                    
+                    <h3 class="custom-white">Time</h3>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button class="btn btn-outline-light">15:40</button>
+                        <button class="btn btn-outline-light selected">15:40</button>
+                        <button class="btn btn-outline-light">15:40</button>
+                        <button class="btn btn-outline-light">15:40</button>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3">
+                    <div class="card bg-dark text-white">
+                        <img src="movie.jpeg" class="card-img-top" alt="Movie Poster">
+                        <div class="card-body">
+                            <h5 class="card-title">SPIDERMAN ACROSS THE SPIDERVERSE</h5>
+                            <p class="card-text">Movie description here...</p>
+                            <p><strong>Duration:</strong> 2h 30m</p>
+                            <p><strong>Type:</strong> Cartoon</p>
+                        </div>
+                    </div>
+                    <div class="card bg-dark text-white mt-3 p-3">
+                        <h5>IOI Putrajaye</h5>
+                        <p>28 October 2023</p>
+                        <p>15:40</p>
+                        <small>*Seat selection can be done after this</small>
+                        <button class="btn btn-success w-100 mt-2">Proceed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>  
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
