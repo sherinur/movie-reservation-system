@@ -1,3 +1,9 @@
+// @title User Service API
+// @version 1.0
+// @description This is a user service API for movie reservation system
+// @host localhost:8080
+// @BasePath /
+// @schemes http
 package main
 
 import (

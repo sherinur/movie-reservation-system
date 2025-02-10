@@ -10,12 +10,6 @@ import (
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
 )
 
-// TODO: handlers must implement http.Handler interface, not custom interface
-
-// TODO: Add to handler : kitHTTP.NewServer -> middleware, go kit, server options
-
-// TODO: Use kitHTTP to unmarshal binary from req.body: - go kit -> decodeRequest
-
 type UserHandler interface {
 	HandleLogin(c *gin.Context)
 	HandleRegister(c *gin.Context)
@@ -26,14 +20,16 @@ type UserHandler interface {
 }
 
 type userHandler struct {
-	userService service.UserService
-	log         *logging.Logger
+	userService  service.UserService
+	tokenService service.TokenService
+	log          *logging.Logger
 }
 
-func NewUserHandler(s service.UserService, logger *logging.Logger) UserHandler {
+func NewUserHandler(u service.UserService, t service.TokenService, logger *logging.Logger) UserHandler {
 	return &userHandler{
-		userService: s,
-		log:         logger,
+		userService:  u,
+		tokenService: t,
+		log:          logger,
 	}
 }
 
@@ -46,7 +42,7 @@ func (h *userHandler) HandleLogin(c *gin.Context) {
 		return
 	}
 
-	jwtToken, err := h.userService.Authorize(c.Request.Context(), &logReq)
+	user, err := h.userService.Authorize(c.Request.Context(), &logReq)
 	if err != nil {
 		h.log.Infof("Failed authentication attempt to the profile with email %s from IP %s, error: %s", logReq.Email, c.ClientIP(), err.Error())
 		switch err {
@@ -63,11 +59,31 @@ func (h *userHandler) HandleLogin(c *gin.Context) {
 		}
 	}
 
+	accessPayload := h.tokenService.CreateAccessPayload(user)
+	refreshPayload := h.tokenService.CreateAccessPayload(user)
+
+	accessToken, refreshToken, err := h.tokenService.GenerateTokens(accessPayload, refreshPayload)
+	if err != nil {
+		h.log.Errorf("User authentication error: %s", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal server error"})
+		return
+	}
+
 	h.log.Infof("User with email %s logged in from %s", logReq.Email, c.ClientIP())
-	c.JSON(http.StatusOK, gin.H{"token": jwtToken})
+	c.JSON(http.StatusOK, gin.H{"accessToken": accessToken, "refreshToken": refreshToken})
 }
 
-// POST /register => new user registration
+// HandleRegister registers a new user
+// @Summary Register user
+// @Description Registers a new user with email and password
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body RegisterRequest true "User registration request"
+// @Success 201 {object} RegisterResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /users/register [post]
 func (h *userHandler) HandleRegister(c *gin.Context) {
 	var regReq models.RegisterRequest
 
@@ -76,7 +92,7 @@ func (h *userHandler) HandleRegister(c *gin.Context) {
 		return
 	}
 
-	_, err := h.userService.Register(c.Request.Context(), &regReq)
+	err := h.userService.Register(c.Request.Context(), &regReq)
 	if err != nil {
 		h.log.Infof("Failed registration attempt from IP %s, error: %s", c.ClientIP(), err.Error())
 		switch err {

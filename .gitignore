@@ -38,3 +38,4 @@ reservation-service/logs
 # node_modules
 node_modules/
 web/node_modules/
+web/client/node_modules
