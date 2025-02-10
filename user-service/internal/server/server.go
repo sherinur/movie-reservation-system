@@ -40,7 +40,7 @@ func NewServer(cfg *configs.Config) Server {
 	r.Use(middleware.CorsMiddleware())
 
 	// jwt middleware
-	middleware.SetSecret([]byte(cfg.JwtSecretKey))
+	middleware.SetSecret([]byte(cfg.JwtAccessSecret))
 
 	return &server{
 		router: r,
