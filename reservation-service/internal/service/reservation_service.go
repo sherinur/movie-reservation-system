@@ -17,7 +17,7 @@ type ReservationService interface {
 	GetReservation(ctx context.Context, id string) (*models.Reservation, error)
 	AddReservation(ctx context.Context, booking models.ProcessingRequest) (*mongo.InsertOneResult, error)
 	PayReservation(ctx context.Context, id string, paying models.ReservationRequest) (*mongo.UpdateResult, error)
-	DeleteReservation(ctx context.Context, id, userID string) error
+	DeleteReservation(ctx context.Context, id, userID string) (*mongo.DeleteResult, error)
 }
 
 type reservationService struct {
@@ -80,6 +80,10 @@ func (s *reservationService) PayReservation(ctx context.Context, id string, requ
 		return nil, ErrNoId
 	}
 
+	if requestBody.Email == "" || requestBody.PhoneNumber == "" {
+		return nil, ErrEmptyData
+	}
+
 	process, err := s.reservationRepository.GetById(ctx, id)
 	if err != nil {
 		return nil, err
@@ -117,17 +121,17 @@ func (s *reservationService) PayReservation(ctx context.Context, id string, requ
 	return result, nil
 }
 
-func (s *reservationService) DeleteReservation(ctx context.Context, id, userID string) error {
+func (s *reservationService) DeleteReservation(ctx context.Context, id, userID string) (*mongo.DeleteResult, error) {
 	if id == "" {
-		return ErrNoId
+		return nil, ErrNoId
 	}
 
 	reservation, err := s.reservationRepository.GetById(ctx, id)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if reservation.UserID != userID {
-		return ErrWrongUser
+		return nil, ErrWrongUser
 	}
 
 	return s.reservationRepository.Delete(ctx, id)

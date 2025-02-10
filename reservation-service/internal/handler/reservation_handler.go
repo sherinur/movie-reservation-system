@@ -107,7 +107,7 @@ func (rh *reservationHandler) PayReservation(c *gin.Context) {
 	var requestBody models.ReservationRequest
 	if err := c.ShouldBindJSON(&requestBody); err != nil {
 		rh.log.Warn("Error paying reservation: " + ErrEmptyData.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrEmptyData.Error(), "message": "Invalid Request Body"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": ErrEmptyData.Error(), "message": "Invalid Request Body"})
 		return
 	}
 
@@ -129,7 +129,7 @@ func (rh *reservationHandler) PayReservation(c *gin.Context) {
 	result, err := rh.reservationService.PayReservation(c.Request.Context(), id, requestBody)
 	if err != nil {
 		rh.log.Warn("Error paying the reservation: " + err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Updating error"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Updating error"})
 		return
 	}
 
@@ -153,13 +153,13 @@ func (rh *reservationHandler) DeleteReservation(c *gin.Context) {
 		return
 	}
 
-	err := rh.reservationService.DeleteReservation(c.Request.Context(), id, userId.(string))
+	result, err := rh.reservationService.DeleteReservation(c.Request.Context(), id, userId.(string))
 	if err != nil {
 		rh.log.Warnf("Error getting reservation: %s", err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Deleting error"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Deleting error"})
 		return
 	}
 
 	rh.log.Info("Successfully deleted reservation")
-	c.Status(http.StatusNoContent)
+	c.JSON(http.StatusOK, result)
 }

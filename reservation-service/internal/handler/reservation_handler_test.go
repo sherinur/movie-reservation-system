@@ -197,7 +197,7 @@ func TestGetReservations(t *testing.T) {
 }
 
 func TestGetReservation(t *testing.T) {
-	r, handler, err := setupTestRouter()
+	_, handler, err := setupTestRouter()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -221,7 +221,11 @@ func TestGetReservation(t *testing.T) {
 	req, _ = http.NewRequest(http.MethodGet, "/booking/"+insertedID, nil)
 	w = httptest.NewRecorder()
 
-	r.ServeHTTP(w, req)
+	c, _ = gin.CreateTestContext(w)
+	c.Request = req
+	c.Params = append(c.Params, gin.Param{Key: "id", Value: insertedID})
+
+	handler.GetReservation(c)
 
 	assert.Equal(t, http.StatusOK, w.Code)
 
@@ -229,4 +233,208 @@ func TestGetReservation(t *testing.T) {
 	err = json.Unmarshal(w.Body.Bytes(), &Response)
 	assert.NoError(t, err)
 	//assert.Equal(t, newRes.ScreeningID, Response.ScreeningID)
+}
+
+func TestPayReservation(t *testing.T) {
+	_, handler, err := setupTestRouter()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		name   string
+		req    string
+		userId string
+
+		expectedStatus  int
+		expectedError   string
+		expectedMessage string
+	}{
+		{
+			name:            "User not autorized",
+			req:             `{ "email": "testing1@gmail.com", "phone_number": "+12345678990" }`,
+			userId:          "",
+			expectedStatus:  http.StatusUnauthorized,
+			expectedError:   "not autorized",
+			expectedMessage: "Not Autorized",
+		},
+		{
+			name:            "Not provided all data",
+			req:             `{ "email": "testing1@gmail.com" }`,
+			userId:          "679dc7d7ebe4f308cb076e7f",
+			expectedStatus:  http.StatusBadRequest,
+			expectedError:   "not provided all data",
+			expectedMessage: "Updating error",
+		},
+		{
+			name:            "No request data",
+			req:             ``,
+			userId:          "679dc7d7ebe4f308cb076e7f",
+			expectedStatus:  http.StatusBadRequest,
+			expectedError:   "incoming data must be entered",
+			expectedMessage: "Invalid Request Body",
+		},
+		{
+			name:            "Wrong user",
+			req:             `{ "email": "testing1@gmail.com", "phone_number": "+12345678990" }`,
+			userId:          "679dc7d7ebe4f308cb076e7h",
+			expectedStatus:  http.StatusBadRequest,
+			expectedError:   "attemping to interact with someone else's reservation",
+			expectedMessage: "Updating error",
+		},
+		{
+			name:            "Successful paying",
+			req:             `{ "email": "testing1@gmail.com", "phone_number": "+12345678990" }`,
+			userId:          "679dc7d7ebe4f308cb076e7f",
+			expectedStatus:  http.StatusOK,
+			expectedError:   "",
+			expectedMessage: "",
+		},
+		{
+			name:            "Already paid",
+			req:             `{ "email": "testing1@gmail.com", "phone_number": "+12345678990" }`,
+			userId:          "679dc7d7ebe4f308cb076e7f",
+			expectedStatus:  http.StatusBadRequest,
+			expectedError:   "could not pay already paid reservation",
+			expectedMessage: "Updating error",
+		},
+	}
+
+	body := bytes.NewReader([]byte(`{ "screening_id": "679bg09j53ae5cc94c021c5d", "tickets": [ { "seat_row": "A", "seat_column": "3", "price": 1500.00, "seat_type": "common", "user_type": "adult" } ] }`))
+
+	req, _ := http.NewRequest(http.MethodPost, "/booking", body)
+	w := httptest.NewRecorder()
+
+	c, _ := gin.CreateTestContext(w)
+	c.Request = req
+	c.Set("user_id", "679dc7d7ebe4f308cb076e7f")
+
+	handler.AddReservation(c)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err)
+	insertedID := response["InsertedID"].(string)
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			body := bytes.NewReader([]byte(test.req))
+			req, _ = http.NewRequest(http.MethodPut, "/booking/"+insertedID, body)
+			w = httptest.NewRecorder()
+
+			c, _ = gin.CreateTestContext(w)
+			c.Request = req
+			c.Params = append(c.Params, gin.Param{Key: "id", Value: insertedID})
+			if test.userId != "" {
+				c.Set("user_id", test.userId)
+			}
+
+			handler.PayReservation(c)
+
+			assert.Equal(t, test.expectedStatus, w.Code)
+
+			var response map[string]interface{}
+			err = json.Unmarshal(w.Body.Bytes(), &response)
+			assert.NoError(t, err)
+
+			if test.expectedError != "" {
+				assert.Equal(t, test.expectedError, response["error"])
+			}
+
+			if test.expectedMessage != "" {
+				assert.Equal(t, test.expectedMessage, response["message"])
+			}
+		})
+	}
+}
+
+func TestDeleteReservation(t *testing.T) {
+	_, handler, err := setupTestRouter()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		name   string
+		userId string
+
+		expectedStatus  int
+		expectedError   string
+		expectedMessage string
+	}{
+		{
+			name:            "User not autorized",
+			userId:          "",
+			expectedStatus:  http.StatusUnauthorized,
+			expectedError:   "not autorized",
+			expectedMessage: "Not Autorized",
+		},
+		{
+			name:            "Wrong user",
+			userId:          "679dc7d7ebe4f308cb076e7h",
+			expectedStatus:  http.StatusBadRequest,
+			expectedError:   "attemping to interact with someone else's reservation",
+			expectedMessage: "Deleting error",
+		},
+		{
+			name:            "Successful deleting reservations",
+			userId:          "679dc7d7ebe4f308cb076e7f",
+			expectedStatus:  http.StatusOK,
+			expectedError:   "",
+			expectedMessage: "",
+		},
+		{
+			name:            "No reservation",
+			userId:          "679dc7d7ebe4f308cb076e7f",
+			expectedStatus:  http.StatusBadRequest,
+			expectedError:   "mongo: no documents in result",
+			expectedMessage: "Deleting error",
+		},
+	}
+
+	body := bytes.NewReader([]byte(`{ "screening_id": "679bg09j53ae5cc94c021c5d", "tickets": [ { "seat_row": "A", "seat_column": "3", "price": 1500.00, "seat_type": "common", "user_type": "adult" } ] }`))
+
+	req, _ := http.NewRequest(http.MethodPost, "/booking", body)
+	w := httptest.NewRecorder()
+
+	c, _ := gin.CreateTestContext(w)
+	c.Request = req
+	c.Set("user_id", "679dc7d7ebe4f308cb076e7f")
+
+	handler.AddReservation(c)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err)
+	insertedID := response["InsertedID"].(string)
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			req, _ = http.NewRequest(http.MethodDelete, "/booking/delete/"+insertedID, nil)
+			w = httptest.NewRecorder()
+
+			c, _ = gin.CreateTestContext(w)
+			c.Request = req
+			c.Params = append(c.Params, gin.Param{Key: "id", Value: insertedID})
+			if test.userId != "" {
+				c.Set("user_id", test.userId)
+			}
+
+			handler.DeleteReservation(c)
+
+			assert.Equal(t, test.expectedStatus, w.Code)
+
+			var response map[string]interface{}
+			err = json.Unmarshal(w.Body.Bytes(), &response)
+			assert.NoError(t, err)
+
+			if test.expectedError != "" {
+				assert.Equal(t, test.expectedError, response["error"])
+			}
+
+			if test.expectedMessage != "" {
+				assert.Equal(t, test.expectedMessage, response["message"])
+			}
+		})
+	}
 }

@@ -17,7 +17,7 @@ type ReservationRepository interface {
 	GetById(ctx context.Context, id string) (*models.Reservation, error)
 	AddReservation(ctx context.Context, process models.Reservation) (*mongo.InsertOneResult, error)
 	UpdateReservation(ctx context.Context, id string, reservation models.Reservation) (*mongo.UpdateResult, error)
-	Delete(ctx context.Context, id string) error
+	Delete(ctx context.Context, id string) (*mongo.DeleteResult, error)
 }
 
 type reservationRepository struct {
@@ -120,19 +120,19 @@ func (r *reservationRepository) UpdateReservation(ctx context.Context, id string
 	return result, nil
 }
 
-func (r *reservationRepository) Delete(ctx context.Context, id string) error {
+func (r *reservationRepository) Delete(ctx context.Context, id string) (*mongo.DeleteResult, error) {
 	coll := r.db.Collection("reservations")
 	ObjID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	res, err := coll.DeleteOne(ctx, bson.M{"_id": ObjID})
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if res.DeletedCount == 0 {
-		return ErrNotFoundById
+		return nil, ErrNotFoundById
 	}
-	return nil
+	return res, nil
 }
