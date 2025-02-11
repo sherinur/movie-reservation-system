@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"encoding/base64"
 	"fmt"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -25,48 +27,10 @@ func ConvertToBsonD(movie interface{}) (interface{}, error) {
 	return bsonDoc, nil
 }
 
-// func IsEmpty(v interface{}) string {
-// 	if v == nil {
-// 		return "Nil"
-// 	}
+func GenerateID() string {
+	id := uuid.New()
 
-// 	val := reflect.ValueOf(v)
-// 	if val.Kind() == reflect.Ptr && val.IsNil() {
-// 		return "Nil pointer"
-// 	}
+	ID := base64.URLEncoding.EncodeToString(id[:])
 
-// 	if val.Kind() == reflect.Ptr {
-// 		val = val.Elem()
-// 	}
-
-// 	switch val.Kind() {
-// 	case reflect.Struct:
-// 		for i := 0; i < val.NumField(); i++ {
-// 			field := val.Field(i)
-// 			fieldName := val.Type().Field(i).Name
-// 			if IsEmpty(field.Interface()) != "" {
-// 				return fieldName
-// 			}
-// 		}
-// 	case reflect.Slice, reflect.Array:
-// 		for i := 0; i < val.Len(); i++ {
-// 			if IsEmpty(val.Index(i).Interface()) != "" {
-// 				return fmt.Sprintf("[%d]", i)
-// 			}
-// 		}
-// 	case reflect.String:
-// 		if val.String() == "" {
-// 			return "String"
-// 		}
-// 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-// 		if val.Int() == 0 {
-// 			return "Integer"
-// 		}
-// 	case reflect.Float32, reflect.Float64:
-// 		if val.Float() == 0.0 {
-// 			return "Float"
-// 		}
-// 	}
-
-// 	return ""
-// }
+	return ID
+}

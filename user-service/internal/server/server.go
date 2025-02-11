@@ -30,7 +30,7 @@ func NewServer(cfg *configs.Config) Server {
 	r := gin.Default()
 
 	corsConfig := &middleware.CorsConfig{
-		AllowedOrigins: []string{"http://localhost:4200"},
+		AllowedOrigins: []string{"http://localhost:3000"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type", "Authorization"},
 	}

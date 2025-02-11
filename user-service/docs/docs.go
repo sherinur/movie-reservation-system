@@ -3,11 +3,10 @@ package docs
 
 import (
 	"github.com/swaggo/swag"
-    // "github.com/swaggo/gin-swagger"
-    // "github.com/swaggo/files"
-    // "github.com/gin-gonic/gin"
+	// "github.com/swaggo/gin-swagger"
+	// "github.com/swaggo/files"
+	// "github.com/gin-gonic/gin"
 )
-
 
 const docTemplate = `{
     "schemes": {{ marshal .Schemes }},
@@ -25,16 +24,15 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-    Version:          "1.0",
-    Host:             "localhost:8080",
-    BasePath:         "/",
-    Schemes:          []string{"http"},
-    Title:            "User Service API",
-    Description:      "API for User Service in the Movie Reservation System",
-    InfoInstanceName: "swagger",
-    SwaggerTemplate:  docTemplate,
+	Version:          "1.0",
+	Host:             "localhost:8080",
+	BasePath:         "/",
+	Schemes:          []string{"http"},
+	Title:            "User Service API",
+	Description:      "API for User Service in the Movie Reservation System",
+	InfoInstanceName: "swagger",
+	SwaggerTemplate:  docTemplate,
 }
-
 
 func init() {
 	swag.Register(SwaggerInfo.InstanceName(), SwaggerInfo)

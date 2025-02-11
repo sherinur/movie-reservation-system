@@ -2,6 +2,9 @@ BINARY_NAME=movie-service
 
 MAIN_FILE=cmd/main.go
 
+test:
+	go test -v ./internal/handler/
+	
 build:
 	go mod tidy
 	gofumpt -l -w .

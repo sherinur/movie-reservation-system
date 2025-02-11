@@ -1,12 +1,16 @@
 module movie-service
 
-go 1.23.4
+go 1.23.5
+
+require go.mongodb.org/mongo-driver v1.17.2
 
 require (
 	github.com/gin-gonic/gin v1.10.0
-	github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-20250125170936-009706ca1af8
-	github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-20250125170936-009706ca1af8
-	go.mongodb.org/mongo-driver v1.17.2
+	github.com/joho/godotenv v1.5.1
+	github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-00010101000000-000000000000
+	github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-00010101000000-000000000000
+	github.com/sherinur/movie-reservation-system/pkg/middleware v0.0.0-00010101000000-000000000000
+	github.com/stretchr/testify v1.10.0
 )
 
 require (
@@ -19,6 +23,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.24.0 // indirect
 	github.com/goccy/go-json v0.10.4 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
@@ -37,10 +42,12 @@ require (
 )
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/joho/godotenv v1.5.1 // direct
+	github.com/google/uuid v1.6.0 // direct
 	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
@@ -49,3 +56,9 @@ require (
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 )
+
+replace github.com/sherinur/movie-reservation-system/pkg/logging => ../pkg/logging
+
+replace github.com/sherinur/movie-reservation-system/pkg/db => ../pkg/db
+
+replace github.com/sherinur/movie-reservation-system/pkg/middleware => ../pkg/middleware

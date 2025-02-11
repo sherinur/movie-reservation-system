@@ -13,19 +13,18 @@ var (
 )
 
 type Config struct {
-	Port         string
-	DbUri        string
-	DbName       string
-	JwtSecretKey string
-	ExpHours     string
+	Port            string
+	DbUri           string
+	DbName          string
+	JwtAccessSecret string
 }
 
 func GetConfig() *Config {
 	once.Do(func() {
 		config, err := ParseEnvConfig()
 		if err != nil {
-			log.Errorf("Error of parsing environment variables: %s", err.Error())
-			log.Warn("Failed to load config. Using default values.")
+			// log.Errorf("Error of parsing environment variables: %s", err.Error())
+			// log.Warn("Failed to load config. Using default values.")
 			instance = GetDefaultConfig()
 		} else {
 			instance = config
@@ -50,20 +49,20 @@ func ParseEnvConfig() (*Config, error) {
 	}
 
 	var (
-		port        = os.Getenv("PORT")
-		mongoUri    = os.Getenv("MONGO_URI")
-		mongoDbName = os.Getenv("DB_NAME")
+		port            = os.Getenv("PORT")
+		mongoUri        = os.Getenv("MONGO_URI")
+		mongoDbName     = os.Getenv("DB_NAME")
+		jwtAccessSecret = os.Getenv("JWT_ACCESS_SECRET")
 	)
 
-	if port == "" || mongoUri == "" || mongoDbName == "" {
+	if port == "" || mongoUri == "" || mongoDbName == "" || jwtAccessSecret == "" {
 		return nil, ErrInvalidEnv
 	}
 
 	return &Config{
-		Port:   ":" + port,
-		DbUri:  mongoUri,
-		DbName: mongoDbName,
-		// JwtSecretKey: jwtSecretKey,
-		// ExpHours:     expHours,
+		Port:            ":" + port,
+		DbUri:           mongoUri,
+		DbName:          mongoDbName,
+		JwtAccessSecret: jwtAccessSecret,
 	}, nil
 }
