@@ -1,0 +1,43 @@
+
+[
+    {
+        "email": "testing1@gmail.com",
+        "phone_number": "+12345678990"
+    },
+    {
+        "email": "testing2@gmail.com",
+        "phone_number": "+98765432112"
+    },
+    {
+        "email": "testing3@gmail.com",
+        "phone_number": "+78889996655"
+    },
+    {
+        "email": "testing4@gmail.com",
+        "phone_number": "+71112223344"
+    },
+    {
+        "email": "testing5@gmail.com",
+        "phone_number": "+75556667788"
+    },
+    {
+        "email": "testing6@gmail.com",
+        "phone_number": "+79877896556"
+    },
+    {
+        "email": "testing7@gmail.com",
+        "phone_number": "+77788796633"
+    },
+    {
+        "email": "testing8@gmail.com",
+        "phone_number": "+71231231212"
+    },
+    {
+        "email": "testing9@gmail.com",
+        "phone_number": "+76666666666"
+    },
+    {
+        "email": "testing10@gmail.com",
+        "phone_number": "+79089089080"
+    }
+]

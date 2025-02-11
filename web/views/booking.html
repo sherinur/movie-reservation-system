@@ -1,64 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cinema Seat Reservation</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="booking-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container text-center">
-    <h1 class="my-4">Choose your seat</h1>
-    <div class="screen"></div>
+  <div class="background-wrapper"></div>
+  
+  <div class="booking-container">
+    <h1 class="title">Booking Detail</h1>
 
-    <div class="seats">
+    <div class="schedule-section">
+        <h2>Schedule</h2>
+        <p><strong>Movie Title</strong></p>
+        <p class="movie-title">SPIDERMAN NO WAY HOME</p>
+        
+        <p><strong>Date</strong></p>
+        <p class="movie-date">Mon, 23 Oct 2023</p>
 
-      <!-- row A -->
-      <!-- <div class="row" row="A"> 
-
-        <div class="dropdown seat common">
-          <a href="#" class="seat-button" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Adult  -  1900тг</a></li>
-            <li><a class="dropdown-item" href="#">Kids  -  1450тг</a></li>
-            <li><a class="dropdown-item" href="#">Senior  -  1500тг</a></li>
-            <li><a class="dropdown-item" href="#">Student  -  1400тг</a></li>
-          </ul>
+        <div class="ticket-info">
+            <div class="seats">
+                <strong>Ticket (3)</strong>
+                <p>C8, C9, C10</p>
+            </div>
+            <div class="time">
+                <strong>Hours</strong>
+                <p>14:40</p>
+            </div>
         </div>
-
-      </div> -->
-
     </div>
-   
 
-    <!-- Legend -->
-    <div class="legend">
-      <div class="legend-item">
-        <div class="seat"></div>
-        <span>Unoccupied seat</span>
-      </div>
-      <div class="legend-item">
-        <div class="seat occupied"></div>
-        <span>Occupied seat</span>
-      </div>
-      <div class="legend-item">
-        <div class="seat selected"></div>
-        <span>Your choice</span>
-      </div>
-      <div class="legend-item">
-        <div class="seat love"></div>
-        <span>Love seats</span>
-      </div>
-      <div class="legend-item">
-        <div class="seat vip"></div>
-        <span>VIP seats</span>
-      </div>
+    <div class="transaction-detail">
+        <h2>Transaction Detail</h2>
+        <div class="price-row">
+            <p>REGULAR SEAT</p>
+            <p>1500 Tg x3</p>
+        </div>
+        <div class="price-row">
+            <p>Service Charge (6%)</p>
+            <p>90 Tg x3</p>
+        </div>
+        <hr>
+        <div class="total-payment">
+            <p><strong>Total payment</strong></p>
+            <p class="total-amount">4770 Tg</p>
+        </div>
+        <p class="note">*Purchased ticket cannot be canceled</p>
     </div>
+
+    <a href="paid.html"><button class="checkout-btn">Checkout Ticket</button></a>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <script src="booking.render.js"></script>
-  <script src="booking.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="login.validation.js"></script>
 </body>
 </html>

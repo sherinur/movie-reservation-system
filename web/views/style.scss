@@ -29,6 +29,10 @@ $bg-color-btn: #1DE782;
 $bg-color-btn-hover: #58eba1;
 $bg-color-btn-active: #32c77d;
 
+$bg-color-back-btn: #4e5d56;
+$bg-color-back-btn-hover: #2e3130;
+$bg-color-back-btn-active: #1f1f1f;
+
 $color-link: #1DE782;
 
 
@@ -197,6 +201,228 @@ a.link {
     color: red;
     font-size: 1rem;
     display: none;
+}
+
+.seat-selection-container {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+}
+
+.screen {
+    width: 35%;
+    height: 50px;
+    background: #ccc;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    margin-top: 30px;
+    margin-bottom: 40px;
+}
+
+.seat-map {
+    display: flex;
+    grid-template-columns: repeat(10, 40px);
+    gap: 8px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.seat {
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    color: #000;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover {
+        background: $bg-color-btn;
+        color: #fff;
+    }
+}
+
+.selected {
+    background: $bg-color-btn;
+    color: #fff;
+
+    &:hover {
+        background: $bg-color-btn-hover;
+        color: #fff;
+    }
+}
+
+.seat-selection-footer {
+    margin-top: 20%;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 2);
+}
+
+.total-price, .selected-seats {
+    margin-right: 3%;
+}
+
+.total-price strong, .selected-seats strong {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-cancel, .btn-proceed {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-cancel {
+    background: #444;
+    color: #fff;
+}
+
+.btn-proceed {
+    background: $bg-color-btn;
+    color: #fff;
+}
+
+.btn-proceed:hover {
+    background: $bg-color-btn-hover;
+}
+
+
+.booking-container {
+    width: 400px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 30px;
+    border-radius: 12px;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    text-align: left;
+}
+
+.schedule-section {
+    margin-bottom: 20px;
+}
+
+.movie-title, .movie-date {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.seats p, .time p {
+    font-weight: 600;
+    font-size: 21px;
+}
+
+.seats strong, .time strong {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.ticket-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.transaction-detail {
+    margin-top: 20px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+.total-payment {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.total-amount {
+    font-weight: 600;
+}
+
+.note {
+    font-size: 12px;
+    color: #BEBEBF;
+    margin-top: 5px;
+}
+
+.checkout-btn {
+    background-color: $bg-color-btn;
+    color: #FFFFFF;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $bg-color-btn-hover;
+    }
+
+    &:active {
+        background-color: $bg-color-btn-active;
+    }
+}
+
+.back-btn {
+    background-color: $bg-color-back-btn;
+    color: #FFFFFF;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $bg-color-back-btn-hover;
+    }
+
+    &:active {
+        background-color: $bg-color-back-btn-active;
+    }
+}
+
+.paid-container {
+    width: 400px;
+    background: rgb(0, 0, 0);
+    padding: 30px;
+    border: 2px solid #FFF;
+    border-radius: 15px;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    text-align: left;
 }
 
 // header style 

@@ -4,6 +4,9 @@ import Register from './Register';
 import Login from './Login';
 import HomePage from './HomePage';
 import SessionPage from './SessionPage'
+import SeatSelection from './SeatSelection';
+import Paying from './Paying';
+import Paid from './Paid';
 
 const App = () => {
   return (
@@ -12,6 +15,9 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/booking" element={<SeatSelection />} />
+        <Route path="/paying" element={<Paying />} />
+        <Route path="/paid" element={<Paid />} />
         <Route path="/session" element={<SessionPage />} />
       </Routes>
     </Router>
