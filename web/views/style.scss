@@ -181,7 +181,7 @@ a.link {
     z-index: -1;
 }
 
-.login-section {
+.login-section, .profile-section {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -196,4 +196,65 @@ a.link {
     color: red;
     font-size: 1rem;
     display: none;
+}
+
+.nav-pills {
+    .nav-item {
+        .nav-link {
+            font-size: 16px;
+            font-family: "Poppins", serif;
+            font-weight: 500;
+            font-style: normal;
+            color: #ffffff;
+            border-radius: 50px;
+            border: 2px solid #ffffff;
+
+            &.active {
+                background-color: $bg-color-btn;
+                border: none;
+            }
+        }
+
+        &:not(:last-child) {
+            margin-right: 10px;
+        }
+    }
+}
+
+.card {
+    text-decoration: none;
+    box-shadow: none;
+    border: 1px solid #FFFFFF;
+    color: #FFFFFF;
+    background: none;
+
+    max-height: 600px;
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .btn {
+            font-size: 20px;
+            font-family: "Poppins", serif;
+            font-weight: 500;
+            font-style: normal;
+            background-color: $bg-color-btn;
+            border: none;
+            border-radius: 8px;
+
+            &:hover {
+                background-color: $bg-color-btn-hover;
+            }
+
+            &:active {
+                background-color: $bg-color-btn-active;
+            }
+        }
+    }
+}
+
+.row {
+    overflow: hidden;
 }

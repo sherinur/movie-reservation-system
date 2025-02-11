@@ -1,8 +1,48 @@
-import React from "react";
-import { Button, Form, Container } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Button, Form, Container, Alert } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
+    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
+    const navigate = useNavigate();
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        setError(null);
+        setSuccess(null);
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost/auth/users/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, username, password }),
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.message || "Registration failed");
+            }
+
+            setSuccess("User registered successfully");
+            setTimeout(() => navigate("/login"), 2000);
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
     return (
         <Container fluid className="p-0">
             <div className="row no-gutters hero">
@@ -16,44 +56,62 @@ const Register = () => {
                 <div className="col-lg-4 col-md-6 col-sm-12 hero-form mx-auto">
                     <div className="container">
                         <h2 className="mb-4 title">Create an account</h2>
+                        {error && <Alert variant="danger">{error}</Alert>}
+                        {success && <Alert variant="success">{success}</Alert>}
 
-                        {/* Email Input */}
-                        <Form.Group className="mb-3">
-                            <Form.Label htmlFor="email">Email</Form.Label>
-                            <Form.Control type="email" id="email" placeholder="Enter your email" required />
-                            <div id="email-error" className="error-message mt-2">Email error</div>
-                        </Form.Group>
+                        <Form onSubmit={handleRegister}>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control 
+                                    type="email" 
+                                    value={email} 
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Enter your email" 
+                                    required 
+                                />
+                            </Form.Group>
 
-                        {/* Username Input */}
-                        <Form.Group className="mb-3">
-                            <Form.Label htmlFor="username">Username</Form.Label>
-                            <Form.Control type="text" id="username" placeholder="Enter your username" required />
-                            <div id="username-error" className="error-message mt-2">Fullname error</div>
-                        </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control 
+                                    type="text" 
+                                    value={username} 
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    placeholder="Enter your username" 
+                                    required 
+                                />
+                            </Form.Group>
 
-                        {/* Password Input */}
-                        <Form.Group className="mb-3">
-                            <Form.Label htmlFor="password">Password</Form.Label>
-                            <Form.Control type="password" id="password" placeholder="Create a password" required />
-                            <div id="password-error" className="error-message mt-2">Password error</div>
-                        </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control 
+                                    type="password" 
+                                    value={password} 
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Create a password" 
+                                    required 
+                                />
+                            </Form.Group>
 
-                        {/* Confirm Password Input */}
-                        <Form.Group className="mb-3">
-                            <Form.Control type="password" id="confirm-password" placeholder="Confirm your password" required />
-                            <div id="confirm-password-error" className="error-message mt-2">Confirm Password error</div>
-                        </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Confirm Password</Form.Label>
+                                <Form.Control 
+                                    type="password" 
+                                    value={confirmPassword} 
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="Confirm your password" 
+                                    required 
+                                />
+                            </Form.Group>
 
-                        {/* Sign Up Button */}
-                        <div className="d-grid">
-                            <Button type="submit" className="btn-accept" id="submit-btn">Create account</Button>
-                        </div>
+                            <div className="d-grid">
+                                <Button type="submit" className="btn-accept">Create account</Button>
+                            </div>
+                        </Form>
 
-                        {/* Already have an account link */}
                         <div className="mt-3 text-center">
                             <span className="already-account">
-                                Already have an account ?{' '}
-                                <Link to="/login" className="text-decoration-none link">Sign In</Link>
+                                Already have an account? <Link to="/login" className="text-decoration-none link">Sign In</Link>
                             </span>
                         </div>
                     </div>

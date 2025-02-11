@@ -105,3 +105,10 @@ time="2025-02-10T14:02:16+05:00" level=info msg="Registering routes..." func="us
 time="2025-02-10T14:02:16+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
 time="2025-02-10T14:06:22+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
 time="2025-02-10T14:06:22+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T11:09:46+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T11:09:46+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T11:09:50+05:00" level=info msg="User with email john@example.com logged in from ::1" func="user-service/internal/handler.(*userHandler).HandleLogin" file=user_handler.go
+time="2025-02-11T11:15:19+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T11:15:19+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T11:15:23+05:00" level=info msg="User with email john@example.com logged in from ::1" func="user-service/internal/handler.(*userHandler).HandleLogin" file=user_handler.go
+time="2025-02-11T11:16:26+05:00" level=info msg="Refreshed token for user with id 67a8678671dd45b904fcde8d from IP ::1" func="user-service/internal/handler.(*userHandler).HandleRefresh" file=user_handler.go
