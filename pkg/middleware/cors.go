@@ -28,15 +28,19 @@ func CorsMiddleware() gin.HandlerFunc {
 		for _, allowedOrigin := range corsConfig.AllowedOrigins {
 			if origin == allowedOrigin {
 				c.Header("Access-Control-Allow-Origin", origin)
+				c.Header("Access-Control-Allow-Credentials", "true")
 				break
 			}
 		}
 
 		c.Header("Access-Control-Allow-Methods", strings.Join(corsConfig.AllowedMethods, ", "))
 		c.Header("Access-Control-Allow-Headers", strings.Join(corsConfig.AllowedHeaders, ", "))
+		c.Header("Access-Control-Expose-Headers", "Authorization")
 
+		// preflight
 		if c.Request.Method == http.MethodOptions {
-			c.Status(http.StatusOK)
+			c.Header("Access-Control-Max-Age", "86400")
+			c.Status(http.StatusNoContent)
 			c.Abort()
 			return
 		}

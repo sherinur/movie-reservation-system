@@ -64,8 +64,8 @@ func ParseEnvConfig() (*Config, error) {
 		mongoDbName             = os.Getenv("DB_NAME")
 		jwtAccessSecret         = os.Getenv("JWT_ACCESS_SECRET")
 		jwtRefreshSecret        = os.Getenv("JWT_REFRESH_SECRET")
-		jwtRefreshExpirationStr = os.Getenv("JWT_EXPIRATION")
-		jwtAccessExpirationStr  = os.Getenv("JWT_EXPIRATION")
+		jwtAccessExpirationStr  = os.Getenv("JWT_ACCESS_EXPIRATION")
+		jwtRefreshExpirationStr = os.Getenv("JWT_REFRESH_EXPIRATION")
 		goEnv                   = os.Getenv("GO_ENV")
 	)
 

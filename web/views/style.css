@@ -121,7 +121,7 @@ a.link {
   background-position: center;
   z-index: -1; }
 
-.login-section {
+.login-section, .profile-section {
   display: flex;
   justify-content: center;
   align-items: center; }
@@ -399,6 +399,56 @@ a.link {
 header img {
   height: 40px;
   margin-right: 15px;
+}
+
+.nav-pills .nav-item .nav-link {
+  font-size: 16px;
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-style: normal;
+  color: #ffffff;
+  border-radius: 50px;
+  border: 2px solid #ffffff;
+}
+.nav-pills .nav-item .nav-link.active {
+  background-color: #1DE782;
+  border: none;
+}
+.nav-pills .nav-item:not(:last-child) {
+  margin-right: 10px;
+}
+
+.card {
+  text-decoration: none;
+  box-shadow: none;
+  border: 1px solid #FFFFFF;
+  color: #FFFFFF;
+  background: none;
+  max-height: 600px;
+}
+.card .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.card .card-body .btn {
+  font-size: 20px;
+  font-family: "Poppins", serif;
+  font-weight: 500;
+  font-style: normal;
+  background-color: #1DE782;
+  border: none;
+  border-radius: 8px;
+}
+.card .card-body .btn:hover {
+  background-color: #58eba1;
+}
+.card .card-body .btn:active {
+  background-color: #32c77d;
+}
+
+.row {
+  overflow: hidden;
 }
 
 /*# sourceMappingURL=style.css.map */
