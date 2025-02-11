@@ -362,3 +362,44 @@ time="2025-02-09T00:29:40+05:00" level=info msg="Cinema get with ID apAcIqZzTCG3
 time="2025-02-09T00:30:30+05:00" level=info msg="Failed to add hall in cinema with ID apAcIqZzTCG3ZRK9vewJMA== from IP ::1, error: hall already exists" func="movie-service/internal/handler.(*cinemaHandler).HandleAddHall" file=cinema_handler.go
 time="2025-02-09T00:30:38+05:00" level=info msg="Hall added in cinema with ID apAcIqZzTCG3ZRK9vewJMA== from IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleAddHall" file=cinema_handler.go
 time="2025-02-09T00:30:48+05:00" level=info msg="Hall 12 get from cinema with ID apAcIqZzTCG3ZRK9vewJMA== form IP ::1" func="movie-service/internal/handler.(*cinemaHandler).HandleGetHall" file=cinema_handler.go
+time="2025-02-11T04:44:23+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T04:44:23+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T04:44:40+05:00" level=info msg="Faile to get movie by ID get from IP 127.0.0.1, error: mongo: no documents in result" func="movie-service/internal/handler.(*movieHandler).HadleGetMovieById" file=movie_handler.go
+time="2025-02-11T04:44:44+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:47:25+05:00" level=info msg="Faile to get movie by ID batch from IP ::1, error: mongo: no documents in result" func="movie-service/internal/handler.(*movieHandler).HadleGetMovieById" file=movie_handler.go
+time="2025-02-11T04:47:32+05:00" level=info msg="Failed to add batch of movie from IP ::1, error: movie PG rating must be G, PG, PG-13, R, NC-17" func="movie-service/internal/handler.(*movieHandler).HandleAddBatchOfMovie" file=movie_handler.go
+time="2025-02-11T04:48:28+05:00" level=info msg="Failed to add batch of movie from IP ::1, error: movie PG rating must be G, PG, PG-13, R, NC-17" func="movie-service/internal/handler.(*movieHandler).HandleAddBatchOfMovie" file=movie_handler.go
+time="2025-02-11T04:49:00+05:00" level=info msg="Batch of movies added with IDs: [v0KQ3vdbQSm19KOy_sE8Fg== eGmCYnj9SQ2NPD0hfro0Tg== Yl9RWEBaRgCM36ngFf5H3g== VvhINISUSHO5YvzW-bGI9Q== 15E0mHMYQqCKfHJWlc14gw== _FZJ1seQRjOH_BsHxrMqtQ== lODnBpjHRTKlCK_T_bJ0mg== DN4YMKisRjeZBhdk_1pTbw== SD_7ROwTTJSjcKLv8Ovgdw== lGh6Qu4SSBWzkTYncpTAGw== h4vbmkUHR9q5UYdoh9DMqg== don8IcE1R5GENBLq_-s0Gw== mDUTToR6RZuDj3WqBDi2Qw== UZ7nJjRxTjal8V3KodHWiA== jRO6YxPJRJ26ucZpWIxlOA== GRN0LjyHShGBgGuR67oGWQ== xiH40MdOSluwSLATASEHSA== LIUkh6USRgiKn1imYaUc_A== 28xFDBR_T12vT468Mpxbtg== BcIuyRNoSvu0JpQugMjaFQ==] from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleAddBatchOfMovie" file=movie_handler.go
+time="2025-02-11T04:49:04+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:55:48+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:55:48+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:56:00+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:56:34+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:56:43+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:56:45+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:56:45+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:56:56+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:57:20+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:57:20+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T04:58:51+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T05:00:12+05:00" level=info msg="All movie returned form IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T05:04:07+05:00" level=info msg="All movie returned form IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T05:04:10+05:00" level=info msg="Faile to get movie by ID n from IP ::1, error: mongo: no documents in result" func="movie-service/internal/handler.(*movieHandler).HadleGetMovieById" file=movie_handler.go
+time="2025-02-11T05:04:16+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T05:04:16+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T05:04:21+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T05:04:21+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T05:04:24+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T05:04:24+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T05:06:31+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T05:06:31+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T05:52:22+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T05:52:22+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T10:21:11+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T10:21:11+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T10:21:21+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T10:21:21+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T12:08:58+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T12:08:58+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-11T12:09:24+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go
+time="2025-02-11T12:09:24+05:00" level=info msg="All movie returned form IP 127.0.0.1" func="movie-service/internal/handler.(*movieHandler).HandleGetAllMovie" file=movie_handler.go

@@ -53,7 +53,7 @@ func ValidateCinema(cinema models.Cinema) error {
 }
 
 func ValidateMovie(movie models.Movie) error {
-	var pgratinglist = map[string]struct{}{
+	pgratinglist := map[string]struct{}{
 		"G":     {},
 		"PG":    {},
 		"PG-13": {},

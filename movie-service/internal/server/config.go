@@ -13,11 +13,10 @@ var (
 )
 
 type Config struct {
-	Port         string
-	DbUri        string
-	DbName       string
-	JwtSecretKey string
-	ExpHours     string
+	Port            string
+	DbUri           string
+	DbName          string
+	JwtAccessSecret string
 }
 
 func GetConfig() *Config {
@@ -50,20 +49,20 @@ func ParseEnvConfig() (*Config, error) {
 	}
 
 	var (
-		port        = os.Getenv("PORT")
-		mongoUri    = os.Getenv("MONGO_URI")
-		mongoDbName = os.Getenv("DB_NAME")
+		port            = os.Getenv("PORT")
+		mongoUri        = os.Getenv("MONGO_URI")
+		mongoDbName     = os.Getenv("DB_NAME")
+		jwtAccessSecret = os.Getenv("JWT_ACCESS_SECRET")
 	)
 
-	if port == "" || mongoUri == "" || mongoDbName == "" {
+	if port == "" || mongoUri == "" || mongoDbName == "" || jwtAccessSecret == "" {
 		return nil, ErrInvalidEnv
 	}
 
 	return &Config{
-		Port:   ":" + port,
-		DbUri:  mongoUri,
-		DbName: mongoDbName,
-		// JwtSecretKey: jwtSecretKey,
-		// ExpHours:     expHours,
+		Port:            ":" + port,
+		DbUri:           mongoUri,
+		DbName:          mongoDbName,
+		JwtAccessSecret: jwtAccessSecret,
 	}, nil
 }

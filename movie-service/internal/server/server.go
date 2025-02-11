@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sherinur/movie-reservation-system/pkg/db"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
+	"github.com/sherinur/movie-reservation-system/pkg/middleware"
 )
 
 type Server interface {
@@ -29,6 +30,20 @@ type server struct {
 }
 
 func NewServer(cfg *Config) Server {
+	r := gin.Default()
+
+	corsConfig := &middleware.CorsConfig{
+		AllowedOrigins: []string{"http://localhost:4200"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Content-Type", "Authorization"},
+	}
+
+	// cors middleware
+	middleware.SetCorsConfig(corsConfig)
+	r.Use(middleware.CorsMiddleware())
+
+	// jwt middleware
+	middleware.SetSecret([]byte(cfg.JwtAccessSecret))
 	return &server{
 		router: gin.Default(),
 		cfg:    cfg,
@@ -81,7 +96,7 @@ func (s *server) registerRoutes() error {
 	// Basic crud operation routes for movie and cinema
 	s.router.POST("/movie", s.movieHandler.HandleAddMovie)
 	s.router.POST("/movie/batch", s.movieHandler.HandleAddBatchOfMovie)
-	s.router.GET("/movielist", s.movieHandler.HandleGetAllMovie)
+	s.router.GET("/movie", s.movieHandler.HandleGetAllMovie)
 	s.router.GET("/movie/:id", s.movieHandler.HadleGetMovieById)
 	s.router.PUT("/movie/:id", s.movieHandler.HandleUpdateMovieById)
 	s.router.DELETE("/movie/:id", s.movieHandler.HandleDeleteMovieByID)

@@ -80,6 +80,7 @@ func (h *cinemaHandler) HandleGetAllCinema(c *gin.Context) {
 	h.log.Infof("Cinema get from IP %s ", c.ClientIP())
 	c.JSON(http.StatusOK, data)
 }
+
 func (h *cinemaHandler) HadleGetCinemaById(c *gin.Context) {
 	id := c.Param("id")
 
