@@ -1,0 +1,25 @@
+{
+    "screening_id": "679bg09j53ae5cc94c021c5d",
+    "user_id": "679b90f897ae5cc94c021c5d",
+    "status": "processing",
+    "tickets": [
+      {
+        "seatrow": "J",
+        "seatcolumn": "7",
+        "price": 1800,
+        "seattype": "love",
+        "usertype": "adult"
+      },
+      {
+        "seatrow": "J",
+        "seatcolumn": "6",
+        "price": 1800,
+        "seattype": "love",
+        "usertype": "adult"
+      }
+    ],
+    "total_price": 3600,
+    "expiring_at": {
+      "$date": "2025-01-31T07:27:06.647Z"
+    }
+  }

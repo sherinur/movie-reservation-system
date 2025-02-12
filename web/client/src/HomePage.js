@@ -7,6 +7,7 @@ const MoviePage = () => {
   // const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
+<<<<<<< HEAD
   // useEffect(() => {
   //   fetch("http://localhost/movi/movie")
   //     .then(response => response.json())
@@ -302,6 +303,21 @@ let movies = [
       "Status": "Released"
   }
 ]
+=======
+  useEffect(() => {
+    fetch("http://localhost/movi/movie")
+      .then(response => response.json())
+      .then(data => {
+        setMovies(data); 
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error("Movie download error:", error);
+        setLoading(false);
+      });
+  }, []);
+
+>>>>>>> main
   return (
     <div>
       <div className="background-wrapper"></div>
@@ -332,17 +348,17 @@ let movies = [
                 <a href="#" className="movie-link">
                   <div className="poster-container">
                     <img 
-                      src={movie.PosterImage || "https://via.placeholder.com/140x207"} 
+                      src={movie.posterimage || "https://via.placeholder.com/140x207"} 
                       className="card-img-top" 
-                      alt={movie.Title} 
+                      alt={movie.title} 
                     />
                     <div className="rating-badge">
-                      <span>&#9733;</span> {movie.Rating || "N/A"}
+                      <span>&#9733;</span> {movie.rating || "N/A"}
                     </div>
-                    <div className="pg-rating">{movie.PGrating || "N/A"}+</div>
+                    <div className="pg-rating">{movie.pgrating || "N/A"}+</div>
                   </div>
                   <div className="card-body">
-                    <h6 className="card-title">{movie.Title}</h6>
+                    <h6 className="card-title">{movie.title}</h6>
                   </div>
                 </a>
               </div>

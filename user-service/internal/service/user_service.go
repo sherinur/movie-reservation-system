@@ -13,6 +13,7 @@ import (
 type UserService interface {
 	Register(ctx context.Context, req *models.RegisterRequest) error
 	Authorize(ctx context.Context, req *models.LoginRequest) (*models.User, error)
+	Refresh(ctx context.Context, refreshToken string) error
 	GetAllUsers(ctx context.Context) ([]models.User, error)
 	GetUser(ctx context.Context, id string) (*models.User, error)
 	UpdatePasswordById(ctx context.Context, id string, password string) error
@@ -95,6 +96,10 @@ func (s *userService) Register(ctx context.Context, req *models.RegisterRequest)
 		return err
 	}
 
+	return nil
+}
+
+func (s *userService) Refresh(ctx context.Context, refreshToken string) error {
 	return nil
 }
 

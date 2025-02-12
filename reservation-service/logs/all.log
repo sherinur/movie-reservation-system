@@ -109,3 +109,9 @@ time="2025-01-28T12:50:48+05:00" level=info msg="error adding new process: not p
 time="2025-01-28T12:51:32+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
 time="2025-01-28T12:51:32+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
 time="2025-01-28T12:51:32+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T19:45:28+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T19:47:00+05:00" level=info msg="Successfully initialized the logrus logger" func=github.com/sherinur/movie-reservation-system/pkg/logging.Init file=init.go
+time="2025-01-30T19:47:00+05:00" level=info msg="Registering routes.." func="reservation-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-01-30T19:47:00+05:00" level=info msg="Sarting server at the port:8080" func="reservation-service/internal/server.(*server).Start" file=server.go
+time="2025-01-30T19:51:12+05:00" level=info msg="error paying the reservation: mongo: no documents in result" func="reservation-service/internal/handler.(*reservationHandler).PayReservation" file=reservation_handler.go
+time="2025-01-30T19:51:32+05:00" level=info msg="error paying the reservation: mongo: no documents in result" func="reservation-service/internal/handler.(*reservationHandler).PayReservation" file=reservation_handler.go

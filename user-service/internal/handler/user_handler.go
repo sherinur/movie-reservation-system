@@ -13,6 +13,7 @@ import (
 type UserHandler interface {
 	HandleLogin(c *gin.Context)
 	HandleRegister(c *gin.Context)
+	HandleRefresh(c *gin.Context)
 	HandleProfile(c *gin.Context)
 	HandleUpdatePassword(c *gin.Context)
 	HandleUpdateEmail(c *gin.Context)
@@ -60,7 +61,7 @@ func (h *userHandler) HandleLogin(c *gin.Context) {
 	}
 
 	accessPayload := h.tokenService.CreateAccessPayload(user)
-	refreshPayload := h.tokenService.CreateAccessPayload(user)
+	refreshPayload := h.tokenService.CreateRefreshPayload(user)
 
 	accessToken, refreshToken, err := h.tokenService.GenerateTokens(accessPayload, refreshPayload)
 	if err != nil {
@@ -70,6 +71,7 @@ func (h *userHandler) HandleLogin(c *gin.Context) {
 	}
 
 	h.log.Infof("User with email %s logged in from %s", logReq.Email, c.ClientIP())
+	c.SetCookie("refreshToken", refreshToken, 3600*24*30, "/", "", true, true)
 	c.JSON(http.StatusOK, gin.H{"accessToken": accessToken, "refreshToken": refreshToken})
 }
 
@@ -110,13 +112,41 @@ func (h *userHandler) HandleRegister(c *gin.Context) {
 			return
 		default:
 			h.log.Errorf("User registration error: %s", err.Error())
-			c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "message": "Internal server error"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal server error"})
 			return
 		}
 	}
 
 	h.log.Infof("Registered an user with email %s from IP %s", regReq.Email, c.ClientIP())
 	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
+}
+
+func (h *userHandler) HandleRefresh(c *gin.Context) {
+	refreshToken, err := c.Cookie("refreshToken")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	userData := h.tokenService.ParseRefreshToken(refreshToken)
+	if userData == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	accessPayload := h.tokenService.CreateAccessPayload(userData)
+	refreshPayload := h.tokenService.CreateRefreshPayload(userData)
+
+	accessToken, refreshToken, err := h.tokenService.GenerateTokens(accessPayload, refreshPayload)
+	if err != nil {
+		h.log.Errorf("User token refreshing error: %s", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Internal server error"})
+		return
+	}
+
+	h.log.Infof("Refreshed token for user with id %s from IP %s", userData.ID, c.ClientIP())
+	c.SetCookie("refreshToken", refreshToken, 3600*24*30, "/", "", true, true)
+	c.JSON(http.StatusOK, gin.H{"accessToken": accessToken, "refreshToken": refreshToken})
 }
 
 // GET /users/me => get user profile data (need JWT)
