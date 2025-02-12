@@ -1,10 +1,40 @@
-// src/HomePage.js
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './style.scss';
-import logo from './logo.png'; // Ensure the logo image is in the correct path
+// src/SessionPage.js
+import React, { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./style.scss";
+import logo from "./logo.png";
 
 const SessionPage = () => {
+  // const [movie, setMovie] = useState(null);
+  // const [sessions, setSessions] = useState([]);
+  // const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   // Fetch movie data
+  //   fetch("localhost/movi/movie/60d5ec49f9a1c72d4c8e4b8b")
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setMovie(data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching movie:", error);
+  //       setLoading(false);
+  //     });
+
+  //   // Fetch session data
+  //   fetch("localhost/movi/sessions?movie_id=60d5ec49f9a1c72d4c8e4b8b")
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setSessions(data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching sessions:", error);
+  //       setLoading(false);
+  //     });
+  // }, []);
+
   return (
     <div>
       <div className="background-wrapper"></div>
@@ -21,57 +51,52 @@ const SessionPage = () => {
       </header>
 
       <div className="container py-4">
-        <div className="row justify-content-center">
-          <div className="row">
-            <div className="col-lg-8">
-              <h3 className="custom-white">Theater</h3>
-              <div className="btn-group mb-3" role="group">
-                <button className="btn btn-outline-light">Bukit Bintang</button>
-                <button className="btn btn-outline-light selected">IOI Putrajaye</button>
-                <button className="btn btn-outline-light">KB Mall</button>
-              </div>
-
-              <h3 className="custom-white">Date</h3>
-              <div className="d-flex flex-wrap gap-2 mb-3">
-                <button className="btn btn-outline-light">22 Oct Mon</button>
-                <button className="btn btn-outline-light selected">22 Oct Mon</button>
-                <button className="btn btn-outline-light">22 Oct Mon</button>
-                <button className="btn btn-outline-light">22 Oct Mon</button>
-                <button className="btn btn-outline-light">22 Oct Mon</button>
-              </div>
-
-              <h3 className="custom-white">Time</h3>
-              <div className="d-flex flex-wrap gap-2 mb-3">
-                <button className="btn btn-outline-light">15:40</button>
-                <button className="btn btn-outline-light selected">15:40</button>
-                <button className="btn btn-outline-light">15:40</button>
-                <button className="btn btn-outline-light">15:40</button>
-              </div>
-            </div>
-
-            <div className="col-lg-3">
+        <div className="row">
+          <div className="col-lg-4">
+            {loading ? (
+              <p className="text-white">Loading movie...</p>
+            ) : movie ? (
               <div className="card bg-dark text-white">
-                <img src="movie.jpeg" className="card-img-top" alt="Movie Poster" />
+                <img src={movie.PosterImage} className="card-img-top" alt={movie.Title} />
                 <div className="card-body">
-                  <h5 className="card-title">SPIDERMAN ACROSS THE SPIDERVERSE</h5>
-                  <p className="card-text">Movie description here...</p>
-                  <p><strong>Duration:</strong> 2h 30m</p>
-                  <p><strong>Type:</strong> Cartoon</p>
+                  <h5 className="card-title">{movie.Title}</h5>
+                  <p className="card-text">{movie.Description}</p>
+                  <p><strong>Genre:</strong> {movie.Genre}</p>
+                  <p><strong>Duration:</strong> {movie.Duration} minutes</p>
+                  <p><strong>Language:</strong> {movie.Language}</p>
+                  <p><strong>Release Date:</strong> {movie.ReleaseDate}</p>
+                  <p><strong>Rating:</strong> {movie.Rating}</p>
+                  <p><strong>PG Rating:</strong> {movie.PGrating}</p>
                 </div>
               </div>
-              <div className="card bg-dark text-white mt-3 p-3">
-                <h5>IOI Putrajaye</h5>
-                <p>28 October 2023</p>
-                <p>15:40</p>
-                <small>*Seat selection can be done after this</small>
-                <button className="btn btn-success w-100 mt-2">Proceed</button>
-              </div>
+            ) : (
+              <p className="text-white">Movie not found.</p>
+            )}
+          </div>
+
+          
+
+          <div className="col-lg-8">
+            <h3 className="custom-white">Available Sessions</h3>
+            <div className="row">
+              {loading ? (
+                <p className="text-white">Loading sessions...</p>
+              ) : sessions.length === 0 ? (
+                <p className="text-white">There are no available sessions.</p>
+              ) : (
+                sessions.map((session, index) => (
+                  <div key={index} className="card bg-dark text-white mb-3 p-3">
+                    <h5>{session.cinemaAddress} - Hall {session.hall_number}</h5>
+                    <p><strong>Start:</strong> {new Date(session.start_time).toLocaleString()}</p>
+                    <p><strong>End:</strong> {new Date(session.end_time).toLocaleString()}</p>
+                    <button className="btn btn-success w-100 mt-2">Select</button>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
       </div>
-
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     </div>
   );
 };

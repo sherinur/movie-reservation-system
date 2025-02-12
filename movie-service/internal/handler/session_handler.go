@@ -16,6 +16,7 @@ type SessionHandler interface {
 	HandleAddSession(c *gin.Context)
 	HandleGetAllSession(c *gin.Context)
 	HandleGetSessionByID(c *gin.Context)
+	HandleGetSeats(c *gin.Context)
 	HandleUpdateSessionByID(c *gin.Context)
 	HandleDeleteSessionByID(c *gin.Context)
 	HandleDeleteAllSession(c *gin.Context)
@@ -90,6 +91,26 @@ func (h *sessionHandler) HandleGetSessionByID(c *gin.Context) {
 
 	h.log.Infof("Session retrieved with ID %s from IP %s", sessionID, c.ClientIP())
 	c.JSON(http.StatusOK, session)
+}
+
+func (h *sessionHandler) HandleGetSeats(c *gin.Context) {
+	sessionID := c.Param("id")
+
+	seats, err := h.sessionHandler.GetSeat(sessionID)
+	if err != nil {
+		h.log.Infof("Failed to get seats with ID %s from IP %s, error: %s", sessionID, c.ClientIP(), err.Error())
+		_, clientError := utils.BadRequestSessionErrors[err]
+		switch {
+		case clientError:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
+
+	h.log.Infof("Seats retrieved with ID %s from IP %s", sessionID, c.ClientIP())
+	c.JSON(http.StatusOK, seats)
 }
 
 func (h *sessionHandler) HandleUpdateSessionByID(c *gin.Context) {

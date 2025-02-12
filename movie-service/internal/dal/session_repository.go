@@ -15,6 +15,7 @@ type SessionRepository interface {
 	AddSession(session models.Session) (*mongo.InsertOneResult, error)
 	GetAllSession() ([]models.Session, error)
 	GetSessionByID(sessionID string) (*models.Session, error)
+	GetSeats(sessionID string) ([]models.Seat, error)
 	UpdateSessionByID(sessionID string, session models.Session) (*mongo.UpdateResult, error)
 	DeleteSessionByID(sessionID string) (*mongo.DeleteResult, error)
 	DeleteAllSession() (*mongo.DeleteResult, error)
@@ -81,6 +82,18 @@ func (r *sessionRepository) GetSessionByID(sessionID string) (*models.Session, e
 	}
 
 	return &session, nil
+}
+
+func (r *sessionRepository) GetSeats(sessionID string) ([]models.Seat, error) {
+	col := r.db.Collection("session")
+
+	var session models.Session
+	err := col.FindOne(context.TODO(), bson.M{"_id": sessionID}).Decode(&session)
+	if err != nil {
+		return nil, err
+	}
+
+	return session.Seats, nil
 }
 
 func (r *sessionRepository) UpdateSessionByID(sessionID string, session models.Session) (*mongo.UpdateResult, error) {

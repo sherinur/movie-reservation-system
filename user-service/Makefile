@@ -8,7 +8,7 @@ test:
 build:
 	go mod tidy
 	gofumpt -l -w .
-	go build -o $(BINARY_NAME) $(MAIN_FILE)
+	GOOS=linux GOARCH=amd64 go build -o $(BINARY_NAME) $(MAIN_FILE)
 
 run: build
 	./$(BINARY_NAME)
