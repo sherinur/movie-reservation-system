@@ -1,6 +1,7 @@
 package server
 
 import (
+	"net/http"
 	"os"
 
 	"movie-service/internal/dal"
@@ -33,7 +34,7 @@ func NewServer(cfg *Config) Server {
 	r := gin.Default()
 
 	corsConfig := &middleware.CorsConfig{
-		AllowedOrigins: []string{"http://localhost:4200"},
+		AllowedOrigins: []string{"http://localhost:3000"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type", "Authorization"},
 	}
@@ -75,6 +76,7 @@ func (s *server) Shutdown() {
 }
 
 func (s *server) registerRoutes() error {
+	s.log.Info(s.cfg.DbName, s.cfg.DbUri)
 	db, err := db.ConnectMongo(s.cfg.DbUri, s.cfg.DbName)
 	if err != nil {
 		return err
@@ -92,6 +94,13 @@ func (s *server) registerRoutes() error {
 	sessionRepository := dal.NewSessionRepository(db, cinemaRepository)
 	sessionService := service.NewSessionService(sessionRepository)
 	s.sessionHandler = handler.NewSessionHandler(sessionService, s.log)
+
+	s.router.OPTIONS("/*any", func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		c.Status(http.StatusNoContent)
+	})
 
 	// Basic crud operation routes for movie and cinema
 	s.router.POST("/movie", s.movieHandler.HandleAddMovie)
