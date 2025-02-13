@@ -26,7 +26,7 @@ func NewConfig() *config {
 func DefaultConfig() *config {
 	return &config{
 		Port:      ":8080",
-		DBuri:     "mongodb://localhost:27017",
+		DBuri:     "mongodb://mongo:27017",
 		DBname:    "reservationDB",
 		SecretKey: "a5d52d1471164c78450ee0f6095cfN2f2c712e45525010b0e46e936cc61e6d205",
 		ExpHours:  "1440",

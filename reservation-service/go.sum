@@ -61,8 +61,8 @@ github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-20250125170936-009706
 github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-20250125170936-009706ca1af8/go.mod h1:Pj4wExXBWY5AsHPDWGa4lOUrtF6t1KiDe+bHBD7Yshk=
 github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-20250205114506-6a2cf3ef0b57 h1:1SO0JCFM+6pTYJ7CtKmGaXrwjxnrkDnmJ3Tbe0w7JsU=
 github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-20250205114506-6a2cf3ef0b57/go.mod h1:6MiOS9L4KaJTHVrjBRtKImrdAyM664wZE5h10BLiHE4=
-github.com/sherinur/movie-reservation-system/pkg/middleware v0.0.0-20250130122455-731d944a2e79 h1:n+t3PKaMyQmskLS0egYQum+cznlZ1zAza7oMkdt0YNs=
-github.com/sherinur/movie-reservation-system/pkg/middleware v0.0.0-20250130122455-731d944a2e79/go.mod h1:kr/62YMnnIsB76w1Ve4ZEJjaZV2v7SOPD+JLo1eiohQ=
+github.com/sherinur/movie-reservation-system/pkg/middleware v0.0.0-20250212142651-98ed0f8c9182 h1:iilbyHmbEsSiTN8h+LmAGp65Q07u9IISwWQ11PIglKs=
+github.com/sherinur/movie-reservation-system/pkg/middleware v0.0.0-20250212142651-98ed0f8c9182/go.mod h1:kr/62YMnnIsB76w1Ve4ZEJjaZV2v7SOPD+JLo1eiohQ=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
 github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e h1:MRM5ITcdelLK2j1vwZ3Je0FKVCfqOLp5zO6trqMLYs0=

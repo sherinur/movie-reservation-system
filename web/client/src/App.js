@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Register from './Register';
 import Login from './Login';
+import Tickets from './Tickets';
 import HomePage from './HomePage';
 import SessionPage from './SessionPage';
 import SeatSelection from './SeatSelection';
@@ -17,9 +18,10 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/profile/tickets" element={<Tickets />} />
         <Route path="/booking" element={<SeatSelection />} />
-        <Route path="/paying" element={<Paying />} />
-        <Route path="/paid" element={<Paid />} />
+        <Route path="/booking/:id" element={<Paying />} />
+        <Route path="/paid/:id" element={<Paid />} />
         <Route path="/session/:movieID" element={<SessionPage />} />
         <Route path="/admin/movie" element={<MovieAdminPanel />} />
         <Route path="/admin/cinema" element={<CinemaAdminPanel />} />

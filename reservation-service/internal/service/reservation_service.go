@@ -50,7 +50,7 @@ func (s *reservationService) AddReservation(ctx context.Context, requestBody mod
 		return nil, ErrEmptyData
 	}
 	for _, ticket := range requestBody.Tickets {
-		if ticket.SeatColumn == "" || ticket.SeatRow == "" || ticket.Price <= 0 || ticket.SeatType == "" || ticket.UserType == "" {
+		if ticket.Seat == "" || ticket.Price <= 0 || ticket.SeatType == "" || ticket.UserType == "" {
 			return nil, ErrEmptyData
 		}
 	}
@@ -80,9 +80,9 @@ func (s *reservationService) PayReservation(ctx context.Context, id string, requ
 		return nil, ErrNoId
 	}
 
-	if requestBody.Email == "" || requestBody.PhoneNumber == "" {
-		return nil, ErrEmptyData
-	}
+	// if requestBody.Email == "" || requestBody.PhoneNumber == "" {
+	// 	return nil, ErrEmptyData
+	// }
 
 	process, err := s.reservationRepository.GetById(ctx, id)
 	if err != nil {
