@@ -150,6 +150,8 @@ const CinemaAdminPanel = () => {
 
   const handleHallSubmit = async (e) => {
     e.preventDefault();
+    const url = `http://localhost/movi/cinema/${currentCinema.id}/hall`
+    console.log(currentCinema.id)
 
     // Generate seats for the hall
     const seats = generateSeats(10, 10); // Example: 10 rows and 10 columns
@@ -162,12 +164,12 @@ const CinemaAdminPanel = () => {
     const updatedCinema = { ...currentCinema, hall_list: updatedHallList };
 
     try {
-      const response = await fetch(`http://localhost/movi/cinema/${currentCinema.id}`, {
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updatedCinema)
+        body: JSON.stringify(updatedHall)
       });
 
       if (response.ok) {

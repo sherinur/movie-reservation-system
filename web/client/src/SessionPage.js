@@ -90,8 +90,8 @@ const SessionPage = () => {
                 sessions.map((session, index) => (
                   <div key={index} className="card bg-dark text-white mb-3 p-3">
                     <h5>{session.cinemaAddress} - Hall {session.hall_number}</h5>
-                    <p><strong>Start:</strong> {new Date(session.start_time).toLocaleString()}</p>
-                    <p><strong>End:</strong> {new Date(session.end_time).toLocaleString()}</p>
+                    <p><strong>Date:</strong>{new Date(session.date).toLocaleString()}</p>
+                    <p><strong>Time:</strong> {session.start_time}</p>
                     <button className="btn btn-success w-100 mt-2">Select</button>
                   </div>
                 ))
