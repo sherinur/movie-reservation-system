@@ -16,10 +16,12 @@ type SessionHandler interface {
 	HandleAddSession(c *gin.Context)
 	HandleGetAllSession(c *gin.Context)
 	HandleGetSessionByID(c *gin.Context)
-	HandleGetSeats(c *gin.Context)
 	HandleUpdateSessionByID(c *gin.Context)
 	HandleDeleteSessionByID(c *gin.Context)
 	HandleDeleteAllSession(c *gin.Context)
+
+	HandleGetSeats(c *gin.Context)
+	HandleGetSessionsByMovieID(c *gin.Context)
 }
 
 type sessionHandler struct {
@@ -169,4 +171,24 @@ func (h *sessionHandler) HandleDeleteAllSession(c *gin.Context) {
 
 	h.log.Infof("All session deleted from IP %s", c.ClientIP())
 	c.JSON(http.StatusNoContent, gin.H{"deleted_count": deleteResult.DeletedCount})
+}
+
+func (h *sessionHandler) HandleGetSessionsByMovieID(c *gin.Context) {
+	movieID := c.Param("id")
+
+	sessions, err := h.sessionHandler.GetSessionsByMovieID(movieID)
+	if err != nil {
+		h.log.Infof("Failed to get sessions with movieID %s from IP %s, error: %s", movieID, c.ClientIP(), err.Error())
+		_, clientError := utils.BadRequestSessionErrors[err]
+		switch {
+		case clientError:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
+
+	h.log.Infof("Sessions retrieved with movieID %s from IP %s", movieID, c.ClientIP())
+	c.JSON(http.StatusOK, sessions)
 }

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link} from "react-router-dom";
 import { Alert } from "react-bootstrap";
 import axios from "axios";
+import logo from '../src/logo.png';
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -34,6 +35,18 @@ const Login = () => {
     return (
         <>
             <div className="background-wrapper"></div>
+
+            <header className="text-white py-3">
+                <div className="container d-flex justify-content-between align-items-center">
+                    <Link to="/" className="d-flex justify-content-center">
+                        <img src={logo} className="card-img-top" alt="logo"/>
+                    </Link>
+                    <div> 
+                    <a href="/login" className="btn btn-outline-light custom-green-btn">Log In</a>
+                    <a href="/register" className="btn btn-outline-light me-2">Register</a>
+                    </div>
+                </div>
+            </header>
 
             <div className="container">
                 <div className="row justify-content-center login-section">

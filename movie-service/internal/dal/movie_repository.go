@@ -102,7 +102,7 @@ func (r *movieRepository) GetMovieById(id string) (*models.Movie, error) {
 func (r *movieRepository) UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error) {
 	col := r.db.Collection("movie")
 
-	if len(strings.TrimSpace(movie.ID)) == 0 {
+	if len(strings.TrimSpace(movie.ID)) != 0 {
 		movie.ID = id
 	}
 

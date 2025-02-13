@@ -407,3 +407,24 @@ time="2025-02-12T14:47:03+05:00" level=info msg="Registering routes..." func="mo
 time="2025-02-12T14:47:13+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="movie-service/internal/server.(*server).Start" file=server.go
 time="2025-02-12T14:48:22+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
 time="2025-02-12T14:48:32+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:43:35+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:43:35+05:00" level=info msg="movieDBmongodb://mongo:27017" func="movie-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-02-12T23:43:45+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:44:07+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:44:07+05:00" level=info msg="movieDBmongodb://localhost:27017" func="movie-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-02-12T23:44:07+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:44:07+05:00" level=error msg="Can not start the server: listen tcp :8070: bind: address already in use" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:44:26+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:44:26+05:00" level=info msg="movieDBmongodb://localhost:27017" func="movie-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-02-12T23:44:26+05:00" level=info msg="Starting server on port:8070" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:44:53+05:00" level=info msg="Movie updated with ID hTyfDP2gSZq07mI2aEZEWA== from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleUpdateMovieById" file=movie_handler.go
+time="2025-02-12T23:48:32+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:48:32+05:00" level=info msg="movieDBmongodb://mongo:27017" func="movie-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-02-12T23:48:42+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:48:50+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:48:50+05:00" level=info msg="movieDBmongodb://localhost:27017" func="movie-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-02-12T23:48:50+05:00" level=info msg="Starting server on port:8077" func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-12T23:49:32+05:00" level=info msg="Movie updated with ID hTyfDP2gSZq07mI2aEZEWA== from IP ::1" func="movie-service/internal/handler.(*movieHandler).HandleUpdateMovieById" file=movie_handler.go
+time="2025-02-13T00:37:02+05:00" level=info msg="Registering routes..." func="movie-service/internal/server.(*server).Start" file=server.go
+time="2025-02-13T00:37:02+05:00" level=info msg="movieDBmongodb://mongo:27017" func="movie-service/internal/server.(*server).registerRoutes" file=server.go
+time="2025-02-13T00:37:12+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="movie-service/internal/server.(*server).Start" file=server.go

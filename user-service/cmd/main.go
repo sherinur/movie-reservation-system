@@ -15,7 +15,7 @@ import (
 
 func main() {
 	cfg := configs.GetConfig()
-	if cfg.GoEnv == "test" {
+	if cfg.GoEnv == "dev" {
 		return
 	}
 

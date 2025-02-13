@@ -1,7 +1,7 @@
 package main
 
 import (
-	"os"
+	"log"
 
 	"movie-service/internal/server"
 )
@@ -12,6 +12,6 @@ func main() {
 
 	err := apiServer.Start()
 	if err != nil {
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }

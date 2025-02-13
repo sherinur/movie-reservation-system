@@ -44,7 +44,6 @@ func CorsMiddleware() gin.HandlerFunc {
 				return
 			}
 		}
-
 		c.Next()
 	}
 }

@@ -39,6 +39,7 @@ var (
 	ErrSessionEndTimeInvalid        = errors.New("session end time cannot be before start time and in the past")
 	ErrSessionInvalidAvailableSeats = errors.New("session available seats cannot be negative")
 	ErrSeatCannotBeSet              = errors.New("session seat can not be seat")
+	ErrInvalidDate                  = errors.New("session date cannot be in the past")
 
 	BadRequestCinemaErrors = map[error]struct{}{
 		ErrInvalidId:            {},

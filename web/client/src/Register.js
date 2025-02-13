@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Button, Form, Container, Alert } from "react-bootstrap";
+import { Button, Form, Container, Alert} from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import logo from '../src/logo.png';
 
 const Register = () => {
     const [email, setEmail] = useState("");

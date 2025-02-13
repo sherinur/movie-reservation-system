@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-00010101000000-000000000000
 	github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-00010101000000-000000000000
-	github.com/sherinur/movie-reservation-system/pkg/middleware v0.0.0-00010101000000-000000000000
+	github.com/sherinur/movie-reservation-system/pkg/middleware v0.0.0-20250212142651-98ed0f8c9182
 	github.com/stretchr/testify v1.10.0
 )
 

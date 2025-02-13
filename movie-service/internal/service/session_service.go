@@ -12,10 +12,12 @@ type SessionService interface {
 	AddSession(session models.Session) (*mongo.InsertOneResult, error)
 	GetAllSession() ([]models.Session, error)
 	GetSessionByID(sessionID string) (*models.Session, error)
-	GetSeat(sessionID string) ([]models.Seat, error)
 	UpdateSessionByID(sessionID string, session models.Session) (*mongo.UpdateResult, error)
 	DeleteSessionByID(sessionID string) (*mongo.DeleteResult, error)
 	DeleteAllSession() (*mongo.DeleteResult, error)
+
+	GetSeat(sessionID string) ([]models.Seat, error)
+	GetSessionsByMovieID(movieID string) ([]models.Session, error)
 }
 
 type sessionService struct {
@@ -113,4 +115,17 @@ func (s *sessionService) DeleteAllSession() (*mongo.DeleteResult, error) {
 	}
 
 	return deleteResult, nil
+}
+
+func (s *sessionService) GetSessionsByMovieID(movieID string) ([]models.Session, error) {
+	if movieID == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	sessions, err := s.sessionRepository.GetSessionsByMovieID(movieID)
+	if err != nil {
+		return nil, err
+	}
+
+	return sessions, nil
 }

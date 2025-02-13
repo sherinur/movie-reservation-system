@@ -1,7 +1,6 @@
 {
     "number": 1,
-    "row_count": 10,
-    "column_count": 10, 
+    "available_seats":10,
     "seats": [
           {"row": "A", "column": "1", "status": "available"},
           {"row": "A", "column": "2", "status": "available"},

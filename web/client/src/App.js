@@ -3,10 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Register from './Register';
 import Login from './Login';
 import HomePage from './HomePage';
-import SessionPage from './SessionPage'
+import SessionPage from './SessionPage';
 import SeatSelection from './SeatSelection';
 import Paying from './Paying';
 import Paid from './Paid';
+import MovieAdminPanel from './MovieAdminPanel';
+import CinemaAdminPanel from './CinemaAdminPanel';
 
 const App = () => {
   return (
@@ -18,7 +20,9 @@ const App = () => {
         <Route path="/booking" element={<SeatSelection />} />
         <Route path="/paying" element={<Paying />} />
         <Route path="/paid" element={<Paid />} />
-        <Route path="/session" element={<SessionPage />} />
+        <Route path="/session/:movieID" element={<SessionPage />} />
+        <Route path="/admin/movie" element={<MovieAdminPanel />} />
+        <Route path="/admin/cinema" element={<CinemaAdminPanel />} />
       </Routes>
     </Router>
   );

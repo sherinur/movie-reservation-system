@@ -15,10 +15,12 @@ type SessionRepository interface {
 	AddSession(session models.Session) (*mongo.InsertOneResult, error)
 	GetAllSession() ([]models.Session, error)
 	GetSessionByID(sessionID string) (*models.Session, error)
-	GetSeats(sessionID string) ([]models.Seat, error)
 	UpdateSessionByID(sessionID string, session models.Session) (*mongo.UpdateResult, error)
 	DeleteSessionByID(sessionID string) (*mongo.DeleteResult, error)
 	DeleteAllSession() (*mongo.DeleteResult, error)
+
+	GetSeats(sessionID string) ([]models.Seat, error)
+	GetSessionsByMovieID(movieID string) ([]models.Session, error)
 }
 
 type sessionRepository struct {
@@ -131,4 +133,21 @@ func (r *sessionRepository) DeleteAllSession() (*mongo.DeleteResult, error) {
 	}
 
 	return deletResult, nil
+}
+
+func (r *sessionRepository) GetSessionsByMovieID(movieID string) ([]models.Session, error) {
+	col := r.db.Collection("session")
+
+	cursor, err := col.Find(context.TODO(), bson.M{"movie_id": movieID})
+	if err != nil {
+		return nil, err
+	}
+
+	var sessions []models.Session
+	err = cursor.All(context.TODO(), &sessions)
+	if err != nil {
+		return nil, err
+	}
+
+	return sessions, nil
 }

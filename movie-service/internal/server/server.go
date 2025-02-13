@@ -1,7 +1,6 @@
 package server
 
 import (
-	"net/http"
 	"os"
 
 	"movie-service/internal/dal"
@@ -46,7 +45,7 @@ func NewServer(cfg *Config) Server {
 	// jwt middleware
 	middleware.SetSecret([]byte(cfg.JwtAccessSecret))
 	return &server{
-		router: gin.Default(),
+		router: r,
 		cfg:    cfg,
 		log:    logging.NewLogger("dev"),
 	}
@@ -95,12 +94,12 @@ func (s *server) registerRoutes() error {
 	sessionService := service.NewSessionService(sessionRepository)
 	s.sessionHandler = handler.NewSessionHandler(sessionService, s.log)
 
-	s.router.OPTIONS("/*any", func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
-		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		c.Status(http.StatusNoContent)
-	})
+	// s.router.OPTIONS("/*any", func(c *gin.Context) {
+	// 	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
+	// 	c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	// 	c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+	// 	c.Status(http.StatusNoContent)
+	// })
 
 	// Basic crud operation routes for movie and cinema
 	s.router.POST("/movie", s.movieHandler.HandleAddMovie)
@@ -126,11 +125,12 @@ func (s *server) registerRoutes() error {
 	s.router.POST("/session", s.sessionHandler.HandleAddSession)
 	s.router.GET("/session", s.sessionHandler.HandleGetAllSession)
 	s.router.GET("/session/:id", s.sessionHandler.HandleGetSessionByID)
-	s.router.GET("/session/:id/seat", s.sessionHandler.HandleGetSeats)
 	s.router.PUT("/session/:id", s.sessionHandler.HandleUpdateSessionByID)
 	s.router.DELETE("/session/:id", s.sessionHandler.HandleDeleteSessionByID)
 	s.router.DELETE("/session", s.sessionHandler.HandleDeleteAllSession)
 
+	s.router.GET("/session/:id/seat", s.sessionHandler.HandleGetSeats)
+	s.router.GET("/session/movie/:id", s.sessionHandler.HandleGetSessionsByMovieID)
 	// other routes
 	s.router.GET("/health", handler.GetHealth)
 

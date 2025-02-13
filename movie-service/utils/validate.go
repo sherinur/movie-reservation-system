@@ -32,7 +32,13 @@ func ValidateHall(hall models.Hall) error {
 }
 
 func ValidateCinema(cinema models.Cinema) error {
-	if strings.TrimSpace(cinema.Name) == "" || strings.TrimSpace(cinema.Address) == "" {
+	switch {
+	case strings.TrimSpace(cinema.Name) == "",
+		strings.TrimSpace(cinema.Address) == "",
+		strings.TrimSpace(cinema.City) == "":
+		return ErrCinemaNameAddress
+	}
+	if strings.TrimSpace(cinema.Name) == "" || strings.TrimSpace(cinema.Address) == "" || strings.TrimSpace(cinema.City) == "" {
 		return ErrCinemaNameAddress
 	}
 
@@ -40,15 +46,15 @@ func ValidateCinema(cinema models.Cinema) error {
 		return ErrValidRating
 	}
 
-	if len(cinema.HallList) == 0 {
-		return ErrCinemaNoHalls
-	}
+	// if len(cinema.HallList) == 0 {
+	// 	return ErrCinemaNoHalls
+	// }
 
-	for _, hall := range cinema.HallList {
-		if err := ValidateHall(hall); err != nil {
-			return err
-		}
-	}
+	// for _, hall := range cinema.HallList {
+	// 	if err := ValidateHall(hall); err != nil {
+	// 		return err
+	// 	}
+	// }
 	return nil
 }
 
@@ -100,11 +106,11 @@ func ValidateSesesion(session models.Session) error {
 		return ErrSessionCinemaIDEmpty
 	case session.HallNumber < 0:
 		return ErrSessionInvalidHallNumber
-	case session.StartTime.Before(time.Now()):
+	case session.Date.Before(time.Now()):
+		return ErrInvalidDate
+	case session.StartTime == "":
 		return ErrSessionStartTimeInvalid
-	case session.EndTime.Before(time.Now()):
-		return ErrSessionEndTimeInvalid
-	case session.EndTime.Before(session.StartTime):
+	case session.EndTime == "":
 		return ErrSessionEndTimeInvalid
 	case session.AvailableSeats < 0:
 		return ErrSessionInvalidAvailableSeats
