@@ -37,7 +37,7 @@ func GetConfig() *Config {
 func GetDefaultConfig() *Config {
 	return &Config{
 		Port:   ":8080",
-		DbUri:  "mongodb://localhost:27017",
+		DbUri:  "mongodb://mongo:27017",
 		DbName: "movieDB",
 	}
 }

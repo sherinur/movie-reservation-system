@@ -1,7 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+
 
 const Paid = () => {
-  return (
+    const navigate = useNavigate();
+    const jwtToken = localStorage.getItem("accessToken")
+    const id = useParams();
+    const idString = id.id.toString();
+    const [seats, setSeats] = useState([]);
+    const [prices, setPrices] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+
+    useEffect(() => {
+        fetch("http://localhost/res/booking/" + idString, {
+            method: "GET",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + jwtToken, 
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+            let tempSeats = []
+            let tempPrices = []
+            let total = 0
+
+            for (let ticket of data.Tickets) {
+                tempSeats.push(ticket.seat)
+                tempPrices.push(ticket.price)
+                total += ticket.price
+            }
+
+            setSeats(tempSeats)
+            setPrices(tempPrices)
+            setTotalPrice(total)
+            })
+            .catch((error) => console.error("Error getting reservation:", error));
+        }, [idString]);
+
+    return (
         <>
             <div class="background-wrapper"></div>
             
@@ -19,8 +56,8 @@ const Paid = () => {
 
                         <div class="ticket-info">
                             <div class="seats">
-                                <strong>Ticket (3)</strong>
-                                <p>C8, C9, C10</p>
+                                <strong>Tickets ({seats.length})</strong>
+                                <p>{seats.join(", ") || "None"}</p>
                             </div>
                             <div class="time">
                                 <strong>Hours</strong>
@@ -30,7 +67,7 @@ const Paid = () => {
                     </div>
 
                     <button class="checkout-btn">Download Ticket</button>
-                    <a href="/booking"><button class="back-btn">Back to Movies</button></a>
+                    <Link to="/"><button class="back-btn">Back to Movies</button></Link>
                 </div>
                 
             </div>

@@ -33,7 +33,7 @@ func NewServer(cfg *Config) Server {
 	r := gin.Default()
 
 	corsConfig := &middleware.CorsConfig{
-		AllowedOrigins: []string{"http://localhost:4200"},
+		AllowedOrigins: []string{"http://localhost:3000"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type", "Authorization"},
 	}
@@ -45,7 +45,7 @@ func NewServer(cfg *Config) Server {
 	// jwt middleware
 	middleware.SetSecret([]byte(cfg.JwtAccessSecret))
 	return &server{
-		router: gin.Default(),
+		router: r,
 		cfg:    cfg,
 		log:    logging.NewLogger("dev"),
 	}
@@ -116,6 +116,7 @@ func (s *server) registerRoutes() error {
 
 	s.router.POST("/session", s.sessionHandler.HandleAddSession)
 	s.router.GET("/session", s.sessionHandler.HandleGetAllSession)
+	s.router.GET("/session/:id", s.sessionHandler.HandleGetSessionByID)
 	s.router.PUT("/session/:id", s.sessionHandler.HandleUpdateSessionByID)
 	s.router.DELETE("/session/:id", s.sessionHandler.HandleDeleteSessionByID)
 	s.router.DELETE("/session", s.sessionHandler.HandleDeleteAllSession)

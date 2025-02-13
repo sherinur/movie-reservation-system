@@ -7,7 +7,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/sherinur/movie-reservation-system/pkg/db v0.0.0-20250125170936-009706ca1af8
 	github.com/sherinur/movie-reservation-system/pkg/logging v0.0.0-20250205114506-6a2cf3ef0b57
-	github.com/sherinur/movie-reservation-system/pkg/middleware v0.0.0-20250130122455-731d944a2e79
+	github.com/sherinur/movie-reservation-system/pkg/middleware v0.0.0-20250212142651-98ed0f8c9182
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.10.0
 	go.mongodb.org/mongo-driver v1.17.2

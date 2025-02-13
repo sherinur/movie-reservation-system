@@ -30,8 +30,8 @@ type server struct {
 func NewServer(cfg *config) Server {
 	r := gin.Default()
 	corsConfig := &middleware.CorsConfig{
-		AllowedOrigins: []string{"http://localhost:4200"},
-		AllowedMethods: []string{"GET", "POST", "UPDATE", "DELETE", "OPTIONS"},
+		AllowedOrigins: []string{"http://localhost:3000"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type", "Authorization"},
 	}
 
