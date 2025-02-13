@@ -103,6 +103,21 @@ const CinemaAdminPanel = () => {
     setExpandedHallNumber(expandedHallNumber === hallNumber ? null : hallNumber);
   };
 
+  const generateSeats = (rows, columns) => {
+    const seats = [];
+    const rowLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < columns; j++) {
+        seats.push({
+          row: rowLetters[i],
+          column: (j + 1).toString(),
+          status: 'available'
+        });
+      }
+    }
+    return seats;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = editMode ? `http://localhost/movi/cinema/${currentCinema.id}` : 'http://localhost/movi/cinema';
@@ -135,9 +150,14 @@ const CinemaAdminPanel = () => {
 
   const handleHallSubmit = async (e) => {
     e.preventDefault();
+
+    // Generate seats for the hall
+    const seats = generateSeats(10, 10); // Example: 10 rows and 10 columns
+
+    const updatedHall = { ...currentHall, seats };
     const updatedHallList = editHallMode
-      ? currentCinema.hall_list.map(hall => hall.number === currentHall.number ? currentHall : hall)
-      : [...currentCinema.hall_list, currentHall];
+      ? currentCinema.hall_list.map(hall => hall.number === currentHall.number ? updatedHall : hall)
+      : [...currentCinema.hall_list, updatedHall];
 
     const updatedCinema = { ...currentCinema, hall_list: updatedHallList };
 
@@ -179,13 +199,13 @@ const CinemaAdminPanel = () => {
     }
   };
 
-  const handleHallDelete = async (hallNumber) => {
+  const handleHallDelete = async (hallNumber,cinemaID) => {
     const updatedHallList = currentCinema.hall_list.filter(hall => hall.number !== hallNumber);
     const updatedCinema = { ...currentCinema, hall_list: updatedHallList };
 
     try {
-      const response = await fetch(`http://localhost/movi/cinema/${currentCinema.id}`, {
-        method: 'PUT',
+      const response = await fetch(`http://localhost/movi/cinema/${cinemaID}/hall/${hallNumber}`, {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -286,7 +306,7 @@ const CinemaAdminPanel = () => {
                                     ))}
                                   </div>
                                   <button className="btn btn-sm btn-warning" onClick={(e) => { e.stopPropagation(); handleShowHallModal(hall); }}>✏️</button>
-                                  <button className="btn btn-sm btn-danger" onClick={(e) => { e.stopPropagation(); handleHallDelete(hall.number); }}>🗑️</button>
+                                  <button className="btn btn-sm btn-danger" onClick={(e) => { e.stopPropagation(); handleHallDelete(hall.number,cinema.id); }}>🗑️</button>
                                 </div>
                               )}
                             </div>

@@ -22,6 +22,8 @@ type SessionHandler interface {
 
 	HandleGetSeats(c *gin.Context)
 	HandleGetSessionsByMovieID(c *gin.Context)
+	HandlePostSeatClose(c *gin.Context)
+	HandlePostSeatOpen(c *gin.Context)
 }
 
 type sessionHandler struct {
@@ -191,4 +193,54 @@ func (h *sessionHandler) HandleGetSessionsByMovieID(c *gin.Context) {
 
 	h.log.Infof("Sessions retrieved with movieID %s from IP %s", movieID, c.ClientIP())
 	c.JSON(http.StatusOK, sessions)
+}
+
+func (h *sessionHandler) HandlePostSeatClose(c *gin.Context) {
+	sessionID := c.Param("id")
+
+	var seat models.Seat
+	err := c.ShouldBindJSON(&seat)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updateResult, err := h.sessionHandler.PostSeatClose(sessionID, seat)
+	if err != nil {
+		_, clientError := utils.BadRequestSessionErrors[err]
+		switch {
+		case clientError:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, updateResult)
+}
+
+func (h *sessionHandler) HandlePostSeatOpen(c *gin.Context) {
+	sessionID := c.Param("id")
+
+	var seat models.Seat
+	err := c.ShouldBindJSON(&seat)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updateResult, err := h.sessionHandler.PostSeatClose(sessionID, seat)
+	if err != nil {
+		_, clientError := utils.BadRequestSessionErrors[err]
+		switch {
+		case clientError:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, updateResult)
 }

@@ -21,6 +21,8 @@ type SessionRepository interface {
 
 	GetSeats(sessionID string) ([]models.Seat, error)
 	GetSessionsByMovieID(movieID string) ([]models.Session, error)
+	PostSeatClose(sessionID string, seat models.Seat) (*mongo.UpdateResult, error)
+	PostSeatOpen(sessionID string, seat models.Seat) (*mongo.UpdateResult, error)
 }
 
 type sessionRepository struct {
@@ -150,4 +152,34 @@ func (r *sessionRepository) GetSessionsByMovieID(movieID string) ([]models.Sessi
 	}
 
 	return sessions, nil
+}
+
+func (r *sessionRepository) PostSeatClose(sessionID string, seat models.Seat) (*mongo.UpdateResult, error) {
+	col := r.db.Collection("session")
+	seat.Status = "Busy"
+
+	filter := bson.M{"_id": sessionID, "seats.row": seat.Row, "seats.column": seat.Column}
+	update := bson.M{"$set": bson.M{"seats.$.status": seat.Status}}
+
+	updateResult, err := col.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateResult, nil
+}
+
+func (r *sessionRepository) PostSeatOpen(sessionID string, seat models.Seat) (*mongo.UpdateResult, error) {
+	col := r.db.Collection("session")
+	seat.Status = "Available"
+
+	filter := bson.M{"_id": sessionID, "seats.row": seat.Row, "seats.column": seat.Column}
+	update := bson.M{"$set": bson.M{"seats.$.status": seat.Status}}
+
+	updateResult, err := col.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateResult, nil
 }

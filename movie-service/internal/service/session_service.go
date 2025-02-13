@@ -18,6 +18,8 @@ type SessionService interface {
 
 	GetSeat(sessionID string) ([]models.Seat, error)
 	GetSessionsByMovieID(movieID string) ([]models.Session, error)
+	PostSeatClose(sessionID string, seat models.Seat) (*mongo.UpdateResult, error)
+	PostSeatOpen(sessionID string, seat models.Seat) (*mongo.UpdateResult, error)
 }
 
 type sessionService struct {
@@ -128,4 +130,30 @@ func (s *sessionService) GetSessionsByMovieID(movieID string) ([]models.Session,
 	}
 
 	return sessions, nil
+}
+
+func (s *sessionService) PostSeatClose(sessionID string, seat models.Seat) (*mongo.UpdateResult, error) {
+	if sessionID == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	updateResult, err := s.sessionRepository.PostSeatClose(sessionID, seat)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateResult, nil
+}
+
+func (s *sessionService) PostSeatOpen(sessionID string, seat models.Seat) (*mongo.UpdateResult, error) {
+	if sessionID == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	updateResult, err := s.sessionRepository.PostSeatOpen(sessionID, seat)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateResult, nil
 }

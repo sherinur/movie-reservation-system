@@ -131,6 +131,8 @@ func (s *server) registerRoutes() error {
 
 	s.router.GET("/session/:id/seat", s.sessionHandler.HandleGetSeats)
 	s.router.GET("/session/movie/:id", s.sessionHandler.HandleGetSessionsByMovieID)
+	s.router.POST("session/:id/close", s.sessionHandler.HandlePostSeatClose)
+	s.router.POST("session/:id/open", s.sessionHandler.HandlePostSeatClose)
 	// other routes
 	s.router.GET("/health", handler.GetHealth)
 
