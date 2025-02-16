@@ -3,6 +3,7 @@ package dal
 import (
 	"context"
 	"strings"
+	"time"
 
 	"movie-service/internal/models"
 	"movie-service/utils"
@@ -140,7 +141,14 @@ func (r *sessionRepository) DeleteAllSession() (*mongo.DeleteResult, error) {
 func (r *sessionRepository) GetSessionsByMovieID(movieID string) ([]models.Session, error) {
 	col := r.db.Collection("session")
 
-	cursor, err := col.Find(context.TODO(), bson.M{"movie_id": movieID})
+	currentTime := time.Now()
+
+	filter := bson.M{
+		"movie_id":   movieID,
+		"start_time": bson.M{"$gte": currentTime},
+	}
+
+	cursor, err := col.Find(context.TODO(), filter)
 	if err != nil {
 		return nil, err
 	}

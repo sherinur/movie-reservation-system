@@ -8,6 +8,7 @@ const HomePage = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const jwtToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
     fetch("http://localhost/movi/movie", {
@@ -28,6 +29,11 @@ const HomePage = () => {
     navigate(`/session/${movieID}`);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/login");
+  };
+
   return (
     <div>
       <div className="background-wrapper"></div>
@@ -38,15 +44,24 @@ const HomePage = () => {
             <img src={logo} className="card-img-top" alt="logo"/>
           </Link>
           <div> 
-            <a href="/login" className="btn btn-outline-light custom-green-btn">Log In</a>
-            <a href="/register" className="btn btn-outline-light me-2">Register</a>
+            {jwtToken ? (
+              <>
+                <a href="/profile/tickets" className="btn btn-outline-light custom-green-btn">My Tickets</a>
+                <button className="btn btn-outline-light me-2" onClick={handleLogout}>Logout</button>
+              </>
+            ) : (
+              <>
+                <a href="/login" className="btn btn-outline-light custom-green-btn">Log In</a>
+                <a href="/register" className="btn btn-outline-light me-2">Register</a>
+              </>
+            )}
           </div>
         </div>
       </header>
 
       <div className="container text-center">
         <div className="row justify-content-center">
-          <h2 className="mb-5 custom-white">Now Showing</h2>
+          <h2 className="mb-5 custom-white">Movies</h2>
 
           {loading ? (
             <p className="text-white">Loading...</p>
@@ -54,7 +69,7 @@ const HomePage = () => {
             <p className="text-white">There are no available movies.</p>
           ) : (
             movies.map((movie) => (
-              <div className="col-md-2 movie-card" key={movie.id} onClick={() => handleMovieClick(movie.id)}>
+              <div className="col-md-2 movie-card text-white" key={movie.id} onClick={() => handleMovieClick(movie.id)}>
                 <div className="poster-container">
                   <img 
                     src={movie.posterimage || "https://via.placeholder.com/140x207"} 
