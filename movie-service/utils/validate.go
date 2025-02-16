@@ -106,11 +106,9 @@ func ValidateSesesion(session models.Session) error {
 		return ErrSessionCinemaIDEmpty
 	case session.HallNumber < 0:
 		return ErrSessionInvalidHallNumber
-	case session.Date.Before(time.Now()):
-		return ErrInvalidDate
-	case session.StartTime == "":
+	case session.StartTime.Before(time.Now()):
 		return ErrSessionStartTimeInvalid
-	case session.EndTime == "":
+	case session.EndTime.Before(session.StartTime):
 		return ErrSessionEndTimeInvalid
 	case session.AvailableSeats < 0:
 		return ErrSessionInvalidAvailableSeats

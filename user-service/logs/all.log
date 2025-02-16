@@ -112,3 +112,11 @@ time="2025-02-11T11:15:19+05:00" level=info msg="Registering routes..." func="us
 time="2025-02-11T11:15:19+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
 time="2025-02-11T11:15:23+05:00" level=info msg="User with email john@example.com logged in from ::1" func="user-service/internal/handler.(*userHandler).HandleLogin" file=user_handler.go
 time="2025-02-11T11:16:26+05:00" level=info msg="Refreshed token for user with id 67a8678671dd45b904fcde8d from IP ::1" func="user-service/internal/handler.(*userHandler).HandleRefresh" file=user_handler.go
+time="2025-02-16T20:02:23+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-16T20:02:33+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-16T20:02:49+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-16T20:02:59+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-16T20:07:00+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-16T20:07:00+05:00" level=info msg="Starting server on port:8080" func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-16T20:07:28+05:00" level=info msg="Registering routes..." func="user-service/internal/server.(*server).Start" file=server.go
+time="2025-02-16T20:07:38+05:00" level=error msg="Could not register routes: server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: mongo:27017, Type: Unknown, Last error: dial tcp: lookup mongo: no such host }, ] }" func="user-service/internal/server.(*server).Start" file=server.go
