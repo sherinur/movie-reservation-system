@@ -24,7 +24,9 @@ type server struct {
 	cfg    *config
 	log    *logging.Logger
 
-	handler handler.ReservationHandler
+	reservationHandler handler.ReservationHandler
+	promotionHandler   handler.PromotionHandler
+	paymentHandler     handler.PaymentHandler
 }
 
 func NewServer(cfg *config) Server {
@@ -76,18 +78,45 @@ func (s *server) registerRoutes() error {
 
 	s.log.Info("Registering routes..")
 
-	repository := dal.NewReservationRepository(database)
-	service := service.NewReservationService(repository)
-	s.handler = handler.NewReservationHandler(service, s.log)
+	reservationRepository := dal.NewReservationRepository(database)
+	reservationService := service.NewReservationService(reservationRepository)
+	s.reservationHandler = handler.NewReservationHandler(reservationService, s.log)
 
-	autorized := s.router.Group("/booking")
-	autorized.Use(middleware.JwtMiddleware())
+	promotionRepository := dal.NewPromotionRepository(database)
+	promotionService := service.NewPromotionService(promotionRepository)
+	s.promotionHandler = handler.NewPromotionHandler(promotionService, s.log)
+
+	paymentRepository := dal.NewPaymentRepository(database)
+	paymentService := service.NewPaymentService(paymentRepository)
+	s.paymentHandler = handler.NewPaymentHandler(paymentService, s.log)
+
+	reservation := s.router.Group("/booking")
+	reservation.Use(middleware.JwtMiddleware())
 	{
-		autorized.POST("/", s.handler.AddReservation)
-		autorized.GET("/", s.handler.GetReservations)
-		autorized.GET("/:id", s.handler.GetReservation)
-		autorized.PUT("/:id", s.handler.PayReservation)
-		autorized.DELETE("/delete/:id", s.handler.DeleteReservation)
+		reservation.POST("/", s.reservationHandler.AddReservation)
+		reservation.GET("/", s.reservationHandler.GetReservations)
+		reservation.GET("/:id", s.reservationHandler.GetReservation)
+		reservation.PUT("/:id", s.reservationHandler.PayReservation)
+		reservation.DELETE("/delete/:id", s.reservationHandler.DeleteReservation)
+	}
+
+	promotions := s.router.Group("/promotions")
+	{
+		promotions.POST("/", s.promotionHandler.AddPromotion)
+		promotions.GET("/", s.promotionHandler.GetPromotions)
+		promotions.GET("/:id", s.promotionHandler.GetPromotion)
+		promotions.PUT("/:id", s.promotionHandler.UpdatePromotion)
+		promotions.DELETE("/delete/:id", s.promotionHandler.DeletePromotion)
+	}
+
+	payments := s.router.Group("/payments")
+	payments.Use(middleware.JwtMiddleware())
+	{
+		payments.POST("/", s.paymentHandler.AddPayment)
+		payments.GET("/", s.paymentHandler.GetPayments)
+		payments.GET("/:id", s.paymentHandler.GetPayment)
+		payments.PUT("/:id", s.paymentHandler.UpdatePayment)
+		payments.DELETE("/delete/:id", s.paymentHandler.DeletePayment)
 	}
 
 	return nil

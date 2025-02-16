@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 const SeatSelection = () => {
     const navigate = useNavigate();
-    const jwtToken = localStorage.getItem("accessToken")
+    const sessionId = useParams().id.toString();
+    const [movieId, setMovieId] = useState("");
+    const jwtToken = localStorage.getItem("accessToken");
+
     const [seats, setSeats] = useState([]);
     const [bookedSeats, setBookedSeats] = useState([]);
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [groupedSeats, setGroupedSeats] = useState({});
 
+    const price = 1500;
+    const [totalPrice, setTotalPrice] = useState(0); 
+
     // Fetch seat data from server
     useEffect(() => {
-        fetch("http://localhost/movi/session/pLdVhypfRGCA9K4X7zy9eg==", {
+        fetch("http://localhost/movi/session/" + sessionId, {
             method: "GET",
             headers: { 
                 "Content-Type": "application/json",
@@ -20,37 +26,57 @@ const SeatSelection = () => {
         })
             .then((response) => response.json())
             .then((data) => {
-            let seat = []
+                let seat = []
 
-            for (let ticket of data.seats) {
-                seat.push(ticket.row)
-            }
+                for (let ticket of data.seats) {
+                    seat.push(ticket)
+                }
 
-            setSeats(seat)
+                setSeats(seat)
+                setMovieId(data.movie_id)
             })
             .catch((error) => console.error("Error getting reservation:", error));
-        }, []);
+        }, [sessionId]);
 
     useEffect(() => {
         // Group seats by their letter and number them
         const groups = {}
         seats.forEach((seat) => {
-        if (!groups[seat]) {
-            groups[seat] = [];
+        if (!groups[seat.row]) {
+            groups[seat.row] = [];
         }
-        groups[seat].push(`${seat}${groups[seat].length + 1}`);
+        groups[seat.row].push(seat);
         });
         
         setGroupedSeats(groups)
-        console.log(jwtToken)
     }, [seats]);
+
+    useEffect(() => {
+        fetch("http://localhost/movi/movie/" + movieId, {
+            method: "GET",
+            headers: { 
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                
+            })
+            .catch((error) => console.error("Error getting reservation:", error));
+    }, [movieId]);
+    
 
     // Toggle seat selection
     const toggleSeat = (seat) => {
-        if (bookedSeats.includes(seat)) return; // Prevent selecting booked seats
-        setSelectedSeats((prev) =>
-        prev.includes(seat) ? prev.filter((s) => s !== seat) : [...prev, seat]
-        );
+        setSelectedSeats((prev) => {
+            if (prev.includes(seat)) {
+                setTotalPrice((new_price) => totalPrice - price); // Subtract price if deselected
+                return prev.filter((s) => s !== seat);
+            } else {
+                setTotalPrice((new_price) => totalPrice + price); // Add price if selected
+                return [...prev, seat];
+            }
+        });
     };
 
     // Handle payment (send selected seats to backend)
@@ -60,14 +86,14 @@ const SeatSelection = () => {
         return
         }
         let jsonData = {
-        screening_id: "679bg09j53ae5cc94c021c5d", 
+        screening_id: sessionId, 
         tickets: []
         }
 
         for (let ticket of selectedSeats) {
         jsonData.tickets.push({
             seat: ticket,
-            price: 1500,
+            price: price,
             seat_type: "common",
             user_type: "adult"
         })}
@@ -81,7 +107,7 @@ const SeatSelection = () => {
         body: JSON.stringify(jsonData),
         })
         .then((res) => res.json())
-        .then((data) => navigate("/booking/" + data.InsertedID))
+        .then((data) => navigate("/order/" + data.InsertedID))
         .catch((error) => console.error("Error confirming seats:", error));
     };
 
@@ -99,8 +125,8 @@ const SeatSelection = () => {
                     {Object.entries(groupedSeats).map(([row, seatNumbers]) => (
                         <div key={row} className="seat-map">
                             {seatNumbers.map((seat) => (
-                                <div onClick={() => toggleSeat(seat)} key={seat} className="seat">
-                                    {seat}
+                                <div onClick={() => toggleSeat(seat.row + seat.column)} key={seat.row + seat.column} className={`seat ${selectedSeats.includes(seat.row + seat.column) ? "selected" : ""}`}>
+                                    {seat.row + seat.column}
                                 </div>
                             ))}
                         </div>
@@ -110,7 +136,7 @@ const SeatSelection = () => {
                 <div className="seat-selection-footer">
                     <div className="total-price">
                         <p>Total:</p>
-                        <strong>4500 Tg</strong>
+                        <strong>{totalPrice} Tg</strong>
                     </div>
                     <div className="selected-seats">
                       <p>Seats: </p>

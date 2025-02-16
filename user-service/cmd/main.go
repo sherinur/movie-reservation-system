@@ -15,9 +15,9 @@ import (
 
 func main() {
 	cfg := configs.GetConfig()
-	if cfg.GoEnv == "dev" {
-		return
-	}
+	// if cfg.GoEnv == "dev" {
+	// 	return
+	// }
 
 	apiServer := server.NewServer(cfg)
 

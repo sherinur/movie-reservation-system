@@ -1,0 +1,6 @@
+{
+    "reservation_id": "333",
+    "payment_price": 3180,
+    "payment_method": "Credit Card",
+    "status": "completed"
+}

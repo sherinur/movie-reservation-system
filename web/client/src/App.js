@@ -19,8 +19,8 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile/tickets" element={<Tickets />} />
-        <Route path="/booking" element={<SeatSelection />} />
-        <Route path="/booking/:id" element={<Paying />} />
+        <Route path="/booking/:id" element={<SeatSelection />} />
+        <Route path="/order/:id" element={<Paying />} />
         <Route path="/paid/:id" element={<Paid />} />
         <Route path="/session/:movieID" element={<SessionPage />} />
         <Route path="/admin/movie" element={<MovieAdminPanel />} />
