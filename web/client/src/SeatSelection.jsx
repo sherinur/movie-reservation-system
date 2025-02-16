@@ -15,6 +15,7 @@ const SeatSelection = () => {
 
     const price = 1500;
     const [totalPrice, setTotalPrice] = useState(0); 
+    const [title, setTitle] = useState("");
 
     // Fetch seat data from server
     useEffect(() => {
@@ -60,7 +61,7 @@ const SeatSelection = () => {
         })
             .then((response) => response.json())
             .then((data) => {
-                
+                setTitle(data.title)
             })
             .catch((error) => console.error("Error getting reservation:", error));
     }, [movieId]);
@@ -116,7 +117,7 @@ const SeatSelection = () => {
             <div className="background-wrapper"></div>
 
             <div className="seat-selection-container">
-                <h1 className="title">Seat Selection</h1>
+                <h1 className="title">{title}</h1>
 
                 {/* Screen */}
                 <div className="screen">SCREEN</div>

@@ -36,7 +36,7 @@ const Paying = () => {
             setTotalPrice(total)
           })
           .catch((error) => console.error("Error getting reservation:", error));
-      }, [idString]);
+      }, [idString, jwtToken]);
 
     const handleConfirmPayment = () => {
         let jsonData = {
