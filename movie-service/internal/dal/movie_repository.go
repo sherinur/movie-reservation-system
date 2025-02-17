@@ -102,11 +102,21 @@ func (r *movieRepository) GetMovieById(id string) (*models.Movie, error) {
 func (r *movieRepository) UpdateMovieById(id string, movie *models.Movie) (*mongo.UpdateResult, error) {
 	col := r.db.Collection("movie")
 
-	if len(strings.TrimSpace(movie.ID)) != 0 {
-		movie.ID = id
+	update := bson.D{
+		{Key: "title", Value: movie.Title},
+		{Key: "genre", Value: movie.Genre},
+		{Key: "description", Value: movie.Description},
+		{Key: "posterimage", Value: movie.PosterImage},
+		{Key: "duration", Value: movie.Duration},
+		{Key: "language", Value: movie.Language},
+		{Key: "releasedate", Value: movie.ReleaseDate},
+		{Key: "rating", Value: movie.Rating},
+		{Key: "pgrating", Value: movie.PGrating},
+		{Key: "production", Value: movie.Production},
+		{Key: "producer", Value: movie.Producer},
+		{Key: "status", Value: movie.Status},
 	}
-
-	res, err := col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: id}}, bson.D{{Key: "$set", Value: movie}})
+	res, err := col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: id}}, bson.D{{Key: "$set", Value: update}})
 	if err != nil {
 		return nil, err
 	}

@@ -94,9 +94,12 @@ func (r *cinemaRepository) UpdateCinemaById(id string, cinema *models.Cinema) (*
 		cinema.HallList[i].AvailableSeats = len(cinema.HallList[i].Seats)
 	}
 
-	update, err := utils.ConvertToBsonD(cinema)
-	if err != nil {
-		return nil, err
+	update := bson.D{
+		{Key: "name", Value: cinema.Name},
+		{Key: "city", Value: cinema.City},
+		{Key: "address", Value: cinema.Address},
+		{Key: "rating", Value: cinema.Rating},
+		{Key: "hall_list", Value: cinema.HallList},
 	}
 
 	res, err := col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: id}}, bson.D{{Key: "$set", Value: update}})

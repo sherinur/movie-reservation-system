@@ -104,11 +104,17 @@ func (r *sessionRepository) GetSeats(sessionID string) ([]models.Seat, error) {
 func (r *sessionRepository) UpdateSessionByID(sessionID string, session models.Session) (*mongo.UpdateResult, error) {
 	col := r.db.Collection("session")
 
-	update := bson.M{
-		"$set": session,
+	update := bson.D{
+		{Key: "movie_id", Value: session.MovieID},
+		{Key: "cinema_id", Value: session.CinemaID},
+		{Key: "hall_number", Value: session.HallNumber},
+		{Key: "start_time", Value: session.StartTime},
+		{Key: "end_time", Value: session.EndTime},
+		{Key: "seats", Value: session.Seats},
+		{Key: "available_seats", Value: session.AvailableSeats},
 	}
 
-	updateResult, err := col.UpdateOne(context.TODO(), bson.M{"_id": sessionID}, update)
+	updateResult, err := col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: sessionID}}, bson.D{{Key: "$set", Value: update}})
 	if err != nil {
 		return nil, err
 	}
