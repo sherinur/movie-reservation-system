@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 
 const SeatSelection = () => {
@@ -144,7 +144,7 @@ const SeatSelection = () => {
                       <strong>{selectedSeats.join(", ") || "None"}</strong>
                     </div>
                     <div className="action-buttons">
-                        <a href="booking.html"><button  className="btn-cancel">Back</button></a>
+                        <Link to="/"><button className="btn-cancel">Back</button></Link>
                         <button onClick={handleStartPayment} className="btn-proceed">Proceed Payment</button>
                     </div>
                 </div>

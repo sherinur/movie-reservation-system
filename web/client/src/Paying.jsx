@@ -4,15 +4,15 @@ import { useNavigate, useParams } from "react-router-dom";
 const Paying = () => {
     const navigate = useNavigate();
     const jwtToken = localStorage.getItem("accessToken")
-    const id = useParams();
-    const idString = id.id.toString();
+    const reservationId = useParams().id.toString();
+    const [sessionId, setSessionId] = useState("")
     const [seats, setSeats] = useState([]);
     const [prices, setPrices] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const servCharge = 6
 
     useEffect(() => {
-        fetch("http://localhost/res/booking/" + idString, {
+        fetch("http://localhost/res/booking/" + reservationId, {
             method: "GET",
             headers: { 
                 "Content-Type": "application/json",
@@ -34,17 +34,19 @@ const Paying = () => {
             setSeats(tempSeats)
             setPrices(tempPrices)
             setTotalPrice(total)
+            setSessionId(data.ScreeningID)
           })
           .catch((error) => console.error("Error getting reservation:", error));
-      }, [idString, jwtToken]);
+      }, [reservationId, jwtToken]);
 
     const handleConfirmPayment = () => {
         let jsonData = {
             email: "testing@gmail.com",
             phone_number: "+71234567890",
+            total_price: totalPrice + ((totalPrice * servCharge) / 100)
         }
 
-        fetch ("http://localhost/res/booking/" + idString, {
+        fetch ("http://localhost/res/booking/" + reservationId, {
             method: "PUT",
             headers: { 
                 "Content-Type": "application/json",
@@ -53,15 +55,30 @@ const Paying = () => {
             body: JSON.stringify(jsonData),
         })
             .then((response) => response.json())
-            .then(() => navigate("/paid/" + idString))
+            .then(() => navigate("/paid/" + reservationId))
             .catch((error) => console.error("Error paying reservation:", error));
     };
+
+
+    const handleCancelPayment = () => {
+        fetch("http://localhost/res/booking/delete/" + reservationId, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + jwtToken,
+            },
+        })
+            .then((response) => response.json())
+            .then(() => navigate("/booking/" + sessionId))
+            .catch((error) => console.error("Error cancelling reservation:", error));
+    }
 
     return (
         <>
             <div className="background-wrapper"></div>
             
             <div className="container booking-container">
+
                 <div className="order-info">
                     <h1 className="title">Booking Detail</h1>
 
@@ -108,6 +125,7 @@ const Paying = () => {
                         <p className="note">*Purchased ticket cannot be canceled</p>
                     </div>
 
+                    <button onClick={handleCancelPayment} className="back-btn">Cancel</button>
                     <button onClick={handleConfirmPayment} className="checkout-btn">Checkout Ticket</button>
                 </div>
             </div>   

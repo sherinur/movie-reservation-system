@@ -101,10 +101,11 @@ func (s *reservationService) PayReservation(ctx context.Context, id string, requ
 		Email:       requestBody.Email,
 		PhoneNumber: requestBody.PhoneNumber,
 		Status:      "paid",
-		Tickets:     process.Tickets,
 		TotalPrice:  process.TotalPrice,
 		BoughtTime:  time.Now(),
 	}
+
+	reservation.TotalPrice = requestBody.TotalPrice
 
 	qrData := fmt.Sprintf("Reservation for %d seats at %s\nStatus: %s", len(reservation.Tickets), reservation.BoughtTime, reservation.Status)
 	QR, err := utilits.GenerateQR(qrData)

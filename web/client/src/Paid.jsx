@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { jsPDF } from "jspdf";
 
 
 const Paid = () => {
@@ -7,6 +8,7 @@ const Paid = () => {
     const jwtToken = localStorage.getItem("accessToken")
     const id = useParams();
     const idString = id.id.toString();
+    const [qr, setQr] = useState("")
     const [seats, setSeats] = useState([]);
     const [prices, setPrices] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -21,22 +23,41 @@ const Paid = () => {
         })
             .then((response) => response.json())
             .then((data) => {
-            let tempSeats = []
-            let tempPrices = []
-            let total = 0
+                let tempSeats = []
+                let tempPrices = []
+                let total = 0
 
-            for (let ticket of data.Tickets) {
-                tempSeats.push(ticket.seat)
-                tempPrices.push(ticket.price)
-                total += ticket.price
-            }
+                for (let ticket of data.Tickets) {
+                    tempSeats.push(ticket.seat)
+                    tempPrices.push(ticket.price)
+                    total += ticket.price
+                }
 
-            setSeats(tempSeats)
-            setPrices(tempPrices)
-            setTotalPrice(total)
+                setSeats(tempSeats)
+                setPrices(tempPrices)
+                setTotalPrice(total)
+                setQr(data.QRCode)
             })
             .catch((error) => console.error("Error getting reservation:", error));
-        }, [idString]);
+        }, [idString, jwtToken]);
+
+    const handleDownload = () => {
+        const doc = new jsPDF();
+
+        const base64QR = "data:image/png;base64," + qr; 
+        
+        // Add text to the PDF (x, y, text)
+        doc.text("THANK YOU FOR YOUR PURCHASE!", 10, 10);
+        doc.text("Your tickets:", 10, 20);
+        doc.text(seats.join(", ") || "None", 10,30);
+
+        doc.text("Show this QR code to guard before session", 10, 50);
+        doc.addImage(base64QR, "PNG", 10, 60, 50, 50)
+    
+        // Save the file
+        doc.save("ticket" + idString + ".pdf");
+    };
+
 
     return (
         <>
@@ -66,7 +87,7 @@ const Paid = () => {
                         </div>
                     </div>
 
-                    <button className="checkout-btn">Download Ticket</button>
+                    <button onClick={handleDownload} className="checkout-btn">Download Ticket</button>
                     <Link to="/"><button className="back-btn">Back to Movies</button></Link>
                 </div>
                 
