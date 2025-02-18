@@ -58,6 +58,7 @@ func (s *reservationService) AddReservation(ctx context.Context, requestBody mod
 	process := models.Reservation{
 		ScreeningID: requestBody.ScreeningID,
 		UserID:      requestBody.UserID,
+		MovieTitle:  requestBody.MovieTitle,
 		Status:      "processing",
 		Tickets:     requestBody.Tickets,
 		ExpiringAt:  time.Now().Add(10 * time.Minute),
@@ -99,13 +100,13 @@ func (s *reservationService) PayReservation(ctx context.Context, id string, requ
 		ScreeningID: process.ScreeningID,
 		UserID:      process.UserID,
 		Email:       requestBody.Email,
+		MovieTitle:  process.MovieTitle,
 		PhoneNumber: requestBody.PhoneNumber,
 		Status:      "paid",
-		TotalPrice:  process.TotalPrice,
+		Tickets:     process.Tickets,
+		TotalPrice:  requestBody.TotalPrice,
 		BoughtTime:  time.Now(),
 	}
-
-	reservation.TotalPrice = requestBody.TotalPrice
 
 	qrData := fmt.Sprintf("Reservation for %d seats at %s\nStatus: %s", len(reservation.Tickets), reservation.BoughtTime, reservation.Status)
 	QR, err := utilits.GenerateQR(qrData)

@@ -11,6 +11,7 @@ type Reservation struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty"`
 	ScreeningID string             `bson:"screening_id"`
 	UserID      string             `bson:"user_id"`
+	MovieTitle  string             `bson:"movie_title"`
 	Email       string             `bson:"email"`
 	PhoneNumber string             `bson:"phone_number"`
 	Status      string             `bson:"status"`

@@ -54,13 +54,13 @@ const Tickets = () => {
                             <div className="col-lg-12 col-sm-12 tab-pane fade show active" id="upcoming">
                                 <div className="row">
                                     {reservations.map((reservation) => (
-                                    <div key={reservation.id} className="col-lg-4 col-md-4 col-sm-6 mb-4">
+                                    <div key={reservation.ID} className="col-lg-4 col-md-4 col-sm-6 mb-4">
                                         <div className="card">
                                             <div className="card-body">
                                                 <p className="card-text"><strong>Date</strong></p>
                                                 <p className="card-text">2025-02-14</p>
                                                 <p className="card-text"><strong>Movie Title</strong></p>
-                                                <p className="card-text">JOKER</p>
+                                                <p className="card-text">{reservation.MovieTitle}</p>
                                                 <p className="card-text"><strong>Seats</strong></p>
                                                 <p className="card-text">
                                                     {reservation.Tickets.map((ticket) => (
@@ -69,7 +69,7 @@ const Tickets = () => {
                                                 </p>
                                                 <p className="card-text"><strong>Time</strong></p>
                                                 <p className="card-text">14:40</p>  
-                                                <Link to={`/paid/${reservation.ID}`}><button className="btn btn-primary mt-2">Download Ticket</button></Link>
+                                                <Link to={`/paid/${reservation.ID}`}><button className="btn btn-primary mt-2">Details</button></Link>
                                             </div>
                                         </div>
                                     </div>

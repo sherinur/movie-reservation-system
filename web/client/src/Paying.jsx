@@ -5,11 +5,19 @@ const Paying = () => {
     const navigate = useNavigate();
     const jwtToken = localStorage.getItem("accessToken")
     const reservationId = useParams().id.toString();
+
     const [sessionId, setSessionId] = useState("")
     const [seats, setSeats] = useState([]);
+
     const [prices, setPrices] = useState([]);
-    const [totalPrice, setTotalPrice] = useState(0);
+    const [sum, setSum] = useState(0);
     const servCharge = 6
+    const [charge, setCharge] = useState(0)
+    const [totalPrice, setTotalPrice] = useState(0)
+
+    const [title, setTitle] = useState("");
+    const [selectedPayment, setSelectedPayment] = useState("credit-card");
+    const [promoCode, setPromoCode] = useState("");
 
     useEffect(() => {
         fetch("http://localhost/res/booking/" + reservationId, {
@@ -33,17 +41,23 @@ const Paying = () => {
 
             setSeats(tempSeats)
             setPrices(tempPrices)
-            setTotalPrice(total)
+            setSum(total)
             setSessionId(data.ScreeningID)
+            setTitle(data.MovieTitle)
           })
           .catch((error) => console.error("Error getting reservation:", error));
       }, [reservationId, jwtToken]);
+
+    useEffect(() => {
+        setCharge((sum * servCharge) / 100)
+        setTotalPrice(sum + charge)
+    }, [charge, sum])
 
     const handleConfirmPayment = () => {
         let jsonData = {
             email: "testing@gmail.com",
             phone_number: "+71234567890",
-            total_price: totalPrice + ((totalPrice * servCharge) / 100)
+            total_price: totalPrice,
         }
 
         fetch ("http://localhost/res/booking/" + reservationId, {
@@ -54,9 +68,28 @@ const Paying = () => {
               },
             body: JSON.stringify(jsonData),
         })
+            .catch((error) => console.error("Error paying reservation:", error));
+
+        
+        let jsonData2 = {
+            "reservation_id": reservationId,
+            "payment_price": totalPrice,
+            "payment_method": selectedPayment,
+            "status": "completed",
+        }
+
+        fetch("http://localhost/res/payments/", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + jwtToken, 
+            },
+            body: JSON.stringify(jsonData2),
+        })
             .then((response) => response.json())
             .then(() => navigate("/paid/" + reservationId))
             .catch((error) => console.error("Error paying reservation:", error));
+
     };
 
 
@@ -73,6 +106,19 @@ const Paying = () => {
             .catch((error) => console.error("Error cancelling reservation:", error));
     }
 
+    const handlePaymentChange = (method) => {
+        setSelectedPayment(method);
+    };
+
+    const handleActivePromo = (discount) => {
+        console.log("Before update:", totalPrice); 
+        setTotalPrice((prevPrice) => {
+            const newPrice = prevPrice - (prevPrice * discount) / 100;
+            console.log("Updated price:", newPrice); 
+            return newPrice;
+        });
+    }
+
     return (
         <>
             <div className="background-wrapper"></div>
@@ -85,7 +131,7 @@ const Paying = () => {
                     <div className="schedule-section">
                         <h2>Schedule</h2>
                         <p><strong>Movie Title</strong></p>
-                        <p className="movie-title">SPIDERMAN NO WAY HOME</p>
+                        <p className="movie-title">{title}</p>
                         
                         <p><strong>Date</strong></p>
                         <p className="movie-date">Mon, 23 Oct 2023</p>
@@ -114,19 +160,52 @@ const Paying = () => {
                             </div>
                         ))}
                         <div className="price-row">
-                            <p>Service Charge (6%)</p>
-                            <p>{(totalPrice * servCharge) / 100} Tg </p>
+                            <p>Service Charge ({servCharge}%)</p>
+                            <p>{charge} Tg </p>
                         </div>
                         <hr></hr>
                         <div className="total-payment">
                             <p><strong>Total payment</strong></p>
-                            <p className="total-amount">{totalPrice + ((totalPrice * servCharge) / 100)} Tg</p>
+                            <p className="total-amount">{totalPrice.toFixed(2)} Tg</p>
                         </div>
-                        <p className="note">*Purchased ticket cannot be canceled</p>
+                    </div>
+
+                    <div className="payment-method my-5">
+                        <h3>Select Payment Method</h3>
+                        <div className="payment-options">
+                        {["credit-card", "paypal", "bank-transfer"].map((method) => (
+                            <label
+                            key={method}
+                            className={`payment-option ${selectedPayment === method ? "selected" : ""}`}
+                            >
+                            <input
+                                type="radio"
+                                name="payment"
+                                value={method}
+                                checked={selectedPayment === method}
+                                onChange={() => handlePaymentChange(method)}
+                            />
+                            {method === "credit-card" ? "Credit Card" : 
+                            method === "paypal" ? "PayPal" : 
+                            "Bank Transfer"}
+                            </label>
+                        ))}
+                        </div>
+                    </div>
+
+                    <div className="promo-code">
+                        <input
+                        type="text"
+                        placeholder="#00000"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value)}
+                        />
+                        <button onClick={() => handleActivePromo(10)} className="apply-btn">Apply</button>
                     </div>
 
                     <button onClick={handleCancelPayment} className="back-btn">Cancel</button>
                     <button onClick={handleConfirmPayment} className="checkout-btn">Checkout Ticket</button>
+                    <p className="note">*Purchased ticket cannot be canceled</p>
                 </div>
             </div>   
         </>

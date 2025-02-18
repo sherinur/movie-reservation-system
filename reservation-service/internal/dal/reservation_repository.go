@@ -101,6 +101,7 @@ func (r *reservationRepository) UpdateReservation(ctx context.Context, id string
 		"screening_id": reservation.ScreeningID,
 		"user_id":      reservation.UserID,
 		"email":        reservation.Email,
+		"movie_title":  reservation.MovieTitle,
 		"phone_number": reservation.PhoneNumber,
 		"status":       reservation.Status,
 		"tickets":      reservation.Tickets,

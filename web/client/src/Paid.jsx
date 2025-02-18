@@ -12,6 +12,7 @@ const Paid = () => {
     const [seats, setSeats] = useState([]);
     const [prices, setPrices] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [title, setTitle] = useState("");
 
     useEffect(() => {
         fetch("http://localhost/res/booking/" + idString, {
@@ -23,6 +24,7 @@ const Paid = () => {
         })
             .then((response) => response.json())
             .then((data) => {
+                console.log(data)
                 let tempSeats = []
                 let tempPrices = []
                 let total = 0
@@ -36,6 +38,7 @@ const Paid = () => {
                 setSeats(tempSeats)
                 setPrices(tempPrices)
                 setTotalPrice(total)
+                setTitle(data.MovieTitle)
                 setQr(data.QRCode)
             })
             .catch((error) => console.error("Error getting reservation:", error));
@@ -48,7 +51,7 @@ const Paid = () => {
         
         // Add text to the PDF (x, y, text)
         doc.text("THANK YOU FOR YOUR PURCHASE!", 10, 10);
-        doc.text("Your tickets:", 10, 20);
+        doc.text(`Your tickets on the movie ${title}:`, 10, 20);
         doc.text(seats.join(", ") || "None", 10,30);
 
         doc.text("Show this QR code to guard before session", 10, 50);
@@ -70,7 +73,7 @@ const Paid = () => {
                     <div className="schedule-section">
                         <h2>Schedule</h2>
                         <p><strong>Movie Title</strong></p>
-                        <p className="movie-title">SPIDERMAN NO WAY HOME</p>
+                        <p className="movie-title">{title}</p>
                         
                         <p><strong>Date</strong></p>
                         <p className="movie-date">Mon, 23 Oct 2023</p>

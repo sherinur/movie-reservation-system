@@ -87,8 +87,9 @@ const SeatSelection = () => {
         return
         }
         let jsonData = {
-        screening_id: sessionId, 
-        tickets: []
+            screening_id: sessionId, 
+            movie_title: title,
+            tickets: []
         }
 
         for (let ticket of selectedSeats) {

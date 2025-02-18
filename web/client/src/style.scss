@@ -467,6 +467,105 @@ a.link {
     }
 }
 
+.payment-method {
+    margin-top: 20px;
+    text-align: left;
+  
+    h3 {
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+  
+    .payment-options {
+        display: flex;
+        gap: 10px;
+    }
+  
+    .payment-option {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 130px;
+        padding: 12px;
+        font-size: 1rem;
+        font-weight: 500;
+        border: 2px solid #BEBEBF;
+        border-radius: 8px;
+        background-color: #fff;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    
+        input {
+            display: none; /* Hide default radio button */
+        }
+    
+        &:hover {
+            border-color: #A0A0A0;
+        }
+    
+        &.selected {
+            background-color: #1DE782;
+            color: #fff;
+            border-color: #1DE782;
+        }
+    }
+}
+
+.promo-code {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+  
+    input {
+        width: 100%;
+        max-width: 200px;
+        height: 48px;
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #BEBEBF;
+        border-radius: 8px;
+        background-color: #fff;
+        color: #333;
+        text-align: center;
+  
+        &::placeholder {
+            color: #000000;  // Background text in #000000 format
+            font-weight: 500;
+        }
+  
+        &:focus {
+            border-color: #A0A0A0;
+            outline: none;
+            box-shadow: 0 0 5px rgba(190, 190, 191, 0.5);
+        }
+    }
+  
+    .apply-btn {
+        background-color: #1DE782;
+        color: #FFFFFF;
+        height: 48px;
+        padding: 10px 15px;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        outline: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    
+        &:hover {
+            background-color: #58eba1;
+        }
+    
+        &:active {
+            background-color: #32c77d;
+        }
+    }
+}
+
 .paid-container {
     width: 400px;
     background: rgb(0, 0, 0);
