@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.scss';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const CinemaAdminPanel = () => {
   const [cinemas, setCinemas] = useState([]);
@@ -10,6 +10,8 @@ const CinemaAdminPanel = () => {
   const [showHallModal, setShowHallModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editHallMode, setEditHallMode] = useState(false);
+  const jwtToken = localStorage.getItem("accessToken");
+  const navigate = useNavigate();
   const [currentCinema, setCurrentCinema] = useState({
     id: '',
     name: '',
@@ -19,7 +21,10 @@ const CinemaAdminPanel = () => {
     hall_list: []
   });
   const [currentHall, setCurrentHall] = useState({
+    id: '',
     number: '',
+    rows: 0,
+    columns: 0,
     available_seats: '',
     seats: []
   });
@@ -28,14 +33,18 @@ const CinemaAdminPanel = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   useEffect(() => {
-    fetchCinemas();
-  }, []);
+    if (!jwtToken) {
+      navigate('/admin/login');
+    } else {
+      fetchCinemas();
+    }
+  }, [jwtToken, navigate]);
 
   const fetchCinemas = async () => {
     try {
       const response = await fetch("http://localhost/movi/cinema");
       const data = await response.json();
-      setCinemas(data);
+      setCinemas(data || []);
     } catch (error) {
       console.error("Error fetching cinemas:", error);
     }
@@ -66,11 +75,15 @@ const CinemaAdminPanel = () => {
     });
   };
 
-  const handleShowHallModal = (hall = {
+  const handleShowHallModal = (cinema, hall = {
+    id: '',
     number: '',
+    rows: 0,
+    columns: 0,
     available_seats: '',
     seats: []
   }) => {
+    setCurrentCinema(cinema);
     setCurrentHall(hall);
     setEditHallMode(!!hall.number);
     setShowHallModal(true);
@@ -79,7 +92,10 @@ const CinemaAdminPanel = () => {
   const handleCloseHallModal = () => {
     setShowHallModal(false);
     setCurrentHall({
+      id: '',
       number: '',
+      rows: 0,
+      columns: 0,
       available_seats: '',
       seats: []
     });
@@ -92,7 +108,10 @@ const CinemaAdminPanel = () => {
 
   const handleHallChange = (e) => {
     const { name, value } = e.target;
-    setCurrentHall({ ...currentHall, [name]: value });
+    const updatedValue = name === "number" || name === "available_seats" || name === "id" || name === "rows" || name === "columns" ? parseInt(value, 10) : value;
+    const updatedHall = { ...currentHall, [name]: updatedValue };
+
+    setCurrentHall(updatedHall);
   };
 
   const handleCardClick = (cinemaId) => {
@@ -150,22 +169,30 @@ const CinemaAdminPanel = () => {
 
   const handleHallSubmit = async (e) => {
     e.preventDefault();
-    const url = `http://localhost/movi/cinema/${currentCinema.id}/hall`
-    console.log(currentCinema.id)
+
+    // Set currentHall.id to currentHall.number for POST requests
+    if (!editHallMode) {
+      setCurrentHall((prevHall) => ({ ...prevHall, id: prevHall.number }));
+    }
+
+    const method = editHallMode ? 'PUT' : 'POST';
+    const url = editHallMode
+      ? `http://localhost/movi/cinema/${currentCinema.id}/hall/${currentHall.id}`
+      : `http://localhost/movi/cinema/${currentCinema.id}/hall`;
 
     // Generate seats for the hall
-    const seats = generateSeats(10, 10); // Example: 10 rows and 10 columns
+    const seats = generateSeats(currentHall.rows, currentHall.columns);
 
-    const updatedHall = { ...currentHall, seats };
+    const updatedHall = { ...currentHall, seats, available_seats: seats.length, cinema_id: currentCinema.id };
     const updatedHallList = editHallMode
-      ? currentCinema.hall_list.map(hall => hall.number === currentHall.number ? updatedHall : hall)
+      ? currentCinema.hall_list.map(hall => hall.id === currentHall.id ? updatedHall : hall)
       : [...currentCinema.hall_list, updatedHall];
 
     const updatedCinema = { ...currentCinema, hall_list: updatedHallList };
 
     try {
       const response = await fetch(url, {
-        method: 'POST',
+        method,
         headers: {
           'Content-Type': 'application/json'
         },
@@ -178,10 +205,10 @@ const CinemaAdminPanel = () => {
         setShowSuccessMessage(true);
         setTimeout(() => setShowSuccessMessage(false), 3000); // Hide success message after 3 seconds
       } else {
-        console.error("Error saving hall:", response.statusText);
+        console.error(`Error ${editHallMode ? 'updating' : 'saving'} hall:`, response.statusText);
       }
-    } catch (error) {    
-      console.error("Error saving hall:", error);
+    } catch (error) {
+      console.error(`Error ${editHallMode ? 'updating' : 'saving'} hall:`, error);
     }
   };
 
@@ -201,7 +228,7 @@ const CinemaAdminPanel = () => {
     }
   };
 
-  const handleHallDelete = async (hallNumber,cinemaID) => {
+  const handleHallDelete = async (hallNumber, cinemaID) => {
     const updatedHallList = currentCinema.hall_list.filter(hall => hall.number !== hallNumber);
     const updatedCinema = { ...currentCinema, hall_list: updatedHallList };
 
@@ -224,6 +251,11 @@ const CinemaAdminPanel = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/admin/login");
+  };
+
   return (
     <div className="container-fluid">
       <div className="row">
@@ -240,14 +272,8 @@ const CinemaAdminPanel = () => {
               <li className="nav-item">
                 <Link to="/admin/session" className="nav-link text-dark">Sessions</Link>
               </li>
-              <li className="nav-item">
-                <a className="nav-link text-dark" href="#">Users</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-dark" href="#">Orders</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-dark" href="#">Report</a>
+              <li>
+              <button className="btn me-2 custom-green-btn" onClick={handleLogout}>Logout</button>
               </li>
             </ul>
           </div>
@@ -276,7 +302,7 @@ const CinemaAdminPanel = () => {
               </tr>
             </thead>
             <tbody>
-              {cinemas.map((cinema, index) => (
+              {cinemas && cinemas.map((cinema, index) => (
                 <React.Fragment key={cinema.id}>
                   <tr onClick={() => handleCardClick(cinema.id)}>
                     <td>{index + 1}</td>
@@ -307,13 +333,13 @@ const CinemaAdminPanel = () => {
                                       </div>
                                     ))}
                                   </div>
-                                  <button className="btn btn-sm btn-warning" onClick={(e) => { e.stopPropagation(); handleShowHallModal(hall); }}>✏️</button>
-                                  <button className="btn btn-sm btn-danger" onClick={(e) => { e.stopPropagation(); handleHallDelete(hall.number,cinema.id); }}>🗑️</button>
+                                  <button className="btn btn-sm btn-warning" onClick={(e) => { e.stopPropagation(); handleShowHallModal(cinema, hall); }}>✏️</button>
+                                  <button className="btn btn-sm btn-danger" onClick={(e) => { e.stopPropagation(); handleHallDelete(hall.id, cinema.id); }}>🗑️</button>
                                 </div>
                               )}
                             </div>
                           ))}
-                          <button className="btn btn-success mt-2" onClick={(e) => { e.stopPropagation(); handleShowHallModal(); }}>+ Add Hall</button>
+                          <button className="btn btn-success mt-2" onClick={(e) => { e.stopPropagation(); handleShowHallModal(cinema); }}>+ Add Hall</button>
                         </div>
                       </td>
                     </tr>
@@ -386,6 +412,15 @@ const CinemaAdminPanel = () => {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleHallSubmit}>
+            <Form.Group controlId="formHallId">
+              <Form.Label>ID</Form.Label>
+              <Form.Control
+                type="number"
+                name="id"
+                value={currentHall.id}
+                readOnly
+              />
+            </Form.Group>
             <Form.Group controlId="formHallNumber">
               <Form.Label>Hall Number</Form.Label>
               <Form.Control
@@ -396,14 +431,33 @@ const CinemaAdminPanel = () => {
                 required
               />
             </Form.Group>
+            <Form.Group controlId="formRows" className="mt-3">
+              <Form.Label>Rows</Form.Label>
+              <Form.Control
+                type="number"
+                name="rows"
+                value={currentHall.rows}
+                onChange={handleHallChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="formColumns" className="mt-3">
+              <Form.Label>Columns</Form.Label>
+              <Form.Control
+                type="number"
+                name="columns"
+                value={currentHall.columns}
+                onChange={handleHallChange}
+                required
+              />
+            </Form.Group>
             <Form.Group controlId="formAvailableSeats" className="mt-3">
               <Form.Label>Available Seats</Form.Label>
               <Form.Control
                 type="number"
                 name="available_seats"
                 value={currentHall.available_seats}
-                onChange={handleHallChange}
-                required
+                readOnly
               />
             </Form.Group>
             <Button variant="primary" type="submit" className="mt-3">

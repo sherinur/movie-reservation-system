@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.scss';
 
@@ -8,6 +8,8 @@ const SessionAdminPanel = () => {
   const [sessions, setSessions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const jwtToken = localStorage.getItem("accessToken");
+  const navigate = useNavigate();
   const [currentSession, setCurrentSession] = useState({
     id: '',
     movie_id: '',
@@ -25,10 +27,14 @@ const SessionAdminPanel = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   useEffect(() => {
-    fetchSessions();
-    fetchMovies();
-    fetchCinemas();
-  }, []);
+    if (!jwtToken) {
+      navigate('/admin/login');
+    } else {
+      fetchSessions();
+      fetchMovies();
+      fetchCinemas();
+    }
+  }, [jwtToken, navigate]);
 
   const fetchSessions = async () => {
     try {
@@ -174,6 +180,11 @@ const SessionAdminPanel = () => {
     return cinema ? cinema.name : 'Unknown';
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/admin/login");
+  };
+
   return (
     <div className="container-fluid">
       <div className="row">
@@ -190,14 +201,8 @@ const SessionAdminPanel = () => {
               <li className="nav-item">
                 <Link to="/admin/session" className="nav-link active text-dark fw-bold">Sessions</Link>
               </li>
-              <li className="nav-item">
-                <a className="nav-link text-dark" href="#">Users</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-dark" href="#">Orders</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-dark" href="#">Report</a>
+              <li>
+              <button className="btn  me-2 custom-green-btn" onClick={handleLogout}>Logout</button>
               </li>
             </ul>
           </div>

@@ -113,6 +113,7 @@ func (s *server) registerRoutes() error {
 	s.router.POST("/cinema/:id/hall", s.cinemaHandler.HandleAddHall)
 	s.router.GET("/cinema/:id/hall_list", s.cinemaHandler.HandleGetAllHall)
 	s.router.GET("/cinema/:id/hall/:hallNumber", s.cinemaHandler.HandleGetHall)
+	s.router.PUT("/cinema/:id/hall/:hallNumber", s.cinemaHandler.HandleUpdateHall)
 	s.router.DELETE("/cinema/:id/hall/:hallNumber", s.cinemaHandler.HandleDeleteHall)
 
 	s.router.POST("/session", s.sessionHandler.HandleAddSession)

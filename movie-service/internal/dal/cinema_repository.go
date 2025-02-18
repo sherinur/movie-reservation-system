@@ -24,6 +24,7 @@ type CinemaRepository interface {
 	GetHall(cinemaID string, hallNumber int) (*models.Hall, error)
 	GetAllHall(cinemaID string) ([]models.Hall, error)
 	DeleteHall(cinemaID string, hallNumber int) (*mongo.UpdateResult, error)
+	UpdateHall(cinemaID string, hallNumber int, hall models.Hall) (*mongo.UpdateResult, error)
 }
 
 type cinemaRepository struct {
@@ -192,7 +193,27 @@ func (r *cinemaRepository) DeleteHall(cinemaID string, hallNumber int) (*mongo.U
 	filter := bson.M{"_id": cinemaID}
 	update := bson.M{
 		"$pull": bson.M{
-			"hall_list": bson.M{"number": hallNumber},
+			"hall_list": bson.M{"id": hallNumber},
+		},
+	}
+
+	updateResult, err := col.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateResult, nil
+}
+
+func (r *cinemaRepository) UpdateHall(cinemaID string, hallNumber int, hall models.Hall) (*mongo.UpdateResult, error) {
+	col := r.db.Collection("cinema")
+
+	filter := bson.M{"_id": cinemaID, "hall_list.id": hallNumber}
+	update := bson.M{
+		"$set": bson.M{
+			"hall_list.$.number":          hall.Number,
+			"hall_list.$.available_seats": hall.AvailableSeats,
+			"hall_list.$.seats":           hall.Seats,
 		},
 	}
 

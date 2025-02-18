@@ -24,6 +24,7 @@ type CinemaHandler interface {
 	HandleGetHall(c *gin.Context)
 	HandleGetAllHall(c *gin.Context)
 	HandleDeleteHall(c *gin.Context)
+	HandleUpdateHall(c *gin.Context)
 }
 
 type cinemaHandler struct {
@@ -261,4 +262,31 @@ func (h *cinemaHandler) HandleDeleteHall(c *gin.Context) {
 
 	h.log.Infof("Hall %s deleted in cinema with ID %s form IP %s", hallNumber, cinemaID, c.ClientIP())
 	c.JSON(http.StatusNoContent, gin.H{"deleted_count": updateResult.ModifiedCount})
+}
+
+func (h *cinemaHandler) HandleUpdateHall(c *gin.Context) {
+	cinemaID := c.Param("id")
+	hallNumber := c.Param("hallNumber")
+
+	var hall models.Hall
+	if err := c.ShouldBindJSON(&hall); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updateResult, err := h.cinemaService.UpdateHall(cinemaID, hallNumber, hall)
+	if err != nil {
+		h.log.Infof("Failed to update hall %s in cinema with ID %s from IP %s, error: %s", hallNumber, cinemaID, c.ClientIP(), err.Error())
+		_, clientError := utils.BadRequestCinemaErrors[err]
+		switch {
+		case clientError:
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
+
+	h.log.Infof("Hall %s updated in cinema with ID %s from IP %s", hallNumber, cinemaID, c.ClientIP())
+	c.JSON(http.StatusOK, gin.H{"matched_count": updateResult.MatchedCount})
 }

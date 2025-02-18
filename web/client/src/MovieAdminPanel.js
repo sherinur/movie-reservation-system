@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
-import {Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.scss';
 
@@ -8,6 +8,8 @@ const AdminPanel = () => {
   const [movies, setMovies] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const jwtToken = localStorage.getItem("accessToken");
+  const navigate = useNavigate();
   const [currentMovie, setCurrentMovie] = useState({
     id: '',
     title: '',
@@ -27,8 +29,12 @@ const AdminPanel = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   useEffect(() => {
-    fetchMovies();
-  }, []);
+    if (!jwtToken) {
+      navigate('/admin/login');
+    } else {
+      fetchMovies();
+    }
+  }, [jwtToken, navigate]);
 
   const fetchMovies = async () => {
     try {
@@ -93,12 +99,12 @@ const AdminPanel = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = editMode ? `http://localhost/movi/movie/${currentMovie.id}` : 'http://localhost/movi/movie';
-    const metho = editMode ? 'PUT' : 'POST';
+    const method = editMode ? 'PUT' : 'POST';
   
     try {
       const movieToSubmit = { ...currentMovie, duration: parseInt(currentMovie.duration, 10) };
       const response = await fetch(url, {
-        method: metho,
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -135,8 +141,14 @@ const AdminPanel = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/admin/login");
+  };
+
   return (
     <div className="container-fluid">
+
       <div className="row">
         {/* Sidebar */}
         <nav className="col-md-2 d-md-block bg-light sidebar vh-100">
@@ -146,19 +158,13 @@ const AdminPanel = () => {
                 <Link to="/admin/movie" className="nav-link active text-dark fw-bold">Movies</Link>
               </li>
               <li className="nav-item">
-              <Link to="/admin/cinema" className="nav-link text-dark">Cinema</Link>
+                <Link to="/admin/cinema" className="nav-link text-dark">Cinema</Link>
               </li>
               <li className="nav-item">
                 <Link to="/admin/session" className="nav-link text-dark">Sessions</Link>
               </li>
-              <li className="nav-item">
-                <a className="nav-link text-dark" href="#">Users</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-dark" href="#">Orders</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link text-dark" href="#">Report</a>
+              <li>
+              <button className="btn  me-2 custom-green-btn" onClick={handleLogout}>Logout</button>
               </li>
             </ul>
           </div>

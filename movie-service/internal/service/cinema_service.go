@@ -22,6 +22,7 @@ type CinemaService interface {
 	GetHall(cinemaID string, hallNumber string) (*models.Hall, error)
 	GetAllHall(cinemaID string) ([]models.Hall, error)
 	DeleteHall(cinemaID string, hallNumber string) (*mongo.UpdateResult, error)
+	UpdateHall(cinemaID string, hallNumber string, hall models.Hall) (*mongo.UpdateResult, error)
 }
 
 type cinemaService struct {
@@ -184,6 +185,28 @@ func (s *cinemaService) DeleteHall(cinemaID string, hallNumber string) (*mongo.U
 	}
 
 	updateResult, err := s.cinemaRepository.DeleteHall(cinemaID, num)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateResult, nil
+}
+
+func (s *cinemaService) UpdateHall(cinemaID string, hallNumber string, hall models.Hall) (*mongo.UpdateResult, error) {
+	if cinemaID == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	if hallNumber == "" {
+		return nil, utils.ErrInvalidId
+	}
+
+	num, err := strconv.Atoi(hallNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	updateResult, err := s.cinemaRepository.UpdateHall(cinemaID, num, hall)
 	if err != nil {
 		return nil, err
 	}
