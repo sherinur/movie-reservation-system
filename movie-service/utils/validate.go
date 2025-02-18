@@ -110,10 +110,6 @@ func ValidateSesesion(session models.Session) error {
 		return ErrSessionStartTimeInvalid
 	case session.EndTime.Before(session.StartTime):
 		return ErrSessionEndTimeInvalid
-	case session.AvailableSeats < 0:
-		return ErrSessionInvalidAvailableSeats
-	case len(session.Seats) != 0:
-		return ErrSeatCannotBeSet
 	}
 
 	return nil

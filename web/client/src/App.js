@@ -10,6 +10,8 @@ import Paying from './Paying';
 import Paid from './Paid';
 import MovieAdminPanel from './MovieAdminPanel';
 import CinemaAdminPanel from './CinemaAdminPanel';
+import SessionAdminPanel from './SessionAdminPanel';
+import AdminLogin from './AdminLogin';
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
         <Route path="/session/:movieID" element={<SessionPage />} />
         <Route path="/admin/movie" element={<MovieAdminPanel />} />
         <Route path="/admin/cinema" element={<CinemaAdminPanel />} />
+        <Route path="/admin/session" element={<SessionAdminPanel />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
     </Router>
   );

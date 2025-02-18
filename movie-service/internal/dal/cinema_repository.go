@@ -24,6 +24,7 @@ type CinemaRepository interface {
 	GetHall(cinemaID string, hallNumber int) (*models.Hall, error)
 	GetAllHall(cinemaID string) ([]models.Hall, error)
 	DeleteHall(cinemaID string, hallNumber int) (*mongo.UpdateResult, error)
+	UpdateHall(cinemaID string, hallNumber int, hall models.Hall) (*mongo.UpdateResult, error)
 }
 
 type cinemaRepository struct {
@@ -94,9 +95,12 @@ func (r *cinemaRepository) UpdateCinemaById(id string, cinema *models.Cinema) (*
 		cinema.HallList[i].AvailableSeats = len(cinema.HallList[i].Seats)
 	}
 
-	update, err := utils.ConvertToBsonD(cinema)
-	if err != nil {
-		return nil, err
+	update := bson.D{
+		{Key: "name", Value: cinema.Name},
+		{Key: "city", Value: cinema.City},
+		{Key: "address", Value: cinema.Address},
+		{Key: "rating", Value: cinema.Rating},
+		{Key: "hall_list", Value: cinema.HallList},
 	}
 
 	res, err := col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: id}}, bson.D{{Key: "$set", Value: update}})
@@ -189,7 +193,27 @@ func (r *cinemaRepository) DeleteHall(cinemaID string, hallNumber int) (*mongo.U
 	filter := bson.M{"_id": cinemaID}
 	update := bson.M{
 		"$pull": bson.M{
-			"hall_list": bson.M{"number": hallNumber},
+			"hall_list": bson.M{"id": hallNumber},
+		},
+	}
+
+	updateResult, err := col.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateResult, nil
+}
+
+func (r *cinemaRepository) UpdateHall(cinemaID string, hallNumber int, hall models.Hall) (*mongo.UpdateResult, error) {
+	col := r.db.Collection("cinema")
+
+	filter := bson.M{"_id": cinemaID, "hall_list.id": hallNumber}
+	update := bson.M{
+		"$set": bson.M{
+			"hall_list.$.number":          hall.Number,
+			"hall_list.$.available_seats": hall.AvailableSeats,
+			"hall_list.$.seats":           hall.Seats,
 		},
 	}
 
