@@ -7,6 +7,7 @@ import (
 	"movie-service/internal/handler"
 	"movie-service/internal/service"
 
+	"github.com/Depado/ginprom"
 	"github.com/gin-gonic/gin"
 	"github.com/sherinur/movie-reservation-system/pkg/db"
 	"github.com/sherinur/movie-reservation-system/pkg/logging"
@@ -32,18 +33,26 @@ type server struct {
 func NewServer(cfg *Config) Server {
 	r := gin.Default()
 
+	// Prometheus middleware
+	prom := ginprom.New(
+		ginprom.Engine(r),
+		ginprom.Subsystem("movie_service"),
+	)
+	r.Use(prom.Instrument())
+
 	corsConfig := &middleware.CorsConfig{
 		AllowedOrigins: []string{"http://localhost:3000"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type", "Authorization"},
 	}
 
-	// cors middleware
+	// CORS middleware
 	middleware.SetCorsConfig(corsConfig)
 	r.Use(middleware.CorsMiddleware())
 
-	// jwt middleware
+	// JWT middleware
 	middleware.SetSecret([]byte(cfg.JwtAccessSecret))
+
 	return &server{
 		router: r,
 		cfg:    cfg,
@@ -59,11 +68,11 @@ func (s *server) Start() error {
 		return err
 	}
 
-	s.log.Info("Starting server on port" + s.cfg.Port)
+	s.log.Info("Starting server on port " + s.cfg.Port)
 
 	err = s.router.Run(s.cfg.Port)
 	if err != nil {
-		s.log.Errorf("Can not start the server: %s", err.Error())
+		s.log.Errorf("Cannot start the server: %s", err.Error())
 		return err
 	}
 
@@ -94,7 +103,7 @@ func (s *server) registerRoutes() error {
 	sessionService := service.NewSessionService(sessionRepository)
 	s.sessionHandler = handler.NewSessionHandler(sessionService, s.log)
 
-	// Basic crud operation routes for movie and cinema
+	// Basic CRUD operation routes for movie and cinema
 	s.router.POST("/movie", s.movieHandler.HandleAddMovie)
 	s.router.POST("/movie/batch", s.movieHandler.HandleAddBatchOfMovie)
 	s.router.GET("/movie", s.movieHandler.HandleGetAllMovie)
@@ -127,7 +136,8 @@ func (s *server) registerRoutes() error {
 	s.router.GET("/session/movie/:id", s.sessionHandler.HandleGetSessionsByMovieID)
 	s.router.POST("session/:id/close", s.sessionHandler.HandlePostSeatClose)
 	s.router.POST("session/:id/open", s.sessionHandler.HandlePostSeatClose)
-	// other routes
+
+	// Health check route
 	s.router.GET("/health", handler.GetHealth)
 
 	return nil
